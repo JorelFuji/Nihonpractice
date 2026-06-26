@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KiraStudy - Collection &amp; Retry</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#dae3ef",
+                    "on-surface-variant": "#544245",
+                    "on-tertiary-fixed": "#001f2a",
+                    "secondary-fixed": "#79f9ce",
+                    "surface-variant": "#dae3ef",
+                    "background": "#f7f9ff",
+                    "surface-container": "#e6effa",
+                    "outline-variant": "#dac0c4",
+                    "inverse-surface": "#29313a",
+                    "on-tertiary-fixed-variant": "#004d65",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#7d2742",
+                    "on-surface": "#141c25",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#3f0018",
+                    "primary-container": "#ff8eaa",
+                    "surface-tint": "#9c3f59",
+                    "on-tertiary": "#ffffff",
+                    "surface": "#f7f9ff",
+                    "inverse-on-surface": "#e9f2fd",
+                    "on-background": "#141c25",
+                    "outline": "#877275",
+                    "on-secondary-fixed-variant": "#00513d",
+                    "tertiary-container": "#73b9d9",
+                    "secondary-container": "#79f9ce",
+                    "secondary": "#006c52",
+                    "secondary-fixed-dim": "#5adcb3",
+                    "surface-dim": "#d2dbe6",
+                    "surface-bright": "#f7f9ff",
+                    "primary": "#9c3f59",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#ecf4ff",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#8ad0f1",
+                    "tertiary-fixed": "#bee9ff",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#0d6683",
+                    "primary-fixed-dim": "#ffb1c2",
+                    "on-secondary-fixed": "#002117",
+                    "primary-fixed": "#ffd9df",
+                    "on-primary-container": "#79233e",
+                    "surface-container-high": "#e0e9f5",
+                    "on-secondary-container": "#007258",
+                    "on-tertiary-container": "#004960",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#ffb1c2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-margin": "20px",
+                    "xl": "32px",
+                    "card-gap": "12px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "unit": "4px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "body-md": ["Quicksand"],
+                    "label-sm": ["Quicksand"],
+                    "body-lg": ["Quicksand"],
+                    "label-bold": ["Quicksand"],
+                    "display-lg": ["Quicksand"],
+                    "display-lg-mobile": ["Quicksand"],
+                    "headline-md": ["Quicksand"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "label-bold": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bouncy-tap:active {
+            transform: scale(0.95) translateY(2px);
+        }
+        .arcade-btn {
+            box-shadow: 0 4px 0 0 rgba(0,0,0,0.1);
+            transition: all 0.1s ease;
+        }
+        .arcade-btn:active {
+            box-shadow: 0 0px 0 0 rgba(0,0,0,0.1);
+            transform: translateY(4px);
+        }
+        .glossy-bar {
+            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky z-40 bg-surface dark:bg-surface-dim shadow-[0_2px_0_0_rgba(156,63,89,0.1)] flex justify-between items-center px-container-margin py-md">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-headline-md" data-icon="local_fire_department">local_fire_department</span>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">KiraStudy</h1>
+</div>
+<div class="bg-surface-container-low px-sm py-xs rounded-full border-2 border-primary-fixed">
+<span class="font-label-bold text-on-primary-container">⚡ 5   💎 120</span>
+</div>
+</header>
+<main class="max-w-md mx-auto px-container-margin mt-lg">
+<!-- Retry Section: Bento Style -->
+<section class="mb-xl">
+<div class="flex items-center justify-between mb-md">
+<h2 class="font-headline-md text-headline-md text-on-surface">Oops! Retry?</h2>
+<span class="text-label-sm bg-error-container text-on-error-container px-sm py-xs rounded-full font-bold">2 Failed</span>
+</div>
+<div class="grid grid-cols-1 gap-card-gap">
+<!-- Main Retry Card -->
+<div class="bg-surface-container-lowest p-lg rounded-lg border-2 border-surface-container-highest shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-md opacity-10">
+<span class="material-symbols-outlined text-[80px]" data-icon="heart_broken">heart_broken</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-center gap-md mb-sm">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container font-bold text-headline-md">あ</div>
+<div>
+<p class="font-label-bold text-on-surface-variant">Hiragana Basics II</p>
+<p class="text-label-sm text-outline">Mistakes: Ka, Ki, Ku</p>
+</div>
+</div>
+<!-- Progress Mockup -->
+<div class="w-full h-4 bg-surface-container rounded-full mb-lg relative overflow-hidden">
+<div class="h-full w-[65%] bg-primary rounded-full glossy-bar relative">
+<div class="absolute right-1 top-1 w-2 h-1 bg-white opacity-40 rounded-full"></div>
+</div>
+</div>
+<button class="arcade-btn w-full py-md bg-primary text-on-primary font-label-bold rounded-lg text-lg flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+                            Try Again!
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Row -->
+<section class="grid grid-cols-2 gap-card-gap mb-xl">
+<div class="bg-secondary-container p-md rounded-lg flex flex-col items-center justify-center border-b-4 border-secondary text-center">
+<span class="text-display-lg text-on-secondary-container leading-none">12</span>
+<span class="font-label-sm text-on-secondary-container">Unlocked</span>
+</div>
+<div class="bg-tertiary-container p-md rounded-lg flex flex-col items-center justify-center border-b-4 border-tertiary text-center">
+<span class="text-display-lg text-on-tertiary-container leading-none">4</span>
+<span class="font-label-sm text-on-tertiary-container">Special Edition</span>
+</div>
+</section>
+<!-- Characters Collection -->
+<section class="mb-xl">
+<div class="flex items-center justify-between mb-md">
+<h2 class="font-headline-md text-headline-md text-on-surface">Collection</h2>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="filter_list">filter_list</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="grid_view">grid_view</span>
+</div>
+</div>
+<!-- Character Grid -->
+<div class="grid grid-cols-3 sm:grid-cols-4 gap-md">
+<!-- Character 1: Unlocked -->
+<div class="flex flex-col items-center gap-xs group cursor-pointer">
+<div class="w-20 h-20 rounded-xl bg-surface-container-highest border-4 border-secondary p-1 relative bouncy-tap transition-all">
+<img class="w-full h-full object-cover rounded-md" data-alt="A cute, chubby white kitten character with big blue eyes and a small red bow, drawn in a minimalist Japanese Kawaii mascot style. The background is a soft pastel teal with subtle geometric patterns. High quality vector art aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXD7q-j9uCc1c5YpMp8O_6R7HCJ_1VGqoweiKI18uhIxslyqrnWmDLiStf4qx-xqetwZ_eksMya_24afHGo6jdaDCProtuauDh_jdHT5MwqgyQ0iCj7wUa6cNKYO0JnDTiJwsHiRSJ77gMREgrINVNtdFApvqz2dmmHwRbSkR-Z1lgfmFU1vwgJd4KwEF9_e40EGQ0hiy_euyFsxQAYOnbkJkDLohss0nUpY85aUM2LZ9kZlCjA1UHms3NNLKLhcjxSrgdElcDJUk"/>
+<div class="absolute -top-2 -right-2 bg-secondary text-on-secondary w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white">LV5</div>
+</div>
+<span class="font-label-bold text-label-sm text-on-surface">Kira-kun</span>
+</div>
+<!-- Character 2: Unlocked -->
+<div class="flex flex-col items-center gap-xs group cursor-pointer">
+<div class="w-20 h-20 rounded-xl bg-surface-container-highest border-4 border-primary p-1 relative bouncy-tap transition-all">
+<img class="w-full h-full object-cover rounded-md" data-alt="A cheerful round Shiba Inu character wearing a small yellow school cap, rendered in a soft-edged minimalist Kawaii style. Warm lighting, vibrant orange and white colors. The character is smiling with closed eyes, evoking happiness and playfulness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmxQIwuq0RuqwHr0KupCIYYJP6G5REwRXGAfdMDXILwop_zCwewN6RVxcHdlMhnuMMaUNT1gUv5KQiojDSuVLo_OWsOgeSBbYe9O0En3WAy01YtJRaZKO_VlkZEWFHFD9Myhn_PYMON6pgPc_wnqk2NA1LTjRHgeBN-5bYnNwwMnzd5Dsq5izIPz5rkzxAzzgUMs-VnPhMFSKG5iSP1MQRbgGclLOe7VJa-BD0n5cJt3vHhSY859qaFnsrtM4SZtLSQNALMpBIMp0"/>
+<div class="absolute -top-2 -right-2 bg-primary text-on-primary w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white">LV3</div>
+</div>
+<span class="font-label-bold text-label-sm text-on-surface">Mochi</span>
+</div>
+<!-- Character 3: Locked -->
+<div class="flex flex-col items-center gap-xs opacity-60">
+<div class="w-20 h-20 rounded-xl bg-surface-dim border-4 border-outline p-1 relative flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-display-lg" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<span class="font-label-bold text-label-sm text-outline">Locked</span>
+</div>
+<!-- Character 4: Special Edition Unlocked -->
+<div class="flex flex-col items-center gap-xs group cursor-pointer">
+<div class="w-20 h-20 rounded-xl bg-tertiary-fixed border-4 border-tertiary p-1 relative bouncy-tap transition-all shadow-[0_0_15px_rgba(13,102,131,0.2)]">
+<img class="w-full h-full object-cover rounded-md" data-alt="A sophisticated black rabbit character with a small monocle and a tiny purple scarf, designed in a sleek Kawaii game-like aesthetic. Professional digital illustration with soft gradients and premium feel. Pastel blue and deep purple accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPwTjdXtCfxCsG12oSeNyc_98I808otxGkvpvkBZYTXYlFooA14Yf3yb9cfqB1qGeMg45F1RkWepB0gllQ0CrYndZCiFNiTPw7JreGleEN-2FcmEMLNLmOYCwZ_XT6mjXMDahDwh4zPf_GeMIjBmuCigdeICS2FDVUKjF3FGdhikPxkV_ImjakLYV3tbyspe0Oo84Nagr4RJrZJkh18vJ-8PsXJqKMRrk_tc6Xo0O93-g5J3Uzjxlx4ByN8PMaH7pfKwX3nrqz-Yg"/>
+<div class="absolute -top-2 -right-2 bg-tertiary text-on-tertiary w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white">SP</div>
+</div>
+<span class="font-label-bold text-label-sm text-on-surface">Sensei</span>
+</div>
+<!-- Character 5: Locked -->
+<div class="flex flex-col items-center gap-xs opacity-60">
+<div class="w-20 h-20 rounded-xl bg-surface-dim border-4 border-outline p-1 relative flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-display-lg" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<span class="font-label-bold text-label-sm text-outline">Locked</span>
+</div>
+<!-- Character 6: Locked -->
+<div class="flex flex-col items-center gap-xs opacity-60">
+<div class="w-20 h-20 rounded-xl bg-surface-dim border-4 border-outline p-1 relative flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-display-lg" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<span class="font-label-bold text-label-sm text-outline">Locked</span>
+</div>
+<!-- Character 7: Locked -->
+<div class="flex flex-col items-center gap-xs opacity-60">
+<div class="w-20 h-20 rounded-xl bg-surface-dim border-4 border-outline p-1 relative flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-display-lg" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<span class="font-label-bold text-label-sm text-outline">Locked</span>
+</div>
+<!-- Character 8: Unlock Slot -->
+<div class="flex flex-col items-center gap-xs">
+<div class="w-20 h-20 rounded-xl bg-surface-container-low border-4 border-dashed border-outline-variant p-1 relative flex flex-col items-center justify-center text-center bouncy-tap cursor-pointer">
+<span class="material-symbols-outlined text-primary" data-icon="add_circle">add_circle</span>
+<span class="text-[8px] font-bold text-primary mt-1 uppercase">Unlock</span>
+</div>
+<span class="font-label-bold text-label-sm text-primary">New!</span>
+</div>
+</div>
+</section>
+<!-- Progress to Next Unlock -->
+<div class="bg-surface-container-high p-md rounded-lg border-2 border-surface-container-highest">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-bold text-on-surface-variant">Next Character</span>
+<span class="font-label-sm text-secondary">85%</span>
+</div>
+<div class="w-full h-3 bg-white rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[85%] glossy-bar"></div>
+</div>
+<p class="text-[10px] text-outline mt-xs">Earn 150 more XP to unlock 'Tako'</p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface-container dark:bg-surface-container-highest border-t-4 border-surface-container-highest dark:border-on-surface-variant shadow-[0_-4px_10px_rgba(156,63,89,0.05)] flex justify-around items-center px-4 pt-2 pb-6 z-50 rounded-t-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 active:translate-y-1 transition-all duration-75" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 active:translate-y-1 transition-all duration-75" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-sm text-label-sm">Study</span>
+</a>
+<!-- Active: Characters -->
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-4 py-1 border-b-4 border-primary dark:border-on-primary-fixed-variant active:translate-y-1 transition-all duration-75" href="#">
+<span class="material-symbols-outlined" data-icon="pets" style="font-variation-settings: 'FILL' 1;">pets</span>
+<span class="font-label-sm text-label-sm">Characters</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 active:translate-y-1 transition-all duration-75" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for character tapping
+        document.querySelectorAll('.bouncy-tap').forEach(el => {
+            el.addEventListener('click', () => {
+                el.classList.add('scale-110');
+                setTimeout(() => {
+                    el.classList.remove('scale-110');
+                }, 200);
+            });
+        });
+    </script>
+</body></html>

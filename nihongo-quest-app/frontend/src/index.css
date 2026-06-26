@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  body {
+    @apply font-quicksand bg-background text-on-background;
+    @apply min-h-screen;
+    overscroll-behavior: none;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
+
+@layer components {
+  .tactile-btn {
+    @apply relative transition-all duration-100;
+    box-shadow: 0 4px 0 0 rgba(156, 63, 89, 0.2);
+  }
+  
+  .tactile-btn:active {
+    @apply translate-y-[2px];
+    box-shadow: 0 2px 0 0 rgba(156, 63, 89, 0.2);
+  }
+
+  .kawaii-card {
+    @apply bg-white rounded-lg p-md border-2 border-surface-container-highest;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+  
+  .kawaii-card:hover {
+    @apply border-primary/20;
+    transform: translateY(-2px);
+  }
+
+  .glossy-progress {
+    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%);
+  }
+
+  .canvas-grid {
+    background-image: 
+      linear-gradient(to right, rgba(156, 63, 89, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(156, 63, 89, 0.1) 1px, transparent 1px),
+      linear-gradient(45deg, rgba(156, 63, 89, 0.05) 1px, transparent 1px),
+      linear-gradient(-45deg, rgba(156, 63, 89, 0.05) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    background-position: center;
+  }
+}
+
+@layer utilities {
+  .squish-active:active {
+    transform: scale(0.95);
+  }
+}

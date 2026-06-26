@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "nihonselfpacepractic"
+  },
+  "targets": {
+    "nihonselfpacepractic": {
+      "hosting": {
+        "flutter": [
+          "nihonselfpacepractic-flutter"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

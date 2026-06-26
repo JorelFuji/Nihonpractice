@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KiraStudy - Daily Practice</title>
+<!-- Google Fonts: Quicksand for the Kawaii feel -->
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-container-highest": "#dae3ef",
+                  "on-surface-variant": "#544245",
+                  "on-tertiary-fixed": "#001f2a",
+                  "secondary-fixed": "#79f9ce",
+                  "surface-variant": "#dae3ef",
+                  "background": "#f7f9ff",
+                  "surface-container": "#e6effa",
+                  "outline-variant": "#dac0c4",
+                  "inverse-surface": "#29313a",
+                  "on-tertiary-fixed-variant": "#004d65",
+                  "surface-container-lowest": "#ffffff",
+                  "on-primary-fixed-variant": "#7d2742",
+                  "on-surface": "#141c25",
+                  "on-error": "#ffffff",
+                  "on-primary-fixed": "#3f0018",
+                  "primary-container": "#ff8eaa",
+                  "surface-tint": "#9c3f59",
+                  "on-tertiary": "#ffffff",
+                  "surface": "#f7f9ff",
+                  "inverse-on-surface": "#e9f2fd",
+                  "on-background": "#141c25",
+                  "outline": "#877275",
+                  "on-secondary-fixed-variant": "#00513d",
+                  "tertiary-container": "#73b9d9",
+                  "secondary-container": "#79f9ce",
+                  "secondary": "#006c52",
+                  "secondary-fixed-dim": "#5adcb3",
+                  "surface-dim": "#d2dbe6",
+                  "surface-bright": "#f7f9ff",
+                  "primary": "#9c3f59",
+                  "on-error-container": "#93000a",
+                  "surface-container-low": "#ecf4ff",
+                  "error-container": "#ffdad6",
+                  "tertiary-fixed-dim": "#8ad0f1",
+                  "tertiary-fixed": "#bee9ff",
+                  "on-primary": "#ffffff",
+                  "on-secondary": "#ffffff",
+                  "tertiary": "#0d6683",
+                  "primary-fixed-dim": "#ffb1c2",
+                  "on-secondary-fixed": "#002117",
+                  "primary-fixed": "#ffd9df",
+                  "on-primary-container": "#79233e",
+                  "surface-container-high": "#e0e9f5",
+                  "on-secondary-container": "#007258",
+                  "on-tertiary-container": "#004960",
+                  "error": "#ba1a1a",
+                  "inverse-primary": "#ffb1c2"
+          },
+          "borderRadius": {
+                  "DEFAULT": "1rem",
+                  "lg": "2rem",
+                  "xl": "3rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "container-margin": "20px",
+                  "xl": "32px",
+                  "card-gap": "12px",
+                  "md": "16px",
+                  "lg": "24px",
+                  "sm": "8px",
+                  "unit": "4px",
+                  "xs": "4px"
+          },
+          "fontFamily": {
+                  "body-md": ["Quicksand"],
+                  "label-sm": ["Quicksand"],
+                  "body-lg": ["Quicksand"],
+                  "label-bold": ["Quicksand"],
+                  "display-lg": ["Quicksand"],
+                  "display-lg-mobile": ["Quicksand"],
+                  "headline-md": ["Quicksand"]
+          },
+          "fontSize": {
+                  "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+                  "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                  "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "500"}],
+                  "label-bold": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+                  "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                  "display-lg-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                  "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Quicksand', sans-serif; background-color: #f7f9ff; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .heart-pulse { animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .bounce-character { animation: bounce 3s infinite ease-in-out; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .check-button-active {
+      transform: translateY(0);
+      box-shadow: 0 4px 0 0 #79233e;
+    }
+    .check-button-active:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 0 #79233e;
+    }
+    .glossy-progress {
+      background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen text-on-background bg-background">
+<!-- Top AppBar (from JSON context) -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky z-50 shadow-[0_2px_0_0_rgba(156,63,89,0.1)] flex justify-between items-center px-container-margin py-md">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim font-headline-md text-headline-md" data-icon="local_fire_department">local_fire_department</span>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">KiraStudy</h1>
+</div>
+<div class="flex items-center gap-md">
+<!-- Hearts / Lives Display -->
+<div class="flex items-center bg-surface-container px-3 py-1 rounded-full border-b-2 border-surface-container-highest">
+<span class="material-symbols-outlined text-error heart-pulse mr-1" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-label-bold text-on-surface">5</span>
+</div>
+<span class="text-primary font-label-bold">⚡ 5  💎 120</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col items-center px-container-margin py-lg max-w-2xl mx-auto w-full">
+<!-- Progression Bar -->
+<div class="w-full mb-xl">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Lesson Progress</span>
+<span class="font-label-sm text-primary font-bold">60%</span>
+</div>
+<div class="w-full h-4 bg-surface-container-highest rounded-full overflow-hidden relative border-b-2 border-surface-container-highest">
+<div class="h-full bg-primary-container relative transition-all duration-500 ease-out" style="width: 60%;">
+<div class="absolute inset-0 glossy-progress"></div>
+<div class="absolute right-1 top-1/2 -translate-y-1/2">
+<span class="material-symbols-outlined text-white text-[12px]" data-icon="auto_awesome">auto_awesome</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Character Mascot & Question Container -->
+<div class="w-full flex flex-col md:flex-row items-center gap-lg mb-xl">
+<!-- Mascot -->
+<div class="relative w-32 h-32 flex-shrink-0">
+<div class="absolute inset-0 bg-secondary-container rounded-full opacity-20 animate-ping"></div>
+<img class="w-full h-full object-contain bounce-character relative z-10" data-alt="A cute, chubby white Shiba Inu character wearing a small traditional Japanese student cap. The character is cheering enthusiastically with paws up, drawn in a modern minimalist kawaii sticker style with thick outlines and soft pastel highlights. The background is a clean, bright studio lighting setup within the app's soft aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtiF5MNWg9Zg6zh3G_VeM5G4Y45KRkfCg-FtGVPrYzLmOncZInNMK-Mza9Y-O3HeOM36lhH-coB0IhV3P4clbJ5BakwF-TN-8Z5VTDs-O8UsFuu724vtbxr5jy-437zL2J1S2LfMz3f1U-GGxfx4pYp-lyXp9PSqNDrHGk0SMLzapLRl-RoRe7Wuyd2Baar5B6MSTTm1_TkwnIhiBdcOpMOrG2vy9re42lA4oy2irOFhIDkzuRWKHl4FciUCJ3Nob3phRcSG4GCbc"/>
+</div>
+<!-- Speech Bubble Question -->
+<div class="relative bg-white p-lg rounded-lg border-2 border-surface-container-highest shadow-sm w-full">
+<div class="absolute -left-3 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[10px] border-t-transparent border-r-[15px] border-r-white border-b-[10px] border-b-transparent hidden md:block"></div>
+<div class="absolute left-1/2 -top-3 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-b-[15px] border-b-white border-r-[10px] border-r-transparent md:hidden"></div>
+<h2 class="font-headline-md text-headline-md text-on-surface text-center md:text-left">
+          How do you say <span class="text-primary">"Good Morning"</span> in Japanese?
+        </h2>
+</div>
+</div>
+<!-- Multiple Choice Options (Bento Style Grid) -->
+<div class="w-full grid grid-cols-1 md:grid-cols-2 gap-card-gap mb-xl">
+<!-- Option 1 -->
+<button class="option-tile group relative bg-white p-lg rounded-lg border-2 border-surface-container-highest shadow-sm hover:border-primary transition-all active:scale-95 text-left" onclick="selectOption(this)">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full border-2 border-surface-container-highest flex items-center justify-center font-label-bold text-on-surface-variant group-hover:border-primary group-hover:bg-primary-fixed group-[.selected]:bg-primary group-[.selected]:text-white">1</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface leading-tight">おはよう</div>
+<div class="font-body-md text-on-surface-variant italic">Ohayou</div>
+</div>
+</div>
+</button>
+<!-- Option 2 -->
+<button class="option-tile group relative bg-white p-lg rounded-lg border-2 border-surface-container-highest shadow-sm hover:border-primary transition-all active:scale-95 text-left" onclick="selectOption(this)">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full border-2 border-surface-container-highest flex items-center justify-center font-label-bold text-on-surface-variant group-hover:border-primary group-hover:bg-primary-fixed group-[.selected]:bg-primary group-[.selected]:text-white">2</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface leading-tight">こんにちは</div>
+<div class="font-body-md text-on-surface-variant italic">Konnichiwa</div>
+</div>
+</div>
+</button>
+<!-- Option 3 -->
+<button class="option-tile group relative bg-white p-lg rounded-lg border-2 border-surface-container-highest shadow-sm hover:border-primary transition-all active:scale-95 text-left" onclick="selectOption(this)">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full border-2 border-surface-container-highest flex items-center justify-center font-label-bold text-on-surface-variant group-hover:border-primary group-hover:bg-primary-fixed group-[.selected]:bg-primary group-[.selected]:text-white">3</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface leading-tight">こんばんは</div>
+<div class="font-body-md text-on-surface-variant italic">Konbanwa</div>
+</div>
+</div>
+</button>
+<!-- Option 4 -->
+<button class="option-tile group relative bg-white p-lg rounded-lg border-2 border-surface-container-highest shadow-sm hover:border-primary transition-all active:scale-95 text-left" onclick="selectOption(this)">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full border-2 border-surface-container-highest flex items-center justify-center font-label-bold text-on-surface-variant group-hover:border-primary group-hover:bg-primary-fixed group-[.selected]:bg-primary group-[.selected]:text-white">4</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface leading-tight">さようなら</div>
+<div class="font-body-md text-on-surface-variant italic">Sayounara</div>
+</div>
+</div>
+</button>
+</div>
+</main>
+<!-- Bottom Action Bar -->
+<footer class="sticky bottom-0 w-full bg-white border-t border-surface-container-highest px-container-margin py-lg z-50">
+<div class="max-w-2xl mx-auto flex items-center justify-between gap-md">
+<button class="bg-surface-container text-on-surface-variant px-lg py-md rounded-lg font-label-bold uppercase tracking-widest hover:bg-surface-container-highest active:scale-95 transition-all">
+        Skip
+      </button>
+<button class="flex-grow bg-primary text-white py-md rounded-lg font-headline-md text-headline-md check-button-active transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed" id="checkButton">
+        Check
+      </button>
+</div>
+</footer>
+<!-- Background Decorative Element (Shader) -->
+<div class="fixed inset-0 pointer-events-none -z-10 opacity-30">
+
+</div>
+<script>
+    function selectOption(element) {
+      // Remove selected class from all
+      document.querySelectorAll('.option-tile').forEach(tile => {
+        tile.classList.remove('selected', 'border-primary', 'bg-primary-fixed');
+      });
+      
+      // Add to current
+      element.classList.add('selected', 'border-primary', 'bg-primary-fixed');
+      
+      // Enable check button with a little "pop" effect
+      const btn = document.getElementById('checkButton');
+      btn.removeAttribute('disabled');
+    }
+
+    // Initialize Check Button as disabled
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('checkButton').setAttribute('disabled', 'true');
+    });
+
+    // Check Button Micro-interaction
+    document.getElementById('checkButton').addEventListener('click', function() {
+      const selected = document.querySelector('.option-tile.selected');
+      if (!selected) return;
+
+      // Simple correct/incorrect logic for demo
+      const isCorrect = selected.textContent.includes('おはよう');
+      
+      if (isCorrect) {
+        this.innerHTML = "Subarashii! ✨";
+        this.classList.replace('bg-primary', 'bg-secondary');
+        selected.classList.add('ring-4', 'ring-secondary', 'border-secondary');
+      } else {
+        this.innerHTML = "Try Again! 💦";
+        this.classList.replace('bg-primary', 'bg-error');
+        selected.classList.add('ring-4', 'ring-error', 'border-error');
+      }
+    });
+  </script>
+</body></html>

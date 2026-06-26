@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KiraStudy - Daily Practice</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Space+Grotesk:wght@700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-background": "#e2e1f1",
+            "surface-container-high": "#282935",
+            "inverse-on-surface": "#2f303b",
+            "secondary-fixed-dim": "#73d9b5",
+            "primary": "#ffe0ea",
+            "on-tertiary-container": "#405488",
+            "surface": "#12131d",
+            "on-tertiary-fixed": "#001847",
+            "surface-dim": "#12131d",
+            "tertiary-container": "#b9caff",
+            "on-error": "#690005",
+            "secondary-container": "#008263",
+            "surface-variant": "#333440",
+            "on-primary-container": "#7c445e",
+            "primary-container": "#ffb7d5",
+            "on-secondary-container": "#e2fff1",
+            "on-primary": "#502038",
+            "background": "#12131d",
+            "secondary": "#73d9b5",
+            "tertiary-fixed": "#dae2ff",
+            "on-secondary": "#003829",
+            "on-surface-variant": "#d4c2c7",
+            "tertiary-fixed-dim": "#b2c5ff",
+            "on-surface": "#e2e1f1",
+            "surface-container-low": "#1a1b26",
+            "on-tertiary": "#182e60",
+            "surface-container-highest": "#333440",
+            "surface-bright": "#383844",
+            "primary-fixed-dim": "#fab2d0",
+            "on-tertiary-fixed-variant": "#314578",
+            "on-secondary-fixed": "#002117",
+            "tertiary": "#e1e6ff",
+            "primary-fixed": "#ffd8e6",
+            "outline-variant": "#504348",
+            "on-secondary-fixed-variant": "#00513d",
+            "surface-container-lowest": "#0c0d18",
+            "surface-tint": "#fab2d0",
+            "surface-container": "#1e1f2a",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed": "#360a22",
+            "inverse-primary": "#854d67",
+            "error": "#ffb4ab",
+            "error-container": "#93000a",
+            "outline": "#9d8c92",
+            "inverse-surface": "#e2e1f1"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-md": "24px",
+            "stack-lg": "48px",
+            "unit": "8px",
+            "gutter": "16px",
+            "stack-sm": "12px",
+            "container-padding": "24px"
+          },
+          "fontFamily": {
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "character-display": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-caps": ["Space Grotesk"],
+            "body-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-lg-mobile": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "character-display": ["64px", {"lineHeight": "72px", "fontWeight": "700"}],
+            "headline-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+            "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .heart-pulse { animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .bounce-character { animation: bounce 3s infinite ease-in-out; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .glossy-progress {
+      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+    }
+    .recording-pulse { animation: rec-pulse 1.5s infinite; }
+    @keyframes rec-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(250, 178, 208, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(250, 178, 208, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(250, 178, 208, 0); }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen text-on-background bg-background">
+<!-- Top AppBar -->
+<header class="bg-surface-container-low w-full top-0 sticky z-50 border-b border-outline-variant flex justify-between items-center px-container-padding py-stack-sm">
+<div class="flex items-center gap-unit">
+<span class="material-symbols-outlined text-primary-fixed-dim text-headline-md" data-icon="local_fire_department">local_fire_department</span>
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">KiraStudy</h1>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="flex items-center bg-surface-container-high px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-error heart-pulse mr-1" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-label-caps text-on-surface">5</span>
+</div>
+<span class="text-secondary-fixed-dim font-label-caps">⚡ 5  💎 120</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col items-center px-container-padding py-stack-md max-w-2xl mx-auto w-full">
+<!-- Progression Bar -->
+<div class="w-full mb-stack-md">
+<div class="flex justify-between items-center mb-unit">
+<span class="font-label-caps text-on-surface-variant uppercase">Lesson Progress</span>
+<span class="font-label-caps text-primary-fixed-dim">60%</span>
+</div>
+<div class="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden relative">
+<div class="h-full bg-primary-container transition-all duration-500 ease-out" style="width: 60%;">
+<div class="absolute inset-0 glossy-progress"></div>
+</div>
+</div>
+</div>
+<!-- Character Mascot & Question -->
+<div class="w-full flex flex-col md:flex-row items-center gap-stack-md mb-stack-md">
+<!-- Mascot -->
+<div class="relative w-28 h-28 flex-shrink-0">
+<div class="absolute inset-0 bg-primary-container rounded-full opacity-10 animate-pulse"></div>
+<img alt="Kawaii Shiba Inu Mascot" class="w-full h-full object-contain bounce-character relative z-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtiF5MNWg9Zg6zh3G_VeM5G4Y45KRkfCg-FtGVPrYzLmOncZInNMK-Mza9Y-O3HeOM36lhH-coB0IhV3P4clbJ5BakwF-TN-8Z5VTDs-O8UsFuu724vtbxr5jy-437zL2J1S2LfMz3f1U-GGxfx4pYp-lyXp9PSqNDrHGk0SMLzapLRl-RoRe7Wuyd2Baar5B6MSTTm1_TkwnIhiBdcOpMOrG2vy9re42lA4oy2irOFhIDkzuRWKHl4FciUCJ3Nob3phRcSG4GCbc"/>
+</div>
+<!-- Speech Bubble -->
+<div class="relative bg-surface-container-high p-gutter rounded-xl border border-outline-variant w-full">
+<div class="absolute -left-2 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-t-transparent border-r-[10px] border-r-surface-container-high border-b-[8px] border-b-transparent hidden md:block"></div>
+<div class="absolute left-1/2 -top-2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-b-[10px] border-b-surface-container-high border-r-[8px] border-r-transparent md:hidden"></div>
+<h2 class="font-headline-md text-headline-md text-on-surface text-center md:text-left">
+          How do you say <span class="text-primary-fixed-dim">"Good Morning"</span> in Japanese?
+        </h2>
+</div>
+</div>
+<!-- Options Grid -->
+<div class="w-full grid grid-cols-1 gap-stack-sm mb-stack-lg">
+<button class="option-tile group flex items-center gap-gutter bg-surface-container p-gutter rounded-lg border border-outline-variant hover:border-primary-fixed-dim transition-all active:scale-[0.98] text-left" onclick="selectOption(this)">
+<div class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center font-label-caps text-on-surface-variant group-[.selected]:bg-primary-fixed-dim group-[.selected]:text-on-primary group-[.selected]:border-primary-fixed-dim">1</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface leading-tight">おはよう</div>
+<div class="font-body-md text-on-surface-variant italic">Ohayou</div>
+</div>
+</button>
+<button class="option-tile group flex items-center gap-gutter bg-surface-container p-gutter rounded-lg border border-outline-variant hover:border-primary-fixed-dim transition-all active:scale-[0.98] text-left" onclick="selectOption(this)">
+<div class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center font-label-caps text-on-surface-variant group-[.selected]:bg-primary-fixed-dim group-[.selected]:text-on-primary group-[.selected]:border-primary-fixed-dim">2</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface leading-tight">こんにちは</div>
+<div class="font-body-md text-on-surface-variant italic">Konnichiwa</div>
+</div>
+</button>
+<button class="option-tile group flex items-center gap-gutter bg-surface-container p-gutter rounded-lg border border-outline-variant hover:border-primary-fixed-dim transition-all active:scale-[0.98] text-left" onclick="selectOption(this)">
+<div class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center font-label-caps text-on-surface-variant group-[.selected]:bg-primary-fixed-dim group-[.selected]:text-on-primary group-[.selected]:border-primary-fixed-dim">3</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface leading-tight">こんばんは</div>
+<div class="font-body-md text-on-surface-variant italic">Konbanwa</div>
+</div>
+</button>
+</div>
+<!-- Record & Review Feature -->
+<div class="w-full flex flex-col items-center gap-stack-sm mb-stack-md pt-stack-sm border-t border-outline-variant/30">
+<span class="font-label-caps text-on-surface-variant uppercase tracking-widest text-[10px]">Practice Pronunciation</span>
+<div class="flex items-center gap-stack-md">
+<!-- Recording Button -->
+<button class="w-16 h-16 rounded-full bg-surface-container-highest border-2 border-outline-variant flex items-center justify-center group transition-all active:scale-90" id="recordBtn" onclick="toggleRecording()">
+<span class="material-symbols-outlined text-primary-fixed-dim text-3xl group-[.recording]:text-error group-[.recording]:recording-pulse" data-icon="mic">mic</span>
+</button>
+<!-- Review Button -->
+<button class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface-variant opacity-50 cursor-not-allowed transition-all active:scale-95" disabled="" id="playBtn">
+<span class="material-symbols-outlined text-xl" data-icon="play_arrow">play_arrow</span>
+</button>
+</div>
+<p class="font-label-caps text-[11px] text-on-surface-variant" id="recStatus">Tap to Record</p>
+</div>
+</main>
+<!-- Bottom Action Bar -->
+<footer class="sticky bottom-0 w-full bg-surface-container-lowest border-t border-outline-variant px-container-padding py-stack-md z-50">
+<div class="max-w-2xl mx-auto flex items-center justify-between gap-gutter">
+<button class="bg-surface-container-high text-on-surface-variant px-gutter py-stack-sm rounded-lg font-label-caps uppercase hover:bg-surface-variant active:scale-95 transition-all">
+        Skip
+      </button>
+<button class="flex-grow bg-primary-fixed-dim text-on-primary py-stack-sm rounded-lg font-headline-md text-headline-md transition-all disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed" disabled="" id="checkButton">
+        Check
+      </button>
+</div>
+</footer>
+<script>
+    function selectOption(element) {
+      document.querySelectorAll('.option-tile').forEach(tile => {
+        tile.classList.remove('selected', 'border-primary-fixed-dim', 'bg-surface-container-high');
+      });
+      element.classList.add('selected', 'border-primary-fixed-dim', 'bg-surface-container-high');
+      document.getElementById('checkButton').removeAttribute('disabled');
+    }
+
+    let isRecording = false;
+    function toggleRecording() {
+      const btn = document.getElementById('recordBtn');
+      const playBtn = document.getElementById('playBtn');
+      const status = document.getElementById('recStatus');
+      
+      isRecording = !isRecording;
+      
+      if (isRecording) {
+        btn.classList.add('recording');
+        status.innerText = "Recording...";
+        status.classList.add('text-error');
+        playBtn.disabled = true;
+        playBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        btn.classList.remove('recording');
+        status.innerText = "Recorded! Review below";
+        status.classList.replace('text-error', 'text-secondary-fixed-dim');
+        playBtn.disabled = false;
+        playBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        playBtn.classList.add('text-on-surface');
+      }
+    }
+
+    document.getElementById('checkButton').addEventListener('click', function() {
+      const selected = document.querySelector('.option-tile.selected');
+      if (!selected) return;
+
+      const isCorrect = selected.textContent.includes('おはよう');
+      
+      if (isCorrect) {
+        this.innerHTML = "Subarashii! ✨";
+        this.classList.replace('bg-primary-fixed-dim', 'bg-secondary-container');
+        this.classList.replace('text-on-primary', 'text-white');
+        selected.classList.add('ring-2', 'ring-secondary-fixed-dim');
+      } else {
+        this.innerHTML = "Try Again! 💦";
+        this.classList.replace('bg-primary-fixed-dim', 'bg-error-container');
+        this.classList.replace('text-on-primary', 'text-on-error-container');
+        selected.classList.add('ring-2', 'ring-error');
+      }
+    });
+  </script>
+</body></html>

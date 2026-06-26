@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Connection Test - NihongoQuest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+        h1 {
+            color: #9c3f59;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f7f9ff;
+            border-radius: 10px;
+            border-left: 4px solid #9c3f59;
+        }
+        .test-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+        .button {
+            background: #9c3f59;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .button:hover {
+            background: #7d2742;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(156, 63, 89, 0.3);
+        }
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .info-box {
+            background: #e0e9f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .info-box strong {
+            color: #0d6683;
+        }
+        .emoji {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="emoji">🔥</span> Firebase Connection Test</h1>
+        <p class="subtitle">Testing NihongoQuest Firebase Integration</p>
+
+        <div class="info-box">
+            <strong>Firebase Project:</strong> nihonselfpacepractic<br>
+            <strong>Auth Domain:</strong> nihonselfpacepractic.firebaseapp.com<br>
+            <strong>App ID:</strong> 1:319096782095:web:4eb19452c95a823eab527a
+        </div>
+
+        <button class="button" onclick="runTests()">▶ Run All Tests</button>
+
+        <div id="tests-container"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAEZ-4sPafZkPUseFK4hRN1q4-Vv-eEq_I",
+            authDomain: "nihonselfpacepractic.firebaseapp.com",
+            projectId: "nihonselfpacepractic",
+            storageBucket: "nihonselfpacepractic.firebasestorage.app",
+            messagingSenderId: "319096782095",
+            appId: "1:319096782095:web:4eb19452c95a823eab527a",
+            measurementId: "G-WWWT98XTT0"
+        };
+
+        let app, auth, db, analytics;
+
+        const tests = [
+            {
+                name: "Firebase App Initialization",
+                test: async () => {
+                    app = initializeApp(firebaseConfig);
+                    return { success: true, message: `App initialized: ${app.name}` };
+                }
+            },
+            {
+                name: "Firebase Auth Connection",
+                test: async () => {
+                    auth = getAuth(app);
+                    return { success: true, message: `Auth instance created. Config: ${auth.config.apiKey.substring(0, 20)}...` };
+                }
+            },
+            {
+                name: "Firestore Connection",
+                test: async () => {
+                    db = getFirestore(app);
+                    return { success: true, message: `Firestore connected to project: ${db.app.options.projectId}` };
+                }
+            },
+            {
+                name: "Analytics Initialization",
+                test: async () => {
+                    analytics = getAnalytics(app);
+                    logEvent(analytics, 'firebase_test', { test_time: new Date().toISOString() });
+                    return { success: true, message: `Analytics initialized. Measurement ID: ${firebaseConfig.measurementId}` };
+                }
+            },
+            {
+                name: "Anonymous Authentication",
+                test: async () => {
+                    const userCredential = await signInAnonymously(auth);
+                    return { 
+                        success: true, 
+                        message: `Signed in anonymously. UID: ${userCredential.user.uid}` 
+                    };
+                }
+            },
+            {
+                name: "Firestore Write Test",
+                test: async () => {
+                    const testDoc = await addDoc(collection(db, 'test_connection'), {
+                        message: 'Firebase connection test',
+                        timestamp: new Date().toISOString(),
+                        source: 'test-firebase.html'
+                    });
+                    return { 
+                        success: true, 
+                        message: `Document written with ID: ${testDoc.id}` 
+                    };
+                }
+            },
+            {
+                name: "Firestore Read Test",
+                test: async () => {
+                    const querySnapshot = await getDocs(collection(db, 'test_connection'));
+                    const count = querySnapshot.size;
+                    
+                    // Clean up test documents
+                    querySnapshot.forEach(async (doc) => {
+                        await deleteDoc(doc.ref);
+                    });
+                    
+                    return { 
+                        success: true, 
+                        message: `Read ${count} document(s) and cleaned up` 
+                    };
+                }
+            },
+            {
+                name: "Firebase Hosting URL Check",
+                test: async () => {
+                    const hostingUrl = 'https://nihonselfpacepractic.web.app';
+                    return {
+                        success: true,
+                        message: `Your Firebase Hosting URL: ${hostingUrl}`
+                    };
+                }
+            }
+        ];
+
+        window.runTests = async function() {
+            const container = document.getElementById('tests-container');
+            container.innerHTML = '';
+            
+            const button = document.querySelector('.button');
+            button.disabled = true;
+            button.textContent = '⏳ Running Tests...';
+
+            for (let i = 0; i < tests.length; i++) {
+                const testItem = tests[i];
+                
+                const testDiv = document.createElement('div');
+                testDiv.className = 'test-section';
+                testDiv.innerHTML = `
+                    <div class="test-title">
+                        ${i + 1}. ${testItem.name}
+                        <span class="status pending" id="status-${i}">Testing...</span>
+                    </div>
+                    <div class="result" id="result-${i}">Running test...</div>
+                `;
+                container.appendChild(testDiv);
+
+                try {
+                    const result = await testItem.test();
+                    document.getElementById(`status-${i}`).className = 'status success';
+                    document.getElementById(`status-${i}`).textContent = '✓ Success';
+                    document.getElementById(`result-${i}`).textContent = result.message;
+                    document.getElementById(`result-${i}`).style.color = '#065f46';
+                } catch (error) {
+                    document.getElementById(`status-${i}`).className = 'status error';
+                    document.getElementById(`status-${i}`).textContent = '✗ Failed';
+                    document.getElementById(`result-${i}`).textContent = `Error: ${error.message}`;
+                    document.getElementById(`result-${i}`).style.color = '#991b1b';
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            button.disabled = false;
+            button.textContent = '✓ Tests Complete - Run Again';
+        };
+    </script>
+</body>
+</html>

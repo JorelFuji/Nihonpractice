@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KiraStudy - Character Lesson</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f7f9ff;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .kawaii-shadow {
+            box-shadow: 0 4px 0 0 rgba(156, 63, 89, 0.1);
+        }
+        .kawaii-button-shadow {
+            box-shadow: 0 4px 0 0 rgba(156, 63, 89, 0.2);
+        }
+        .kawaii-button-active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 0 rgba(156, 63, 89, 0.2);
+        }
+        .glossy-finish {
+            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#dae3ef",
+                        "on-surface-variant": "#544245",
+                        "on-tertiary-fixed": "#001f2a",
+                        "secondary-fixed": "#79f9ce",
+                        "surface-variant": "#dae3ef",
+                        "background": "#f7f9ff",
+                        "surface-container": "#e6effa",
+                        "outline-variant": "#dac0c4",
+                        "inverse-surface": "#29313a",
+                        "on-tertiary-fixed-variant": "#004d65",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#7d2742",
+                        "on-surface": "#141c25",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#3f0018",
+                        "primary-container": "#ff8eaa",
+                        "surface-tint": "#9c3f59",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f7f9ff",
+                        "inverse-on-surface": "#e9f2fd",
+                        "on-background": "#141c25",
+                        "outline": "#877275",
+                        "on-secondary-fixed-variant": "#00513d",
+                        "tertiary-container": "#73b9d9",
+                        "secondary-container": "#79f9ce",
+                        "secondary": "#006c52",
+                        "secondary-fixed-dim": "#5adcb3",
+                        "surface-dim": "#d2dbe6",
+                        "surface-bright": "#f7f9ff",
+                        "primary": "#9c3f59",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#ecf4ff",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#8ad0f1",
+                        "tertiary-fixed": "#bee9ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#0d6683",
+                        "primary-fixed-dim": "#ffb1c2",
+                        "on-secondary-fixed": "#002117",
+                        "primary-fixed": "#ffd9df",
+                        "on-primary-container": "#79233e",
+                        "surface-container-high": "#e0e9f5",
+                        "on-secondary-container": "#007258",
+                        "on-tertiary-container": "#004960",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#ffb1c2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "20px",
+                        "xl": "32px",
+                        "card-gap": "12px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "unit": "4px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Quicksand"],
+                        "label-sm": ["Quicksand"],
+                        "body-lg": ["Quicksand"],
+                        "label-bold": ["Quicksand"],
+                        "display-lg": ["Quicksand"],
+                        "display-lg-mobile": ["Quicksand"],
+                        "headline-md": ["Quicksand"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "label-bold": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "display-lg-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky z-50 shadow-[0_2px_0_0_rgba(156,63,89,0.1)] flex justify-between items-center px-container-margin py-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">KiraStudy</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-surface-container-high px-3 py-1 rounded-full font-label-bold text-primary flex items-center gap-1">
+                ⚡ 5  💎 120
+            </div>
+<button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity">close</button>
+</div>
+</header>
+<main class="flex-grow container mx-auto px-container-margin py-lg flex flex-col items-center max-w-2xl">
+<!-- Lesson Progress Bar -->
+<div class="w-full mb-lg">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-bold text-on-surface-variant">Hiragana 101</span>
+<span class="font-label-bold text-primary">3 / 46</span>
+</div>
+<div class="h-4 w-full bg-surface-container-highest rounded-full overflow-hidden relative border-2 border-surface-container-highest">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container rounded-full relative transition-all duration-500" style="width: 15%;">
+<div class="absolute inset-0 glossy-finish"></div>
+<span class="absolute right-1 top-1/2 -translate-y-1/2 text-[10px] text-white">✨</span>
+</div>
+</div>
+</div>
+<!-- Character Hero Card -->
+<div class="w-full bg-white rounded-lg border-2 border-surface-container-highest kawaii-shadow p-lg flex flex-col items-center relative overflow-hidden mb-lg">
+<!-- Background Decoration -->
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-primary-fixed opacity-20 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-10 -left-10 w-40 h-40 bg-secondary-fixed-dim opacity-20 rounded-full blur-3xl"></div>
+<!-- The Character -->
+<div class="text-[120px] font-bold text-primary leading-none mb-sm animate-float">
+                あ
+            </div>
+<!-- Pronunciation Badge -->
+<div class="bg-primary-container text-on-primary-container px-6 py-2 rounded-xl font-headline-md text-headline-md mb-lg border-b-4 border-primary/30">
+                /a/
+            </div>
+<!-- Interactive Audio Button -->
+<button class="bg-secondary text-white w-14 h-14 rounded-full flex items-center justify-center kawaii-button-shadow transition-all mb-lg active:scale-95" onclick="this.classList.add('kawaii-button-active'); setTimeout(()=&gt;this.classList.remove('kawaii-button-active'), 100)">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+</button>
+<!-- Memory Hook / Mnemonics Section -->
+<div class="w-full bg-surface-container-low p-md rounded-lg border-2 border-dashed border-outline-variant flex flex-col items-center text-center">
+<p class="font-label-bold text-on-surface-variant mb-xs">Mnemonic Hook</p>
+<p class="font-body-md text-on-surface italic">"Looks like an <span class="text-primary font-bold">A</span>pple with a stem!"</p>
+</div>
+</div>
+<!-- Example Vocabulary Bento Section -->
+<div class="w-full grid grid-cols-1 md:grid-cols-2 gap-md mb-xl">
+<!-- Illustration Card -->
+<div class="bg-white rounded-lg border-2 border-surface-container-highest kawaii-shadow p-sm flex items-center justify-center overflow-hidden h-48">
+<img class="w-full h-full object-contain rounded-lg" data-alt="A cute, colorful kawaii-style illustration of a bright red apple with a friendly smiling face and a green leaf, set against a soft pastel blue background. The art style is minimalist with bold outlines and high contrast, consistent with a Japanese learning game aesthetic. Soft lighting and vibrant saturation create a cheerful and encouraging mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1lMjBn2ZTskuOtu0sdbEnc90MJshpBVBqRKpPiIczpw6LdSFSFOtQ5-sIYOgnrP6rJnwpVuX4bwkX4yxdKGRc1lSZ4tbw_jMke6Ah-HDuqM-0umwcrWMn8a4taV40UeDzdXaEQ3Biw1opscF-PCY8P_Acj3wKe85E3sVpGE4bsegs-StWsJEWBC0ip1urTYLCTF-nOgqmmQv_VYvadGO9zB_J9ffIRQTIlsA47YNP8NH0RUvXJbbTf522CRAH6HblVJv-GwUYPj8"/>
+</div>
+<!-- Word Details Card -->
+<div class="bg-white rounded-lg border-2 border-surface-container-highest kawaii-shadow p-md flex flex-col justify-center">
+<p class="font-label-sm text-on-surface-variant uppercase tracking-widest mb-xs">Example Word</p>
+<h3 class="font-headline-md text-headline-md text-primary mb-xs">あか (Aka)</h3>
+<p class="font-body-lg text-body-lg text-on-surface">Red</p>
+<div class="mt-md flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-label-sm font-bold">Noun</span>
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-label-sm font-bold">Level 1</span>
+</div>
+</div>
+</div>
+<!-- Navigation Controls -->
+<div class="w-full flex justify-between items-center gap-md">
+<button class="flex-1 bg-surface-container-highest text-on-surface-variant font-headline-md text-headline-md py-4 rounded-lg flex items-center justify-center gap-2 kawaii-button-shadow transition-all hover:bg-surface-variant active:translate-y-1 active:shadow-none">
+<span class="material-symbols-outlined">chevron_left</span>
+                Prev
+            </button>
+<button class="flex-[2] bg-primary text-white font-headline-md text-headline-md py-4 rounded-lg flex items-center justify-center gap-2 kawaii-button-shadow border-b-4 border-[#7d2742] transition-all hover:opacity-90 active:translate-y-1 active:border-b-0">
+                Next
+                <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation (Filtered: Only for top-level, but kept here for shell structure if needed. Since this is a "Task-Focused" sub-page/lesson view, we suppress the full BottomNavBar as per mandate to prioritize the canvas) -->
+<script>
+        // Simple Interaction logic for tactile feel
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('scale-95');
+            });
+            button.addEventListener('mouseleave', () => {</script></body></html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KiraStudy - Handwriting Practice</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            overscroll-behavior: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .canvas-grid {
+            background-image: 
+                linear-gradient(to right, rgba(156, 63, 89, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(156, 63, 89, 0.1) 1px, transparent 1px),
+                linear-gradient(45deg, rgba(156, 63, 89, 0.05) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(156, 63, 89, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+            background-position: center;
+        }
+        .writing-canvas {
+            touch-action: none;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%239c3f59"><circle cx="12" cy="12" r="4"/></svg>') 12 12, auto;
+        }
+        .stroke-order-badge {
+            box-shadow: 0 2px 0 0 rgba(156, 63, 89, 0.2);
+        }
+        .kawaii-bounce:active {
+            transform: scale(0.95) translateY(2px);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "primary-fixed-dim": "#ffb1c2",
+                "surface-container-highest": "#dae3ef",
+                "on-secondary-container": "#007258",
+                "primary-fixed": "#ffd9df",
+                "background": "#f7f9ff",
+                "surface-bright": "#f7f9ff",
+                "surface-variant": "#dae3ef",
+                "on-secondary-fixed-variant": "#00513d",
+                "on-primary": "#ffffff",
+                "surface-tint": "#9c3f59",
+                "surface-container-lowest": "#ffffff",
+                "on-surface-variant": "#544245",
+                "secondary-fixed": "#79f9ce",
+                "on-surface": "#141c25",
+                "tertiary-fixed-dim": "#8ad0f1",
+                "tertiary-container": "#73b9d9",
+                "on-tertiary-container": "#004960",
+                "inverse-on-surface": "#e9f2fd",
+                "on-primary-fixed-variant": "#7d2742",
+                "error": "#ba1a1a",
+                "surface-dim": "#d2dbe6",
+                "error-container": "#ffdad6",
+                "secondary": "#006c52",
+                "inverse-primary": "#ffb1c2",
+                "on-tertiary": "#ffffff",
+                "on-primary-container": "#79233e",
+                "tertiary-fixed": "#bee9ff",
+                "outline-variant": "#dac0c4",
+                "on-secondary": "#ffffff",
+                "on-error": "#ffffff",
+                "surface-container-low": "#ecf4ff",
+                "on-primary-fixed": "#3f0018",
+                "surface": "#f7f9ff",
+                "outline": "#877275",
+                "tertiary": "#0d6683",
+                "inverse-surface": "#29313a",
+                "surface-container-high": "#e0e9f5",
+                "surface-container": "#e6effa",
+                "primary-container": "#ff8eaa",
+                "on-tertiary-fixed": "#001f2a",
+                "secondary-fixed-dim": "#5adcb3",
+                "on-tertiary-fixed-variant": "#004d65",
+                "secondary-container": "#79f9ce",
+                "on-error-container": "#93000a",
+                "on-secondary-fixed": "#002117",
+                "on-background": "#141c25",
+                "primary": "#9c3f59"
+            },
+            "borderRadius": {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "sm": "8px",
+                "card-gap": "12px",
+                "xl": "32px",
+                "unit": "4px",
+                "lg": "24px",
+                "md": "16px",
+                "container-margin": "20px",
+                "xs": "4px"
+            },
+            "fontFamily": {
+                "headline-md": ["Quicksand"],
+                "label-bold": ["Quicksand"],
+                "body-lg": ["Quicksand"],
+                "display-lg-mobile": ["Quicksand"],
+                "body-md": ["Quicksand"],
+                "display-lg": ["Quicksand"],
+                "label-sm": ["Quicksand"]
+            },
+            "fontSize": {
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                "label-bold": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "500"}],
+                "display-lg-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+                "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky z-50 shadow-[0_2px_0_0_rgba(156,63,89,0.1)]">
+<div class="flex justify-between items-center px-container-margin py-md w-full">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-primary font-bold active:scale-95 transition-transform">arrow_back</button>
+<div class="flex flex-col">
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">Writing Practice: あ</h1>
+<div class="w-32 h-2 bg-surface-container-highest rounded-full overflow-hidden mt-1">
+<div class="bg-primary h-full w-2/5 rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="text-primary font-bold">
+                ⚡ 5  💎 120
+            </div>
+</div>
+</header>
+<main class="flex-1 flex flex-col items-center px-container-margin py-lg gap-lg overflow-y-auto pb-32">
+<!-- Practice Canvas Area -->
+<div class="w-full max-w-md aspect-square bg-surface-container-lowest rounded-lg border-4 border-surface-container-high relative overflow-hidden shadow-[0_8px_20px_rgba(156,63,89,0.05)]">
+<!-- Guideline Overlay -->
+<div class="absolute inset-0 canvas-grid pointer-events-none">
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-full border-t border-dashed border-primary/20"></div>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="h-full border-l border-dashed border-primary/20"></div>
+</div>
+</div>
+<!-- Ghost Character Tracing Guide -->
+<div class="absolute inset-0 flex items-center justify-center select-none pointer-events-none opacity-10">
+<span class="text-[240px] font-bold text-primary">あ</span>
+</div>
+<!-- Stroke Order Markers -->
+<div class="absolute inset-0 pointer-events-none">
+<!-- Stroke 1 -->
+<div class="absolute top-[28%] left-[25%] flex items-center gap-1">
+<span class="stroke-order-badge bg-primary text-on-primary w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+<span class="material-symbols-outlined text-primary text-lg" style="transform: rotate(0deg)">arrow_forward</span>
+</div>
+<!-- Stroke 2 -->
+<div class="absolute top-[18%] left-[50%] flex flex-col items-center gap-1">
+<span class="stroke-order-badge bg-secondary text-on-secondary w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+<span class="material-symbols-outlined text-secondary text-lg" style="transform: rotate(90deg)">arrow_forward</span>
+</div>
+<!-- Stroke 3 -->
+<div class="absolute top-[45%] left-[40%] flex flex-col items-center gap-1">
+<span class="stroke-order-badge bg-tertiary text-on-tertiary w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+<span class="material-symbols-outlined text-tertiary text-lg" style="transform: rotate(135deg)">refresh</span>
+</div>
+</div>
+<!-- Drawing Canvas -->
+<canvas class="writing-canvas absolute inset-0 w-full h-full" id="practiceCanvas"></canvas>
+</div>
+<!-- Controls -->
+<div class="w-full max-w-md flex flex-wrap justify-center gap-md">
+<button class="kawaii-bounce flex flex-col items-center justify-center bg-surface-container-high text-on-surface-variant px-md py-sm rounded-xl border-b-4 border-surface-dim transition-all" onclick="undoLast()">
+<span class="material-symbols-outlined mb-1">undo</span>
+<span class="font-label-sm text-label-sm">Undo</span>
+</button>
+<button class="kawaii-bounce flex flex-col items-center justify-center bg-surface-container-high text-on-surface-variant px-md py-sm rounded-xl border-b-4 border-surface-dim transition-all" onclick="clearCanvas()">
+<span class="material-symbols-outlined mb-1">delete</span>
+<span class="font-label-sm text-label-sm">Clear</span>
+</button>
+<button class="kawaii-bounce flex-1 flex items-center justify-center gap-md bg-primary text-on-primary px-lg py-md rounded-xl border-b-4 border-primary-container font-label-bold text-headline-md transition-all" onclick="checkWriting()">
+<span class="material-symbols-outlined" data-weight="fill">check_circle</span>
+                Check
+            </button>
+</div>
+<!-- Character Info Card -->
+<div class="w-full max-w-md bg-tertiary-container/20 p-md rounded-lg flex items-center gap-md border-2 border-tertiary-container/30">
+<div class="bg-tertiary text-on-tertiary w-16 h-16 rounded-lg flex items-center justify-center text-display-lg-mobile font-headline-md">
+                あ
+            </div>
+<div>
+<h3 class="font-label-bold text-primary uppercase tracking-widest text-xs">Hiragana "A"</h3>
+<p class="text-body-md text-on-surface-variant">Sounds like 'ah' as in 'father'.</p>
+<div class="flex gap-2 mt-2">
+<span class="bg-surface-bright px-2 py-1 rounded-full text-[10px] font-bold text-tertiary border border-tertiary/20">3 Strokes</span>
+<span class="bg-surface-bright px-2 py-1 rounded-full text-[10px] font-bold text-secondary border border-secondary/20">Vowel</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pt-2 pb-6 bg-surface-container dark:bg-surface-container-highest z-50 rounded-t-lg border-t-4 border-surface-container-highest dark:border-on-surface-variant shadow-[0_-4px_10px_rgba(156,63,89,0.05)]">
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-all active:translate-y-1">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 border-b-4 border-primary active:translate-y-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-label-sm text-label-sm">Study</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-all active:translate-y-1">
+<span class="material-symbols-outlined">pets</span>
+<span class="font-label-sm text-label-sm">Characters</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-all active:translate-y-1">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</button>
+</nav>
+<script>
+        const canvas = document.getElementById('practiceCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let paths = [];
+        let currentPath = [];
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            redraw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function startDrawing(e) {
+            isDrawing = true;
+            currentPath = [];
+            const pos = getPos(e);
+            currentPath.push(pos);
+            draw(e);
+        }
+
+        function stopDrawing() {
+            if (isDrawing && currentPath.length > 0) {
+                paths.push([...currentPath]);
+            }
+            isDrawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            currentPath.push(pos);
+
+            ctx.lineWidth = 12;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#9c3f59';
+
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function redraw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.lineWidth = 12;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#9c3f59';
+
+            paths.forEach(path => {
+                ctx.beginPath();
+                ctx.moveTo(path[0].x, path[0].y);
+                path.forEach(point => {
+                    ctx.lineTo(point.x, point.y);
+                });
+                ctx.stroke();
+            });
+        }
+
+        function clearCanvas() {
+            paths = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function undoLast() {
+            paths.pop();
+            redraw();
+        }
+
+        function checkWriting() {
+            // Simulated evaluation logic
+            const btn = event.currentTarget;
+            const originalHtml = btn.innerHTML;
+            
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> Evaluating...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">celebration</span> Sugoi! (Great!)';
+                btn.classList.remove('bg-primary');
+                btn.classList.add('bg-secondary');
+                
+                // Add a small sparkle effect or confetti here if desired
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.add('bg-primary');
+                    btn.classList.remove('bg-secondary');
+                    btn.disabled = false;
+                }, 2000);
+            }, 800);
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', stopDrawing);
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startDrawing(e);
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            draw(e);
+        });
+        canvas.addEventListener('touchend', stopDrawing);
+
+    </script>
+</body></html>
