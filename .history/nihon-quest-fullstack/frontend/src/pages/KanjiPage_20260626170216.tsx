@@ -428,7 +428,7 @@ export default function KanjiPage() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder={isJapanese ? '漢字、読み方、意味をさがす...' : 'Search kanji, reading, or meaning...'}
+            placeholder="Search kanji, reading, or meaning..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none"
@@ -487,9 +487,7 @@ export default function KanjiPage() {
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
-                  {learnedKanji.has(selectedKanji.kanji) 
-                    ? (isJapanese ? '✓ べんきょうした' : '✓ Learned')
-                    : (isJapanese ? 'べんきょうしたにする' : 'Mark as Learned')}
+                  {learnedKanji.has(selectedKanji.kanji) ? '✓ Learned' : 'Mark as Learned'}
                 </button>
               </div>
 
@@ -497,9 +495,7 @@ export default function KanjiPage() {
                 {/* Visual Memory Aid */}
                 {'visual' in selectedKanji && (
                   <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border-2 border-purple-200">
-                    <div className="text-sm font-semibold text-purple-600 mb-2">
-                      👁️ {isJapanese ? 'ビジュアル' : 'Visual Aid'}
-                    </div>
+                    <div className="text-sm font-semibold text-purple-600 mb-2">👁️ Visual Aid</div>
                     <div className="text-5xl text-center mb-2">{selectedKanji.visual}</div>
                     <div className="text-sm text-purple-700 text-center font-medium">{selectedKanji.mnemonic}</div>
                   </div>
@@ -508,9 +504,7 @@ export default function KanjiPage() {
                 {/* Hiragana Association */}
                 {'hiragana' in selectedKanji && (
                   <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-lg border-2 border-blue-200">
-                    <div className="text-sm font-semibold text-blue-600 mb-1">
-                      🔤 {isJapanese ? 'ひらがな' : 'Hiragana'}
-                    </div>
+                    <div className="text-sm font-semibold text-blue-600 mb-1">🔤 Hiragana</div>
                     <div className="text-3xl font-bold text-blue-700">{selectedKanji.hiragana}</div>
                     <div className="text-sm text-blue-600 mt-1">{selectedKanji.reading}</div>
                   </div>
@@ -519,37 +513,27 @@ export default function KanjiPage() {
                 {/* Stroke Order */}
                 {'strokeOrder' in selectedKanji && (
                   <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-4 rounded-lg border-2 border-orange-200">
-                    <div className="text-sm font-semibold text-orange-600 mb-1">
-                      ✏️ {isJapanese ? 'かきじゅん' : 'Stroke Order'}
-                    </div>
+                    <div className="text-sm font-semibold text-orange-600 mb-1">✏️ Stroke Order</div>
                     <div className="text-2xl font-mono text-orange-700">{selectedKanji.strokeOrder}</div>
-                    <div className="text-xs text-orange-600 mt-1">
-                      {selectedKanji.strokes} {isJapanese ? '画' : 'strokes total'}
-                    </div>
+                    <div className="text-xs text-orange-600 mt-1">{selectedKanji.strokes} strokes total</div>
                   </div>
                 )}
 
                 {/* Example Usage */}
                 {'example' in selectedKanji && (
                   <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border-2 border-green-200">
-                    <div className="text-sm font-semibold text-green-600 mb-1">
-                      📝 {isJapanese ? 'れい' : 'Example'}
-                    </div>
+                    <div className="text-sm font-semibold text-green-600 mb-1">📝 Example</div>
                     <div className="text-lg font-bold text-green-700">{selectedKanji.example}</div>
                   </div>
                 )}
 
                 <div>
-                  <div className="text-sm font-semibold text-gray-500 mb-1">
-                    {isJapanese ? 'いみ' : 'Meaning'}
-                  </div>
+                  <div className="text-sm font-semibold text-gray-500 mb-1">Meaning</div>
                   <div className="text-lg font-bold">{selectedKanji.meaning}</div>
                 </div>
 
                 <div>
-                  <div className="text-sm font-semibold text-gray-500 mb-1">
-                    {isJapanese ? 'レベル' : 'Level'}
-                  </div>
+                  <div className="text-sm font-semibold text-gray-500 mb-1">Level</div>
                   <div className="inline-block bg-primary text-white px-3 py-1 rounded-full text-sm font-bold">
                     JLPT {selectedLevel}
                   </div>
@@ -560,7 +544,7 @@ export default function KanjiPage() {
             <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-8 text-center sticky top-4">
               <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-500 font-medium">
-                {isJapanese ? '漢字をえらんでくわしく見よう' : 'Select a kanji to view details'}
+                Select a kanji to view details
               </p>
             </div>
           )}

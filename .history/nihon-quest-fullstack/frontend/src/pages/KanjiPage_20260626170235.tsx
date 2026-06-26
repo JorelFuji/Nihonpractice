@@ -560,7 +560,7 @@ export default function KanjiPage() {
             <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-8 text-center sticky top-4">
               <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-500 font-medium">
-                {isJapanese ? '漢字をえらんでくわしく見よう' : 'Select a kanji to view details'}
+                Select a kanji to view details
               </p>
             </div>
           )}
