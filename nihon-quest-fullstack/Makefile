@@ -168,3 +168,102 @@ full-deploy: check build deploy health
 
 quick-start: install dev
 	@echo "✅ Ready to develop!"
+
+# Docker commands
+docker-build:
+	@echo "🐳 Building Docker image..."
+	docker build -t nihon-quest:latest -f Dockerfile .
+
+docker-run:
+	@echo "🐳 Running Docker container..."
+	docker run -d -p 8080:80 --name nihon-quest nihon-quest:latest
+
+docker-stop:
+	@echo "🐳 Stopping Docker container..."
+	docker stop nihon-quest || true
+	docker rm nihon-quest || true
+
+docker-push:
+	@echo "🐳 Pushing Docker image..."
+	docker tag nihon-quest:latest ghcr.io/jorelfuji/nihonpractice:latest
+	docker push ghcr.io/jorelfuji/nihonpractice:latest
+
+docker-logs:
+	@echo "🐳 Viewing Docker logs..."
+	docker logs -f nihon-quest
+
+# Kubernetes commands
+k8s-deploy:
+	@echo "☸️  Deploying to Kubernetes..."
+	kubectl apply -f ../k8s/
+
+k8s-status:
+	@echo "☸️  Checking Kubernetes status..."
+	kubectl get all -n nihon-quest
+
+k8s-logs:
+	@echo "☸️  Viewing Kubernetes logs..."
+	kubectl logs -f deployment/nihon-quest -n nihon-quest
+
+k8s-delete:
+	@echo "☸️  Deleting Kubernetes deployment..."
+	kubectl delete -f ../k8s/
+
+k8s-scale:
+	@echo "☸️  Scaling deployment..."
+	kubectl scale deployment nihon-quest --replicas=5 -n nihon-quest
+
+# Helm commands
+helm-install:
+	@echo "⎈ Installing Helm chart..."
+	helm install nihon-quest ../helm/nihon-quest -n nihon-quest --create-namespace
+
+helm-upgrade:
+	@echo "⎈ Upgrading Helm release..."
+	helm upgrade nihon-quest ../helm/nihon-quest -n nihon-quest
+
+helm-rollback:
+	@echo "⎈ Rolling back Helm release..."
+	helm rollback nihon-quest 1 -n nihon-quest
+
+helm-uninstall:
+	@echo "⎈ Uninstalling Helm release..."
+	helm uninstall nihon-quest -n nihon-quest
+
+helm-list:
+	@echo "⎈ Listing Helm releases..."
+	helm list -n nihon-quest
+
+# Terraform commands
+tf-init:
+	@echo "🏗️  Initializing Terraform..."
+	cd ../terraform && terraform init
+
+tf-plan:
+	@echo "🏗️  Planning Terraform changes..."
+	cd ../terraform && terraform plan
+
+tf-apply:
+	@echo "🏗️  Applying Terraform changes..."
+	cd ../terraform && terraform apply
+
+tf-destroy:
+	@echo "🏗️  Destroying Terraform infrastructure..."
+	cd ../terraform && terraform destroy
+
+tf-show:
+	@echo "🏗️  Showing Terraform state..."
+	cd ../terraform && terraform show
+
+# OpenTofu commands (Terraform alternative)
+tofu-init:
+	@echo "🏗️  Initializing OpenTofu..."
+	cd ../terraform && tofu init
+
+tofu-plan:
+	@echo "🏗️  Planning OpenTofu changes..."
+	cd ../terraform && tofu plan
+
+tofu-apply:
+	@echo "🏗️  Applying OpenTofu changes..."
+	cd ../terraform && tofu apply

@@ -1,0 +1,17 @@
+apiVersion: v2
+name: nihon-quest
+description: A Helm chart for Nihon Quest Japanese Learning Platform
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - education
+  - japanese
+  - learning
+  - games
+home: https://nihonquest.com
+sources:
+  - https://github.com/JorelFuji/Nihonpractice
+maintainers:
+  - name: Jarrel
+    email: jarrel@nihonquest.com

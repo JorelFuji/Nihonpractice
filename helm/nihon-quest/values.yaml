@@ -1,0 +1,90 @@
+replicaCount: 3
+
+image:
+  repository: nihon-quest
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: nihonquest.com
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: www.nihonquest.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: nihon-quest-tls
+      hosts:
+        - nihonquest.com
+        - www.nihonquest.com
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 80
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: VERSION
+    value: "1.0.0"
+  - name: FIREBASE_PROJECT_ID
+    value: "nihonselfpacepractic"

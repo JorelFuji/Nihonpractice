@@ -1,0 +1,286 @@
+name: Full CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  
+jobs:
+  # Version and Release Info
+  version:
+    name: Determine Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_release: ${{ steps.version.outputs.is_release }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Determine version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+            IS_RELEASE=true
+          else
+            VERSION=$(git describe --tags --always --dirty)
+            IS_RELEASE=false
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "is_release=$IS_RELEASE" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+          echo "Is Release: $IS_RELEASE"
+
+  # Lint and Test
+  lint-test:
+    name: Lint and Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: nihon-quest-fullstack/frontend/package-lock.json
+      
+      - name: Install dependencies
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm ci
+      
+      - name: Run linter
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm run lint
+      
+      - name: Type check
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm run type-check
+      
+      - name: Run tests
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm test
+
+  # Build Application
+  build:
+    name: Build Application
+    needs: [version, lint-test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: nihon-quest-fullstack/frontend/package-lock.json
+      
+      - name: Install dependencies
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm ci
+      
+      - name: Build application
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm run build
+        env:
+          VITE_VERSION: ${{ needs.version.outputs.version }}
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: nihon-quest-fullstack/frontend/dist
+          retention-days: 1
+
+  # Build Docker Image
+  docker-build:
+    name: Build Docker Image
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: nihon-quest-fullstack/frontend/dist
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Log in to Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: nihon-quest-fullstack
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Deploy to Firebase (for main branch)
+  deploy-firebase:
+    name: Deploy to Firebase
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: nihon-quest-fullstack/frontend/dist
+      
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: nihonselfpacepractic
+      
+      - name: Deploy Firebase Functions
+        run: |
+          cd nihon-quest-fullstack/functions
+          npm ci
+          npx firebase-tools deploy --only functions --token "${{ secrets.FIREBASE_TOKEN }}"
+
+  # Deploy to Kubernetes (for releases)
+  deploy-k8s:
+    name: Deploy to Kubernetes
+    needs: [version, docker-build]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+      
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: '3.12.0'
+      
+      - name: Configure GCP credentials
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+      
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: nihon-quest-cluster
+          location: us-central1
+      
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install nihon-quest ./helm/nihon-quest \
+            --namespace nihon-quest \
+            --create-namespace \
+            --set image.tag=${{ needs.version.outputs.version }} \
+            --wait \
+            --timeout 5m
+
+  # Health Check
+  health-check:
+    name: Health Check
+    needs: [deploy-firebase]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Wait for deployment
+        run: sleep 30
+      
+      - name: Install dependencies
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm ci
+      
+      - name: Run health check
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm run health-check
+      
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🌐 Production URL: https://nihonselfpacepractic.web.app"
+          echo "📦 Version: ${{ needs.version.outputs.version }}"
+      
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ needs.version.outputs.version }}
+          draft: false
+          prerelease: false
+
+  # Notify on failure
+  notify-failure:
+    name: Notify on Failure
+    needs: [lint-test, build, docker-build, deploy-firebase, health-check]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Notify failure
+        run: |
+          echo "❌ Pipeline failed!"
+          echo "Check the logs for details"
+          exit 1

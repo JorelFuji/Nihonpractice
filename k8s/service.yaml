@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nihon-quest-service
+  namespace: nihon-quest
+  labels:
+    app: nihon-quest
+spec:
+  type: LoadBalancer
+  selector:
+    app: nihon-quest
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  sessionAffinity: ClientIP
