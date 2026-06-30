@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'kids_mode_screen.dart';
 import 'about_screen.dart';
+import 'kanji_pong_screen.dart';
+import 'hiragana_pacman_screen.dart';
+import 'kanji_mario_screen.dart';
+import 'vocabulary_tetris_screen.dart';
+import 'kanji_climb_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -65,36 +70,90 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Grammar Button (Coming Soon)
+                // Kanji Pong Game Button
                 _buildMenuCard(
                   context,
-                  icon: '📚',
-                  title: 'ぶんぽう N5-N1',
-                  subtitle: 'もうすぐ！',
+                  icon: '🏓',
+                  title: 'かんじポン',
+                  subtitle: '2プレイヤー・ゲーム',
                   colors: [Colors.blue.shade300, Colors.blue.shade100],
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Coming soon! 🚀'),
-                        duration: Duration(seconds: 2),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const KanjiPongScreen(),
                       ),
                     );
                   },
                 ),
                 const SizedBox(height: 20),
 
-                // Adult Learning Button (Coming Soon)
+                // Hiragana Pac-Man Button
                 _buildMenuCard(
                   context,
-                  icon: '🎓',
-                  title: 'おとながくしゅう',
-                  subtitle: 'もうすぐ！',
+                  icon: '👻',
+                  title: 'ひらがなパックマン',
+                  subtitle: 'もじをあつめよう',
+                  colors: [Colors.yellow.shade300, Colors.yellow.shade100],
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HiraganaPacmanScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+
+                // Kanji Mario Button
+                _buildMenuCard(
+                  context,
+                  icon: '�',
+                  title: 'かんじマリオ',
+                  subtitle: 'ぶんぽうをまなぼう',
+                  colors: [Colors.red.shade300, Colors.red.shade100],
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const KanjiMarioScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+
+                // Vocabulary Tetris Button
+                _buildMenuCard(
+                  context,
+                  icon: '🎮',
+                  title: 'ごいテトリス',
+                  subtitle: 'ことばをつくろう',
+                  colors: [Colors.cyan.shade300, Colors.cyan.shade100],
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const VocabularyTetrisScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+
+                // Kanji Climb Button
+                _buildMenuCard(
+                  context,
+                  icon: '🦍',
+                  title: 'かんじクライム',
+                  subtitle: 'ぶしゅをあつめよう',
                   colors: [Colors.purple.shade300, Colors.purple.shade100],
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Coming soon! 🚀'),
-                        duration: Duration(seconds: 2),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const KanjiClimbScreen(),
                       ),
                     );
                   },
@@ -122,7 +181,7 @@ class HomeScreen extends StatelessWidget {
 
                 // Footer
                 const Text(
-                  'Tap Kids Mode to start learning!',
+                  'ゲームをえらんでください！ / Choose a game!',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.deepPurple,

@@ -4,6 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global scrolling and overflow settings */
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -11,8 +19,121 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Ensure all containers are scrollable */
+#root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Smooth scrolling for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Ensure horizontal scrolling for wide content */
+.overflow-x-auto {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure vertical scrolling for tall content */
+.overflow-y-auto {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Both directions scrollable */
+.overflow-auto {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-specific touch scrolling */
+@media (max-width: 768px) {
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure mobile viewports don't have horizontal overflow */
+  body, #root {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  /* Allow horizontal scroll for specific containers */
+  .mobile-scroll-x {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  
+  /* Allow vertical scroll for specific containers */
+  .mobile-scroll-y {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - 120px);
+  }
+}
+
+/* Prevent text selection issues on mobile */
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Ensure tables and wide content scroll horizontally */
+table, .table-container {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+}
+
+/* Grid and flex containers should wrap on mobile */
+@media (max-width: 768px) {
+  .grid {
+    overflow-x: hidden;
+  }
+  
+  .flex {
+    flex-wrap: wrap;
+  }
 }
