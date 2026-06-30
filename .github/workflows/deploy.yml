@@ -1,0 +1,145 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main
+      - scrolling-improvements-and-games
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-and-test:
+    name: Lint and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: nihon-quest-fullstack/frontend/package-lock.json
+          
+      - name: Install dependencies
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm ci
+          
+      - name: Run linter
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm run lint
+          
+      - name: Type check
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm run type-check
+          
+      - name: Run tests
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm test
+
+  build:
+    name: Build
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: nihon-quest-fullstack/frontend/package-lock.json
+          
+      - name: Install dependencies
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm ci
+          
+      - name: Build application
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm run build
+          
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: nihon-quest-fullstack/frontend/dist
+          retention-days: 1
+
+  deploy:
+    name: Deploy to Firebase
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: nihon-quest-fullstack/frontend/dist
+          
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: nihonselfpacepractic
+          
+      - name: Deploy Functions
+        run: |
+          cd nihon-quest-fullstack/functions
+          npm ci
+          npx firebase-tools deploy --only functions --token "${{ secrets.FIREBASE_TOKEN }}"
+
+  health-check:
+    name: Health Check
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Wait for deployment
+        run: sleep 30
+          
+      - name: Run health check
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm ci
+          npm run health-check
+          
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🌐 Production URL: https://nihonselfpacepractic.web.app"
+          
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment or health check failed!"
+          exit 1

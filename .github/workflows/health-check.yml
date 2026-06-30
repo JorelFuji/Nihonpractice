@@ -1,0 +1,45 @@
+name: Scheduled Health Check
+
+on:
+  schedule:
+    # Run every hour
+    - cron: '0 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  health-check:
+    name: Application Health Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm ci
+          
+      - name: Run health check
+        id: health
+        run: |
+          cd nihon-quest-fullstack/frontend
+          npm run health-check
+          
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Health Check Failed',
+              body: `Health check failed at ${new Date().toISOString()}\n\nPlease investigate the application status.`,
+              labels: ['bug', 'health-check']
+            })
