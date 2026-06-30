@@ -1,18 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BookOpen, CheckCircle, Circle, ChevronDown, ChevronRight, Trophy, Zap, Target } from 'lucide-react'
 import { curriculumService, type Lesson } from '@/services/curriculumService'
+import { useUserStore } from '@/store/userStore'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
+import confetti from 'canvas-confetti'
 
 export default function CurriculumPage() {
+  const { completeLesson, stats, incrementStreak } = useUserStore()
   const curriculum = curriculumService.getCurriculum()
   const [expandedPhase, setExpandedPhase] = useState<string | null>('phase-1')
   const [expandedUnit, setExpandedUnit] = useState<string | null>(null)
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
   const [lessonNotes, setLessonNotes] = useState('')
+  const [, setShowXPAnimation] = useState(false)
   
   const totalProgress = curriculumService.getTotalProgress()
+
+  useEffect(() => {
+    // Update streak on page visit
+    incrementStreak()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleLessonClick = (lesson: Lesson) => {
     setSelectedLesson(lesson)
@@ -23,8 +33,21 @@ export default function CurriculumPage() {
   const handleToggleComplete = () => {
     if (!selectedLesson) return
     const progress = curriculumService.getLessonProgress(selectedLesson.id)
-    curriculumService.saveProgress(selectedLesson.id, !progress.completed, lessonNotes)
-    setSelectedLesson({ ...selectedLesson, completed: !progress.completed })
+    const newCompleted = !progress.completed
+    curriculumService.saveProgress(selectedLesson.id, newCompleted, lessonNotes)
+    setSelectedLesson({ ...selectedLesson, completed: newCompleted })
+    
+    // Award XP if completing (not uncompleting)
+    if (newCompleted) {
+      completeLesson()
+      setShowXPAnimation(true)
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      })
+      setTimeout(() => setShowXPAnimation(false), 3000)
+    }
   }
 
   const handleSaveNotes = () => {
@@ -61,10 +84,10 @@ export default function CurriculumPage() {
                       <p className="font-bold">{totalProgress.completed} / {totalProgress.total}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Total XP</p>
+                      <p className="text-sm text-muted-foreground">Your Total XP</p>
                       <p className="font-bold flex items-center gap-1">
                         <Zap className="w-4 h-4 text-yellow-500" />
-                        {totalProgress.xp}
+                        {stats.totalXP.toLocaleString()}
                       </p>
                     </div>
                   </div>

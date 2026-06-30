@@ -97,6 +97,14 @@ const MENU_TILES: MenuTile[] = [
     color: 'from-lime-500 to-green-500'
   },
   {
+    to: '/geography-game',
+    icon: Target,
+    title: 'Geography Game',
+    description: 'Learn Japan, Texas & more!',
+    color: 'from-cyan-500 to-blue-500',
+    badge: 'NEW'
+  },
+  {
     to: '/quiz',
     icon: Brain,
     title: 'Quiz',
@@ -134,9 +142,9 @@ const MENU_TILES: MenuTile[] = [
 ]
 
 const QUICK_STATS = [
-  { label: 'Total Features', labelJP: 'ごうけいきのう', value: '16+', icon: Sparkles, color: 'text-yellow-600' },
+  { label: 'Total Features', labelJP: 'ごうけいきのう', value: '17+', icon: Sparkles, color: 'text-yellow-600' },
   { label: 'Learning Modes', labelJP: 'がくしゅうモード', value: '8', icon: Target, color: 'text-blue-600' },
-  { label: 'Games', labelJP: 'ゲーム', value: '5', icon: Gamepad2, color: 'text-green-600' },
+  { label: 'Games', labelJP: 'ゲーム', value: '6', icon: Gamepad2, color: 'text-green-600' },
   { label: 'Tools', labelJP: 'ツール', value: '3', icon: Settings, color: 'text-purple-600' }
 ]
 

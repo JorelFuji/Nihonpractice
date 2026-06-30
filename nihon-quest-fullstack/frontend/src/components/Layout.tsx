@@ -1,9 +1,58 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Home, Bot, User, Flame, Heart, Baby, BookMarked, Menu } from 'lucide-react'
+import { Home, Bot, User, Flame, Heart, Baby, BookMarked, Menu, Gamepad2, RotateCcw } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { resetStats } from '../utils/statsManager'
+import { LanguageToggle } from '../contexts/LanguageContext'
 import Footer from './Footer'
 
 export default function Layout() {
   const location = useLocation()
+  
+  const [hearts, setHearts] = useState(0)
+  const [energy, setEnergy] = useState(0)
+  const [gems, setGems] = useState(0)
+  
+  useEffect(() => {
+    const savedHearts = localStorage.getItem('hearts')
+    const savedEnergy = localStorage.getItem('energy')
+    const savedGems = localStorage.getItem('gems')
+    
+    if (savedHearts !== null) setHearts(Number(savedHearts))
+    if (savedEnergy !== null) setEnergy(Number(savedEnergy))
+    if (savedGems !== null) setGems(Number(savedGems))
+
+    // Listen for storage changes from other components
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'hearts' && e.newValue) setHearts(Number(e.newValue))
+      if (e.key === 'energy' && e.newValue) setEnergy(Number(e.newValue))
+      if (e.key === 'gems' && e.newValue) setGems(Number(e.newValue))
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+  
+  useEffect(() => {
+    localStorage.setItem('hearts', hearts.toString())
+  }, [hearts])
+  
+  useEffect(() => {
+    localStorage.setItem('energy', energy.toString())
+  }, [energy])
+  
+  useEffect(() => {
+    localStorage.setItem('gems', gems.toString())
+  }, [gems])
+  
+  const handleReset = () => {
+    if (window.confirm('Reset all stats to 0? This will clear all your earned hearts, energy, and gems.')) {
+      resetStats()
+      // Update local state immediately
+      setHearts(0)
+      setEnergy(0)
+      setGems(0)
+    }
+  }
   
   const isActive = (path: string) => location.pathname === path
 
@@ -18,6 +67,16 @@ export default function Layout() {
             </h1>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
+            <a 
+              href="https://nihonselfpacepractic-flutter.web.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-3 py-2 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-1"
+              title="Open Flutter Games"
+            >
+              <Gamepad2 className="w-4 h-4" />
+              <span className="hidden sm:inline text-xs sm:text-sm">Games</span>
+            </a>
             <Link to="/menu">
               <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-2 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-1">
                 <Menu className="w-4 h-4" />
@@ -26,11 +85,19 @@ export default function Layout() {
             </Link>
             <div className="flex items-center bg-white/50 backdrop-blur px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-full border-2 border-error/20 shadow-sm">
               <Heart className="text-error w-4 h-4 sm:w-5 sm:h-5 mr-0.5 sm:mr-1" fill="currentColor" />
-              <span className="font-bold text-on-surface text-sm sm:text-base">5</span>
+              <span className="font-bold text-on-surface text-sm sm:text-base">{hearts}</span>
             </div>
             <span className="text-primary font-bold px-2 sm:px-3 py-1 bg-white/50 backdrop-blur rounded-full border-2 border-primary/20 text-xs sm:text-sm lg:text-base">
-              ⚡ 5  💎 120
+              ⚡ {energy}  💎 {gems}
             </span>
+            <button
+              onClick={handleReset}
+              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-2 rounded-lg shadow-lg hover:shadow-xl transition-all"
+              title="Reset Stats"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+            <LanguageToggle />
           </div>
         </div>
       </header>

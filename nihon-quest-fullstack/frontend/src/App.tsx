@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import { Toaster as Sonner } from 'sonner'
+import { LanguageProvider } from './contexts/LanguageContext'
 import HomePage from './pages/HomePage'
 import LessonsPage from './pages/LessonsPage'
 import AITutorPage from './pages/AITutorPage'
@@ -21,13 +22,15 @@ import StudyJournalPage from './pages/StudyJournalPage'
 import AdultLearningPage from './pages/AdultLearningPage'
 import MenuPage from './pages/MenuPage'
 import KanjiPage from './pages/KanjiPage'
+import GeographyGamePage from './pages/GeographyGamePage'
 import Layout from './components/Layout'
 
 const queryClient = new QueryClient()
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
+      <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Toaster position="top-center" />
         <Sonner />
@@ -39,6 +42,7 @@ function App() {
             <Route path="flashcards" element={<FlashcardPage />} />
             <Route path="grammar-game" element={<GrammarGamePage />} />
             <Route path="sentence-game" element={<SentenceGamePage />} />
+            <Route path="geography-game" element={<GeographyGamePage />} />
             <Route path="study-journal" element={<StudyJournalPage />} />
             <Route path="adult-learning" element={<AdultLearningPage />} />
             <Route path="menu" element={<MenuPage />} />
@@ -56,6 +60,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
+    </LanguageProvider>
   )
 }
 

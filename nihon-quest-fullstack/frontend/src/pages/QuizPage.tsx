@@ -1,6 +1,8 @@
-import { useState } from 'react'
-import { Brain, Trophy, RefreshCw, CheckCircle, XCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Brain, Trophy, RefreshCw, CheckCircle, XCircle, Zap } from 'lucide-react'
 import { wordService } from '@/services/wordService'
+import { useUserStore } from '@/store/userStore'
+import { japaneseNLP } from '@/services/japaneseNLP'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -17,6 +19,7 @@ interface Question {
 }
 
 export default function QuizPage() {
+  const { completeQuiz, stats, incrementStreak } = useUserStore()
   const [quizStarted, setQuizStarted] = useState(false)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
@@ -24,6 +27,13 @@ export default function QuizPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [showResult, setShowResult] = useState(false)
   const [quizType, setQuizType] = useState<QuizType>('meaning')
+  const [, setShowXPGain] = useState(false)
+  const [, setEarnedXP] = useState(0)
+
+  useEffect(() => {
+    // Initialize NLP on mount
+    japaneseNLP.initialize().catch(console.error)
+  }, [])
 
   const generateQuestions = (type: QuizType, count: number = 10): Question[] => {
     const allWords = wordService.getAllWords()
@@ -97,7 +107,15 @@ export default function QuizPage() {
         setCurrentQuestion(currentQuestion + 1)
         setSelectedAnswer(null)
       } else {
+        // Quiz complete - award XP
+        const totalScore = isCorrect ? score + 1 : score
+        const xpGained = totalScore * 10 // 10 XP per correct answer
+        setEarnedXP(xpGained)
+        completeQuiz(totalScore)
+        incrementStreak()
         setShowResult(true)
+        setShowXPGain(true)
+        setTimeout(() => setShowXPGain(false), 3000)
       }
     }, 1500)
   }
@@ -199,6 +217,8 @@ export default function QuizPage() {
   if (showResult) {
     const percentage = Math.round((score / questions.length) * 100)
     const isPerfect = score === questions.length
+    const xpPerAnswer = 10
+    const totalXP = score * xpPerAnswer
 
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-primary/5 py-8">
@@ -227,7 +247,14 @@ export default function QuizPage() {
                   <div className="text-6xl font-bold text-primary mb-2">
                     {score}/{questions.length}
                   </div>
-                  <p className="text-2xl text-muted-foreground">{percentage}% Correct</p>
+                  <p className="text-2xl text-muted-foreground mb-3">{percentage}% Correct</p>
+                  <div className="inline-flex items-center gap-2 bg-yellow-100 px-6 py-3 rounded-full border-2 border-yellow-400">
+                    <Zap className="w-6 h-6 text-yellow-600" />
+                    <span className="text-2xl font-bold text-yellow-700">+{totalXP} XP</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Total XP: {stats.totalXP.toLocaleString()}
+                  </p>
                 </div>
 
                 <div className="flex gap-4">
