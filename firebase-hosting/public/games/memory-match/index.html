@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 かるたメモリー | Memory Match - Japanese Learning Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'M PLUS Rounded 1c', sans-serif; }
+        .card {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .matched {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        @keyframes celebration {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(5deg); }
+            75% { transform: scale(1.1) rotate(-5deg); }
+        }
+        .celebrate {
+            animation: celebration 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 min-h-screen p-4">
+    <div class="container mx-auto max-w-6xl">
+        <!-- Header -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 mb-6 border-2 border-white/20">
+            <div class="flex justify-between items-center flex-wrap gap-4">
+                <a href="/kids-mode" class="bg-white/20 hover:bg-white/30 px-6 py-3 rounded-full font-bold transition-all">
+                    ← もどる
+                </a>
+                
+                <div class="text-center">
+                    <h1 class="text-4xl md:text-5xl font-black text-white">🧠 かるたメモリー</h1>
+                    <p class="text-xl text-yellow-300">Memory Match</p>
+                </div>
+                
+                <button onclick="restartGame()" class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-full font-bold text-white transition-all">
+                    🔄 もういちど
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Info -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-blue-500/80 backdrop-blur-lg rounded-2xl p-4 text-center text-white">
+                <div class="text-3xl font-black" id="moves">0</div>
+                <div class="text-sm">うごき (Moves)</div>
+            </div>
+            
+            <div class="bg-purple-500/80 backdrop-blur-lg rounded-2xl p-4 text-center text-white">
+                <div class="text-3xl font-black" id="matches">0/8</div>
+                <div class="text-sm">ペア (Pairs)</div>
+            </div>
+            
+            <div class="bg-pink-500/80 backdrop-blur-lg rounded-2xl p-4 text-center text-white">
+                <div class="text-3xl font-black" id="highScore">0</div>
+                <div class="text-sm">ベスト (Best)</div>
+            </div>
+            
+            <div class="bg-orange-500/80 backdrop-blur-lg rounded-2xl p-4 text-center text-white">
+                <div class="text-3xl font-black" id="category">🍎</div>
+                <div class="text-sm">カテゴリー</div>
+            </div>
+        </div>
+
+        <!-- Category Selection -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 mb-6 border-2 border-white/20">
+            <h2 class="text-2xl font-black text-white text-center mb-4">カテゴリーをえらぼう！</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <button onclick="selectCategory('food')" class="category-btn bg-red-500 hover:bg-red-600 px-4 py-3 rounded-xl font-bold text-white transition-all">
+                    🍎 たべもの
+                </button>
+                <button onclick="selectCategory('animals')" class="category-btn bg-orange-500 hover:bg-orange-600 px-4 py-3 rounded-xl font-bold text-white transition-all">
+                    🐱 どうぶつ
+                </button>
+                <button onclick="selectCategory('colors')" class="category-btn bg-yellow-500 hover:bg-yellow-600 px-4 py-3 rounded-xl font-bold text-white transition-all">
+                    🎨 いろ
+                </button>
+                <button onclick="selectCategory('numbers')" class="category-btn bg-green-500 hover:bg-green-600 px-4 py-3 rounded-xl font-bold text-white transition-all">
+                    🔢 かず
+                </button>
+                <button onclick="selectCategory('family')" class="category-btn bg-blue-500 hover:bg-blue-600 px-4 py-3 rounded-xl font-bold text-white transition-all">
+                    👨‍👩‍👧‍👦 かぞく
+                </button>
+                <button onclick="selectCategory('body')" class="category-btn bg-indigo-500 hover:bg-indigo-600 px-4 py-3 rounded-xl font-bold text-white transition-all">
+                    👁️ からだ
+                </button>
+                <button onclick="selectCategory('nature')" class="category-btn bg-purple-500 hover:bg-purple-600 px-4 py-3 rounded-xl font-bold text-white transition-all">
+                    🌸 しぜん
+                </button>
+                <button onclick="selectCategory('random')" class="category-btn bg-pink-500 hover:bg-pink-600 px-4 py-3 rounded-xl font-bold text-white transition-all">
+                    🎲 ランダム
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Board -->
+        <div id="gameBoard" class="grid grid-cols-4 gap-3 md:gap-4 mb-6">
+            <!-- Cards will be generated here -->
+        </div>
+
+        <!-- Win Modal -->
+        <div id="winModal" class="fixed inset-0 bg-black/80 backdrop-blur-lg hidden items-center justify-center z-50">
+            <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-8 max-w-md mx-4 text-center">
+                <div class="text-8xl mb-4">🎉</div>
+                <h2 class="text-5xl font-black mb-4">やったね！</h2>
+                <p class="text-3xl font-bold mb-2">You Win!</p>
+                <div class="bg-white/30 rounded-2xl p-6 mb-6">
+                    <p class="text-2xl font-bold">うごき: <span id="finalMoves"></span></p>
+                    <p class="text-xl">Moves: <span id="finalMovesEng"></span></p>
+                </div>
+                <div class="flex gap-4 justify-center">
+                    <button onclick="restartGame()" class="bg-white text-orange-600 px-8 py-4 rounded-full font-black text-xl hover:scale-110 transition-all">
+                        もういちど
+                    </button>
+                    <button onclick="window.location.href='/kids-mode'" class="bg-purple-600 text-white px-8 py-4 rounded-full font-black text-xl hover:scale-110 transition-all">
+                        メニュー
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Japanese Vocabulary Dictionary
+        const vocabulary = {
+            food: [
+                { japanese: 'りんご', romaji: 'ringo', english: 'apple', emoji: '🍎' },
+                { japanese: 'バナナ', romaji: 'banana', english: 'banana', emoji: '🍌' },
+                { japanese: 'いちご', romaji: 'ichigo', english: 'strawberry', emoji: '🍓' },
+                { japanese: 'パン', romaji: 'pan', english: 'bread', emoji: '🍞' },
+                { japanese: 'みず', romaji: 'mizu', english: 'water', emoji: '💧' },
+                { japanese: 'おにぎり', romaji: 'onigiri', english: 'rice ball', emoji: '🍙' },
+                { japanese: 'ラーメン', romaji: 'rāmen', english: 'ramen', emoji: '🍜' },
+                { japanese: 'すし', romaji: 'sushi', english: 'sushi', emoji: '🍣' },
+                { japanese: 'たまご', romaji: 'tamago', english: 'egg', emoji: '🥚' },
+                { japanese: 'さかな', romaji: 'sakana', english: 'fish', emoji: '🐟' },
+            ],
+            animals: [
+                { japanese: 'ねこ', romaji: 'neko', english: 'cat', emoji: '🐱' },
+                { japanese: 'いぬ', romaji: 'inu', english: 'dog', emoji: '🐕' },
+                { japanese: 'とり', romaji: 'tori', english: 'bird', emoji: '🐦' },
+                { japanese: 'うさぎ', romaji: 'usagi', english: 'rabbit', emoji: '🐰' },
+                { japanese: 'くま', romaji: 'kuma', english: 'bear', emoji: '🐻' },
+                { japanese: 'ぞう', romaji: 'zou', english: 'elephant', emoji: '🐘' },
+                { japanese: 'さる', romaji: 'saru', english: 'monkey', emoji: '🐵' },
+                { japanese: 'きりん', romaji: 'kirin', english: 'giraffe', emoji: '🦒' },
+                { japanese: 'らいおん', romaji: 'raion', english: 'lion', emoji: '🦁' },
+                { japanese: 'ぺんぎん', romaji: 'pengin', english: 'penguin', emoji: '🐧' },
+            ],
+            colors: [
+                { japanese: 'あか', romaji: 'aka', english: 'red', emoji: '🔴' },
+                { japanese: 'あお', romaji: 'ao', english: 'blue', emoji: '🔵' },
+                { japanese: 'きいろ', romaji: 'kiiro', english: 'yellow', emoji: '🟡' },
+                { japanese: 'みどり', romaji: 'midori', english: 'green', emoji: '🟢' },
+                { japanese: 'しろ', romaji: 'shiro', english: 'white', emoji: '⚪' },
+                { japanese: 'くろ', romaji: 'kuro', english: 'black', emoji: '⚫' },
+                { japanese: 'ピンク', romaji: 'pinku', english: 'pink', emoji: '🩷' },
+                { japanese: 'オレンジ', romaji: 'orenji', english: 'orange', emoji: '🟠' },
+                { japanese: 'むらさき', romaji: 'murasaki', english: 'purple', emoji: '🟣' },
+                { japanese: 'ちゃいろ', romaji: 'chairo', english: 'brown', emoji: '🟤' },
+            ],
+            numbers: [
+                { japanese: 'いち', romaji: 'ichi', english: 'one', emoji: '1️⃣' },
+                { japanese: 'に', romaji: 'ni', english: 'two', emoji: '2️⃣' },
+                { japanese: 'さん', romaji: 'san', english: 'three', emoji: '3️⃣' },
+                { japanese: 'よん', romaji: 'yon', english: 'four', emoji: '4️⃣' },
+                { japanese: 'ご', romaji: 'go', english: 'five', emoji: '5️⃣' },
+                { japanese: 'ろく', romaji: 'roku', english: 'six', emoji: '6️⃣' },
+                { japanese: 'なな', romaji: 'nana', english: 'seven', emoji: '7️⃣' },
+                { japanese: 'はち', romaji: 'hachi', english: 'eight', emoji: '8️⃣' },
+                { japanese: 'きゅう', romaji: 'kyuu', english: 'nine', emoji: '9️⃣' },
+                { japanese: 'じゅう', romaji: 'juu', english: 'ten', emoji: '🔟' },
+            ],
+            family: [
+                { japanese: 'おかあさん', romaji: 'okaasan', english: 'mother', emoji: '👩' },
+                { japanese: 'おとうさん', romaji: 'otousan', english: 'father', emoji: '👨' },
+                { japanese: 'おにいさん', romaji: 'oniisan', english: 'older brother', emoji: '👦' },
+                { japanese: 'おねえさん', romaji: 'oneesan', english: 'older sister', emoji: '👧' },
+                { japanese: 'おばあさん', romaji: 'obaasan', english: 'grandmother', emoji: '👵' },
+                { japanese: 'おじいさん', romaji: 'ojiisan', english: 'grandfather', emoji: '👴' },
+                { japanese: 'あかちゃん', romaji: 'akachan', english: 'baby', emoji: '👶' },
+                { japanese: 'かぞく', romaji: 'kazoku', english: 'family', emoji: '👨‍👩‍👧‍👦' },
+            ],
+            body: [
+                { japanese: 'あたま', romaji: 'atama', english: 'head', emoji: '👤' },
+                { japanese: 'め', romaji: 'me', english: 'eye', emoji: '👁️' },
+                { japanese: 'はな', romaji: 'hana', english: 'nose', emoji: '👃' },
+                { japanese: 'くち', romaji: 'kuchi', english: 'mouth', emoji: '👄' },
+                { japanese: 'て', romaji: 'te', english: 'hand', emoji: '✋' },
+                { japanese: 'あし', romaji: 'ashi', english: 'foot/leg', emoji: '🦵' },
+                { japanese: 'みみ', romaji: 'mimi', english: 'ear', emoji: '👂' },
+                { japanese: 'かみ', romaji: 'kami', english: 'hair', emoji: '💇' },
+            ],
+            nature: [
+                { japanese: 'はな', romaji: 'hana', english: 'flower', emoji: '🌸' },
+                { japanese: 'き', romaji: 'ki', english: 'tree', emoji: '🌳' },
+                { japanese: 'やま', romaji: 'yama', english: 'mountain', emoji: '⛰️' },
+                { japanese: 'うみ', romaji: 'umi', english: 'sea', emoji: '🌊' },
+                { japanese: 'そら', romaji: 'sora', english: 'sky', emoji: '☁️' },
+                { japanese: 'つき', romaji: 'tsuki', english: 'moon', emoji: '🌙' },
+                { japanese: 'ほし', romaji: 'hoshi', english: 'star', emoji: '⭐' },
+                { japanese: 'たいよう', romaji: 'taiyou', english: 'sun', emoji: '☀️' },
+            ],
+        };
+
+        let currentCategory = 'food';
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let highScore = localStorage.getItem('memoryHighScore') || 0;
+
+        document.getElementById('highScore').textContent = highScore;
+
+        function selectCategory(category) {
+            currentCategory = category;
+            const emoji = {
+                food: '🍎',
+                animals: '🐱',
+                colors: '🎨',
+                numbers: '🔢',
+                family: '👨‍👩‍👧‍👦',
+                body: '👁️',
+                nature: '🌸',
+                random: '🎲'
+            };
+            document.getElementById('category').textContent = emoji[category];
+            initGame();
+        }
+
+        function initGame() {
+            matchedPairs = 0;
+            moves = 0;
+            flippedCards = [];
+            document.getElementById('moves').textContent = moves;
+            document.getElementById('matches').textContent = '0/8';
+            
+            // Get random words from category
+            let categoryWords;
+            if (currentCategory === 'random') {
+                const allCategories = Object.keys(vocabulary);
+                const randomCat = allCategories[Math.floor(Math.random() * allCategories.length)];
+                categoryWords = vocabulary[randomCat];
+            } else {
+                categoryWords = vocabulary[currentCategory];
+            }
+            
+            const selectedWords = shuffle(categoryWords).slice(0, 8);
+            
+            // Create card pairs
+            cards = [];
+            selectedWords.forEach((word, index) => {
+                // Card with Japanese word
+                cards.push({
+                    id: index * 2,
+                    pairId: index,
+                    type: 'japanese',
+                    content: word.japanese,
+                    data: word
+                });
+                // Card with emoji/visual
+                cards.push({
+                    id: index * 2 + 1,
+                    pairId: index,
+                    type: 'emoji',
+                    content: word.emoji + '<br><small class="text-sm">' + word.english + '</small>',
+                    data: word
+                });
+            });
+            
+            cards = shuffle(cards);
+            renderBoard();
+        }
+
+        function shuffle(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function renderBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+            
+            cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card h-32 md:h-40';
+                cardElement.innerHTML = `
+                    <div class="card-inner h-full">
+                        <div class="card-front bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-4xl">
+                            🎴
+                        </div>
+                        <div class="card-back bg-white flex flex-col items-center justify-center p-2">
+                            <div class="text-2xl md:text-3xl font-black text-gray-800 text-center">
+                                ${card.content}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                cardElement.onclick = () => flipCard(card, cardElement);
+                board.appendChild(cardElement);
+            });
+        }
+
+        function flipCard(card, element) {
+            if (flippedCards.length === 2 || element.classList.contains('flipped') || element.classList.contains('matched')) {
+                return;
+            }
+            
+            element.classList.add('flipped');
+            flippedCards.push({ card, element });
+            
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('moves').textContent = moves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [first, second] = flippedCards;
+            
+            if (first.card.pairId === second.card.pairId) {
+                // Match!
+                setTimeout(() => {
+                    first.element.classList.add('matched', 'celebrate');
+                    second.element.classList.add('matched', 'celebrate');
+                    matchedPairs++;
+                    document.getElementById('matches').textContent = matchedPairs + '/8';
+                    flippedCards = [];
+                    
+                    if (matchedPairs === 8) {
+                        setTimeout(showWinModal, 500);
+                    }
+                }, 300);
+            } else {
+                // No match
+                setTimeout(() => {
+                    first.element.classList.remove('flipped');
+                    second.element.classList.remove('flipped');
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+
+        function showWinModal() {
+            document.getElementById('finalMoves').textContent = moves;
+            document.getElementById('finalMovesEng').textContent = moves;
+            document.getElementById('winModal').classList.remove('hidden');
+            document.getElementById('winModal').classList.add('flex');
+            
+            if (highScore === 0 || moves < highScore) {
+                highScore = moves;
+                localStorage.setItem('memoryHighScore', highScore);
+                document.getElementById('highScore').textContent = highScore;
+            }
+        }
+
+        function restartGame() {
+            document.getElementById('winModal').classList.add('hidden');
+            document.getElementById('winModal').classList.remove('flex');
+            initGame();
+        }
+
+        // Initialize game on load
+        initGame();
+    </script>
+</body>
+</html>

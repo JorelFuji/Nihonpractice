@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+<!-- STITCH_THREEJS_START:ANIMATION_9 class="fixed inset-0 w-full h-full bg-transparent" -->
+<div class="fixed inset-0 w-full h-full bg-transparent" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_9" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_9');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+renderer.setSize(width, height);
+container.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+scene.add(ambientLight);
+const pointLight = new THREE.PointLight(0xff8a00, 1, 100);
+pointLight.position.set(5, 5, 5);
+scene.add(pointLight);
+
+// Pokémon-style Battle Platform (Cylinder)
+const geoPlatform = new THREE.CylinderGeometry(2, 2.2, 0.2, 32);
+const matPlatform = new THREE.MeshPhongMaterial({ color: 0xff8a00, transparent: true, opacity: 0.8 });
+const platform = new THREE.Mesh(geoPlatform, matPlatform);
+platform.position.y = -1;
+scene.add(platform);
+
+// Player Side (Blue-ish cube as proxy for character)
+const geoPlayer = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+const matPlayer = new THREE.MeshPhongMaterial({ color: 0x4fc3f7 });
+const playerChar = new THREE.Mesh(geoPlayer, matPlayer);
+playerChar.position.set(-1.5, -0.5, 0);
+scene.add(playerChar);
+
+// Opponent Side (Pink-ish cube as proxy for character)
+const geoEnemy = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+const matEnemy = new THREE.MeshPhongMaterial({ color: 0xf06292 });
+const enemyChar = new THREE.Mesh(geoEnemy, matEnemy);
+enemyChar.position.set(1.5, -0.5, 0);
+scene.add(enemyChar);
+
+camera.position.set(0, 1, 6);
+camera.lookAt(0, 0, 0);
+
+function animate() {
+    requestAnimationFrame(animate);
+    
+    // Idle animations
+    playerChar.position.y = -0.5 + Math.sin(Date.now() * 0.005) * 0.1;
+    enemyChar.position.y = -0.5 + Math.cos(Date.now() * 0.005) * 0.1;
+    
+    playerChar.rotation.y += 0.01;
+    enemyChar.rotation.y -= 0.01;
+    
+    renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+    const newWidth = container.clientWidth || window.innerWidth;
+    const newHeight = container.clientHeight || window.innerHeight;
+    camera.aspect = newWidth / newHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(newWidth, newHeight);
+});
+
+animate();
+
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_9 -->
+</body>
+</html>

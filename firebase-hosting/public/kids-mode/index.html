@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👶 こどもモード - Kids Mode | NihonQuest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'M PLUS Rounded 1c', 'Noto Sans JP', sans-serif;
+        }
+        .game-card {
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+        }
+        .game-card:hover {
+            transform: translateY(-15px) scale(1.05) rotate(2deg);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .game-card:active {
+            transform: translateY(-5px) scale(0.98);
+        }
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .bounce-animation {
+            animation: bounce-slow 3s ease-in-out infinite;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        .wiggle-animation {
+            animation: wiggle 2s ease-in-out infinite;
+        }
+        .japanese-text {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .rainbow-bg {
+            background: linear-gradient(135deg, 
+                #ff6b9d 0%, 
+                #ffc371 25%, 
+                #ffd93d 50%, 
+                #6bcf7f 75%, 
+                #4facfe 100%);
+        }
+        .star-bg {
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, white, transparent),
+                radial-gradient(2px 2px at 60px 70px, white, transparent),
+                radial-gradient(1px 1px at 50px 50px, white, transparent),
+                radial-gradient(1px 1px at 130px 80px, white, transparent),
+                radial-gradient(2px 2px at 90px 10px, white, transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+        }
+    </style>
+</head>
+<body class="rainbow-bg min-h-screen star-bg">
+    <!-- Header -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex justify-between items-center">
+            <a href="/" class="flex items-center gap-3 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg hover:scale-110 transition-all">
+                <span class="text-3xl">🏠</span>
+                <span class="font-bold text-gray-800">ホーム</span>
+            </a>
+            
+            <div class="bg-white/90 backdrop-blur-sm px-8 py-4 rounded-full shadow-lg">
+                <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+                    👶 こどもモード
+                </h1>
+                <p class="text-center text-sm text-gray-600 mt-1">Kids Mode</p>
+            </div>
+            
+            <a href="/menu" class="flex items-center gap-3 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg hover:scale-110 transition-all">
+                <span class="text-3xl">🎮</span>
+                <span class="font-bold text-gray-800">ゲーム</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Welcome Section -->
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl mb-8">
+            <div class="text-center">
+                <div class="text-9xl mb-4 bounce-animation inline-block">🎌</div>
+                <h2 class="text-6xl font-black text-gray-800 mb-4 japanese-text">
+                    にほんごをまなぼう！
+                </h2>
+                <p class="text-3xl font-bold text-purple-600 mb-2">
+                    Let's Learn Japanese!
+                </p>
+                <p class="text-xl text-gray-600">
+                    たのしいゲームでべんきょうしよう 📚✨
+                </p>
+            </div>
+        </div>
+
+        <!-- Learning Categories -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            
+            <!-- Hiragana Section -->
+            <div class="bg-gradient-to-br from-pink-400 to-pink-600 rounded-3xl p-8 text-white shadow-2xl">
+                <div class="text-center">
+                    <div class="text-7xl mb-4 wiggle-animation inline-block">あ</div>
+                    <h3 class="text-4xl font-black mb-3">ひらがな</h3>
+                    <p class="text-2xl mb-6">Hiragana</p>
+                    <div class="bg-white/30 backdrop-blur-sm rounded-2xl p-6 mb-4">
+                        <div class="grid grid-cols-5 gap-2 text-3xl font-bold">
+                            <span>あ</span><span>い</span><span>う</span><span>え</span><span>お</span>
+                            <span>か</span><span>き</span><span>く</span><span>け</span><span>こ</span>
+                        </div>
+                    </div>
+                    <p class="text-sm opacity-90">46 もじ (46 characters)</p>
+                </div>
+            </div>
+
+            <!-- Katakana Section -->
+            <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl p-8 text-white shadow-2xl">
+                <div class="text-center">
+                    <div class="text-7xl mb-4 wiggle-animation inline-block" style="animation-delay: 0.5s;">ア</div>
+                    <h3 class="text-4xl font-black mb-3">カタカナ</h3>
+                    <p class="text-2xl mb-6">Katakana</p>
+                    <div class="bg-white/30 backdrop-blur-sm rounded-2xl p-6 mb-4">
+                        <div class="grid grid-cols-5 gap-2 text-3xl font-bold">
+                            <span>ア</span><span>イ</span><span>ウ</span><span>エ</span><span>オ</span>
+                            <span>カ</span><span>キ</span><span>ク</span><span>ケ</span><span>コ</span>
+                        </div>
+                    </div>
+                    <p class="text-sm opacity-90">46 もじ (46 characters)</p>
+                </div>
+            </div>
+
+            <!-- Numbers Section -->
+            <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-3xl p-8 text-white shadow-2xl">
+                <div class="text-center">
+                    <div class="text-7xl mb-4 wiggle-animation inline-block" style="animation-delay: 1s;">🔢</div>
+                    <h3 class="text-4xl font-black mb-3">すうじ</h3>
+                    <p class="text-2xl mb-6">Numbers</p>
+                    <div class="bg-white/30 backdrop-blur-sm rounded-2xl p-6 mb-4">
+                        <div class="space-y-2 text-2xl font-bold">
+                            <div>いち (1) • に (2) • さん (3)</div>
+                            <div>し/よん (4) • ご (5)</div>
+                            <div>ろく (6) • なな (7)</div>
+                            <div>はち (8) • きゅう (9)</div>
+                            <div>じゅう (10)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Games Grid -->
+        <h2 class="text-5xl font-black text-center text-white mb-8 japanese-text">
+            🎮 ゲームであそぼう！
+        </h2>
+        <p class="text-2xl text-center text-white/90 mb-8">Play & Learn Games</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Hiragana Match Game -->
+            <a href="https://nihonselfpacepractic-flutter.web.app/" target="_blank" class="game-card">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="text-center">
+                        <div class="text-8xl mb-4">あ📝</div>
+                        <h3 class="text-3xl font-black text-gray-800 mb-2">ひらがなマッチ</h3>
+                        <p class="text-xl text-purple-600 font-bold mb-3">Hiragana Match</p>
+                        <p class="text-gray-600 mb-4">ひらがなをおぼえよう！</p>
+                        <div class="bg-pink-100 rounded-xl p-3">
+                            <p class="text-sm font-bold text-pink-700">46 Characters</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Katakana Match Game -->
+            <a href="https://nihonselfpacepractic-flutter.web.app/" target="_blank" class="game-card">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="text-center">
+                        <div class="text-8xl mb-4">ア✨</div>
+                        <h3 class="text-3xl font-black text-gray-800 mb-2">カタカナマッチ</h3>
+                        <p class="text-xl text-blue-600 font-bold mb-3">Katakana Match</p>
+                        <p class="text-gray-600 mb-4">カタカナをれんしゅう！</p>
+                        <div class="bg-blue-100 rounded-xl p-3">
+                            <p class="text-sm font-bold text-blue-700">46 Characters</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Memory Card Game -->
+            <a href="https://nihonselfpacepractic-flutter.web.app/" target="_blank" class="game-card">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="text-center">
+                        <div class="text-8xl mb-4">🧠🎴</div>
+                        <h3 class="text-3xl font-black text-gray-800 mb-2">かるたメモリー</h3>
+                        <p class="text-xl text-purple-600 font-bold mb-3">Memory Cards</p>
+                        <p class="text-gray-600 mb-4">おなじカードをさがそう！</p>
+                        <div class="bg-purple-100 rounded-xl p-3">
+                            <p class="text-sm font-bold text-purple-700">Match Pairs</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Othello Game -->
+            <a href="/games/othello/" class="game-card">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="text-center">
+                        <div class="text-8xl mb-4">🔵⚪</div>
+                        <h3 class="text-3xl font-black text-gray-800 mb-2">ねこオセロ</h3>
+                        <p class="text-xl text-indigo-600 font-bold mb-3">Neko Othello</p>
+                        <p class="text-gray-600 mb-4">かわいいねこのゲーム！</p>
+                        <div class="bg-indigo-100 rounded-xl p-3">
+                            <p class="text-sm font-bold text-indigo-700">Strategy Game</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Shiritori Game -->
+            <a href="/games/shiritori/" class="game-card">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="text-center">
+                        <div class="text-8xl mb-4">🗣️✨</div>
+                        <h3 class="text-3xl font-black text-gray-800 mb-2">しりとり</h3>
+                        <p class="text-xl text-pink-600 font-bold mb-3">Shiritori</p>
+                        <p class="text-gray-600 mb-4">ことばあそびゲーム！</p>
+                        <div class="bg-pink-100 rounded-xl p-3">
+                            <p class="text-sm font-bold text-pink-700">Word Chain</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Kawaii Logic -->
+            <a href="/games/kawaii-logic/" class="game-card">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="text-center">
+                        <div class="text-8xl mb-4">🧩💡</div>
+                        <h3 class="text-3xl font-black text-gray-800 mb-2">かわいいパズル</h3>
+                        <p class="text-xl text-cyan-600 font-bold mb-3">Kawaii Logic</p>
+                        <p class="text-gray-600 mb-4">あたまをつかおう！</p>
+                        <div class="bg-cyan-100 rounded-xl p-3">
+                            <p class="text-sm font-bold text-cyan-700">Puzzle Game</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Battle Arena -->
+            <a href="/games/battle-arena/" class="game-card">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="text-center">
+                        <div class="text-8xl mb-4">⚔️🎮</div>
+                        <h3 class="text-3xl font-black text-gray-800 mb-2">バトルアリーナ</h3>
+                        <p class="text-xl text-orange-600 font-bold mb-3">Battle Arena</p>
+                        <p class="text-gray-600 mb-4">たたかってかとう！</p>
+                        <div class="bg-orange-100 rounded-xl p-3">
+                            <p class="text-sm font-bold text-orange-700">Action Game</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Character Trace -->
+            <a href="https://nihonselfpacepractic-flutter.web.app/" target="_blank" class="game-card">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="text-center">
+                        <div class="text-8xl mb-4">✍️📝</div>
+                        <h3 class="text-3xl font-black text-gray-800 mb-2">もじのれんしゅう</h3>
+                        <p class="text-xl text-green-600 font-bold mb-3">Character Trace</p>
+                        <p class="text-gray-600 mb-4">もじをかこう！</p>
+                        <div class="bg-green-100 rounded-xl p-3">
+                            <p class="text-sm font-bold text-green-700">Writing Practice</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Puzzle Slide -->
+            <a href="https://nihonselfpacepractic-flutter.web.app/" target="_blank" class="game-card">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="text-center">
+                        <div class="text-8xl mb-4">🎯🔀</div>
+                        <h3 class="text-3xl font-black text-gray-800 mb-2">スライドパズル</h3>
+                        <p class="text-xl text-teal-600 font-bold mb-3">Puzzle Slide</p>
+                        <p class="text-gray-600 mb-4">パズルをとこう！</p>
+                        <div class="bg-teal-100 rounded-xl p-3">
+                            <p class="text-sm font-bold text-teal-700">Slide Puzzle</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Learning Progress Section -->
+        <div class="mt-12 bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
+            <h2 class="text-4xl font-black text-center text-gray-800 mb-6">
+                📊 がくしゅうの ステップ
+            </h2>
+            <p class="text-2xl text-center text-purple-600 font-bold mb-8">Learning Steps</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-pink-400 to-pink-600 rounded-full w-24 h-24 mx-auto flex items-center justify-center text-5xl mb-4 shadow-lg">
+                        1️⃣
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">ひらがな</h3>
+                    <p class="text-gray-600">あいうえお (46)</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-full w-24 h-24 mx-auto flex items-center justify-center text-5xl mb-4 shadow-lg">
+                        2️⃣
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">カタカナ</h3>
+                    <p class="text-gray-600">アイウエオ (46)</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-full w-24 h-24 mx-auto flex items-center justify-center text-5xl mb-4 shadow-lg">
+                        3️⃣
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">たんご</h3>
+                    <p class="text-gray-600">Words (100+)</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-purple-400 to-purple-600 rounded-full w-24 h-24 mx-auto flex items-center justify-center text-5xl mb-4 shadow-lg">
+                        4️⃣
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">ぶんぽう</h3>
+                    <p class="text-gray-600">Grammar</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fun Facts Section -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-6 text-white shadow-2xl">
+                <div class="text-6xl mb-3 text-center">🎌</div>
+                <h3 class="text-2xl font-black mb-2 text-center">にほん</h3>
+                <p class="text-center text-lg">Japan = 日本</p>
+                <p class="text-center text-sm opacity-90 mt-2">にっぽん or にほん</p>
+            </div>
+            
+            <div class="bg-gradient-to-br from-pink-400 to-purple-500 rounded-3xl p-6 text-white shadow-2xl">
+                <div class="text-6xl mb-3 text-center">🗾</div>
+                <h3 class="text-2xl font-black mb-2 text-center">もじ</h3>
+                <p class="text-center text-lg">3 Writing Systems</p>
+                <p class="text-center text-sm opacity-90 mt-2">ひらがな・カタカナ・漢字</p>
+            </div>
+            
+            <div class="bg-gradient-to-br from-blue-400 to-cyan-500 rounded-3xl p-6 text-white shadow-2xl">
+                <div class="text-6xl mb-3 text-center">👋</div>
+                <h3 class="text-2xl font-black mb-2 text-center">こんにちは</h3>
+                <p class="text-center text-lg">Hello!</p>
+                <p class="text-center text-sm opacity-90 mt-2">Kon-ni-chi-wa</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="container mx-auto px-4 py-12 text-center">
+        <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
+            <p class="text-3xl font-black text-gray-800 mb-4">🎌 がんばって！🎌</p>
+            <p class="text-2xl text-purple-600 font-bold mb-2">Ganbare! (Good luck!)</p>
+            <p class="text-gray-600 mb-6">Keep learning and have fun! たのしくべんきょうしよう！</p>
+            <div class="flex justify-center gap-6 text-4xl">
+                <span class="bounce-animation inline-block">🎮</span>
+                <span class="bounce-animation inline-block" style="animation-delay: 0.2s;">📚</span>
+                <span class="bounce-animation inline-block" style="animation-delay: 0.4s;">✨</span>
+                <span class="bounce-animation inline-block" style="animation-delay: 0.6s;">🌟</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase Analytics -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBYourApiKey",
+            authDomain: "nihonselfpacepractic.firebaseapp.com",
+            projectId: "nihonselfpacepractic",
+            storageBucket: "nihonselfpacepractic.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123"
+        };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+            logEvent(analytics, 'page_view', { page_title: 'Kids Mode' });
+        } catch (e) {
+            console.log('Analytics not configured yet');
+        }
+    </script>
+</body>
+</html>
