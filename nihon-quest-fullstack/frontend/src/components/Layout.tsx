@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { Home, Bot, User, Flame, Heart, Baby, BookMarked, Menu } from 'lucide-react'
 import Footer from './Footer'
+import { japaneseText } from '@/config/japaneseText'
 
 export default function Layout() {
   const location = useLocation()
@@ -21,7 +22,7 @@ export default function Layout() {
             <Link to="/menu">
               <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-2 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-1 whitespace-nowrap">
                 <Menu className="w-4 h-4" />
-                <span className="hidden sm:inline text-xs sm:text-sm">Menu</span>
+                <span className="hidden sm:inline text-xs sm:text-sm">{japaneseText.nav.menu}</span>
               </button>
             </Link>
             <div className="flex items-center bg-white/50 backdrop-blur px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-full border-2 border-error/20 shadow-sm whitespace-nowrap">
@@ -43,11 +44,11 @@ export default function Layout() {
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t-2 border-primary/20 shadow-2xl safe-area-inset-bottom z-50 w-full overflow-x-auto">
         <div className="max-w-7xl mx-auto px-1 sm:px-2 py-1.5 sm:py-2 flex justify-around items-center min-w-max sm:min-w-0">
-          <NavItem to="/" icon={Home} label="Home" active={isActive('/')} />
-          <NavItem to="/kids-mode" icon={Baby} label="Kids" active={isActive('/kids-mode')} />
-          <NavItem to="/study-journal" icon={BookMarked} label="Journal" active={isActive('/study-journal')} />
-          <NavItem to="/tutor" icon={Bot} label="AI Tutor" active={isActive('/tutor')} />
-          <NavItem to="/profile" icon={User} label="Profile" active={isActive('/profile')} />
+          <NavItem to="/" icon={Home} label={japaneseText.nav.home} active={isActive('/')} />
+          <NavItem to="/kids-mode" icon={Baby} label={japaneseText.nav.kidsMode} active={isActive('/kids-mode')} />
+          <NavItem to="/study-journal" icon={BookMarked} label={japaneseText.nav.studyJournal} active={isActive('/study-journal')} />
+          <NavItem to="/tutor" icon={Bot} label={japaneseText.nav.tutor} active={isActive('/tutor')} />
+          <NavItem to="/profile" icon={User} label={japaneseText.nav.profile} active={isActive('/profile')} />
         </div>
       </nav>
     </div>

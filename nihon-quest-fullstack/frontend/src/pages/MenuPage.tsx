@@ -6,12 +6,12 @@ import {
   Library, Sparkles, User, Bot, Calendar, Award, Settings
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
+import { japaneseText } from '@/config/japaneseText'
 
 interface MenuTile {
   to: string
   icon: any
-  title: string
-  description: string
+  titleKey: keyof typeof japaneseText.menuPage.tiles
   color: string
   badge?: string
 }
@@ -20,124 +20,108 @@ const MENU_TILES: MenuTile[] = [
   {
     to: '/',
     icon: Home,
-    title: 'Home',
-    description: 'Dashboard & overview',
+    titleKey: 'home',
     color: 'from-blue-500 to-cyan-500'
   },
   {
     to: '/adult-learning',
     icon: GraduationCap,
-    title: 'Adult Learning',
-    description: 'Grammar, conversation & practice',
+    titleKey: 'adultLearning',
     color: 'from-indigo-500 to-blue-500',
-    badge: 'NEW'
+    badge: '新着 (NEW)'
   },
   {
     to: '/kids-mode',
     icon: Baby,
-    title: 'Kids Mode',
-    description: 'Games for ages 4-8',
+    titleKey: 'kidsMode',
     color: 'from-pink-500 to-rose-500'
   },
   {
     to: '/study-journal',
     icon: BookMarked,
-    title: 'Study Journal',
-    description: 'Track progress & vocabulary',
+    titleKey: 'studyJournal',
     color: 'from-purple-500 to-pink-500',
-    badge: 'NEW'
+    badge: '新着 (NEW)'
   },
   {
     to: '/grammar-learning',
     icon: BookOpen,
-    title: 'Grammar N5-N1',
-    description: 'SOV structure & registers',
+    titleKey: 'grammarN5N1',
     color: 'from-orange-500 to-amber-500'
   },
   {
     to: '/flashcards',
     icon: Zap,
-    title: 'Flashcards',
-    description: 'SRS vocabulary practice',
+    titleKey: 'flashcards',
     color: 'from-yellow-500 to-orange-500'
   },
   {
     to: '/dictionary',
     icon: Languages,
-    title: 'Dictionary',
-    description: 'Japanese-English lookup',
+    titleKey: 'dictionary',
     color: 'from-green-500 to-emerald-500'
   },
   {
     to: '/tutor',
     icon: Bot,
-    title: 'AI Tutor',
-    description: 'ChatGPT language assistant',
+    titleKey: 'aiTutor',
     color: 'from-violet-500 to-purple-500'
   },
   {
     to: '/video-lessons',
     icon: Video,
-    title: 'Video Lessons',
-    description: 'Curated learning videos',
+    titleKey: 'videoLessons',
     color: 'from-red-500 to-pink-500'
   },
   {
     to: '/sentence-game',
     icon: Gamepad2,
-    title: 'SOV Game',
-    description: 'Sentence word order',
+    titleKey: 'sovGame',
     color: 'from-teal-500 to-cyan-500'
   },
   {
     to: '/grammar-game',
     icon: PenTool,
-    title: 'Grammar Game',
-    description: 'Particle matching',
+    titleKey: 'grammarGame',
     color: 'from-lime-500 to-green-500'
   },
   {
     to: '/quiz',
     icon: Brain,
-    title: 'Quiz',
-    description: 'Test your knowledge',
+    titleKey: 'quiz',
     color: 'from-fuchsia-500 to-pink-500'
   },
   {
     to: '/practice',
     icon: Target,
-    title: 'Curriculum',
-    description: 'Structured lessons',
+    titleKey: 'curriculum',
     color: 'from-sky-500 to-blue-500'
   },
   {
     to: '/lessons',
     icon: Library,
-    title: 'Lessons',
-    description: 'Learning modules',
+    titleKey: 'lessons',
     color: 'from-amber-500 to-yellow-500'
   },
   {
     to: '/word-generator',
     icon: Sparkles,
-    title: 'Word Generator',
-    description: 'Practice vocabulary',
+    titleKey: 'wordGenerator',
     color: 'from-rose-500 to-red-500'
   },
   {
     to: '/profile',
     icon: User,
-    title: 'Profile',
-    description: 'Your account & settings',
+    titleKey: 'profile',
     color: 'from-slate-500 to-gray-500'
   }
 ]
 
 const QUICK_STATS = [
-  { label: 'Total Features', labelJP: 'ごうけいきのう', value: '16+', icon: Sparkles, color: 'text-yellow-600' },
-  { label: 'Learning Modes', labelJP: 'がくしゅうモード', value: '8', icon: Target, color: 'text-blue-600' },
-  { label: 'Games', labelJP: 'ゲーム', value: '5', icon: Gamepad2, color: 'text-green-600' },
-  { label: 'Tools', labelJP: 'ツール', value: '3', icon: Settings, color: 'text-purple-600' }
+  { label: japaneseText.menuPage.stats.totalFeatures, value: '16+', icon: Sparkles, color: 'text-yellow-600' },
+  { label: japaneseText.menuPage.stats.learningModes, value: '8', icon: Target, color: 'text-blue-600' },
+  { label: japaneseText.menuPage.stats.games, value: '5', icon: Gamepad2, color: 'text-green-600' },
+  { label: japaneseText.menuPage.stats.tools, value: '3', icon: Settings, color: 'text-purple-600' }
 ]
 
 export default function MenuPage() {
@@ -152,14 +136,14 @@ export default function MenuPage() {
             transition={{ duration: 2, repeat: Infinity }}
           >
             <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              🎌 All Features
+              {japaneseText.menuPage.title}
             </span>
           </motion.h1>
           <p className="text-xl sm:text-2xl text-gray-600 mb-2">
-            Complete Japanese Learning Platform
+            {japaneseText.menuPage.subtitle}
           </p>
           <p className="text-sm sm:text-base text-gray-500">
-            Everything you need from beginner to advanced
+            {japaneseText.menuPage.description}
           </p>
         </div>
 
@@ -187,9 +171,9 @@ export default function MenuPage() {
         <div className="mb-6">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 flex items-center gap-2">
             <Award className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600" />
-            All Features & Pages
+            {japaneseText.menuPage.allFeaturesPages}
           </h2>
-          <p className="text-gray-600">Tap any tile to start learning!</p>
+          <p className="text-gray-600">{japaneseText.menuPage.tapToStart}</p>
         </div>
 
         {/* Menu Grid */}
@@ -216,10 +200,10 @@ export default function MenuPage() {
                         <tile.icon className="w-8 h-8 text-gray-700" />
                       </div>
                       <h3 className="text-lg sm:text-xl font-bold text-white mb-1 drop-shadow-md">
-                        {tile.title}
+                        {japaneseText.menuPage.tiles[tile.titleKey].title}
                       </h3>
                       <p className="text-sm text-white/90 drop-shadow">
-                        {tile.description}
+                        {japaneseText.menuPage.tiles[tile.titleKey].description}
                       </p>
                     </div>
                   </CardContent>
@@ -234,47 +218,43 @@ export default function MenuPage() {
           <CardContent className="pt-6 pb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-blue-800 mb-4 flex items-center gap-2">
               <Calendar className="w-6 h-6 sm:w-8 sm:h-8" />
-              Recommended Learning Path
+              {japaneseText.menuPage.learningPath.title}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white p-4 rounded-lg">
                 <div className="text-3xl mb-2">1️⃣</div>
-                <h3 className="font-bold text-lg mb-2 text-green-600">Beginners</h3>
+                <h3 className="font-bold text-lg mb-2 text-green-600">{japaneseText.menuPage.learningPath.beginners.title}</h3>
                 <ul className="text-sm text-gray-700 space-y-1">
-                  <li>• Kids Mode (if young)</li>
-                  <li>• Flashcards</li>
-                  <li>• Grammar N5</li>
-                  <li>• Video Lessons</li>
+                  {japaneseText.menuPage.learningPath.beginners.items.map((item, i) => (
+                    <li key={i}>• {item}</li>
+                  ))}
                 </ul>
               </div>
               <div className="bg-white p-4 rounded-lg">
                 <div className="text-3xl mb-2">2️⃣</div>
-                <h3 className="font-bold text-lg mb-2 text-blue-600">Practice</h3>
+                <h3 className="font-bold text-lg mb-2 text-blue-600">{japaneseText.menuPage.learningPath.practice.title}</h3>
                 <ul className="text-sm text-gray-700 space-y-1">
-                  <li>• Adult Learning</li>
-                  <li>• SOV Game</li>
-                  <li>• Grammar Game</li>
-                  <li>• Dictionary</li>
+                  {japaneseText.menuPage.learningPath.practice.items.map((item, i) => (
+                    <li key={i}>• {item}</li>
+                  ))}
                 </ul>
               </div>
               <div className="bg-white p-4 rounded-lg">
                 <div className="text-3xl mb-2">3️⃣</div>
-                <h3 className="font-bold text-lg mb-2 text-purple-600">Track</h3>
+                <h3 className="font-bold text-lg mb-2 text-purple-600">{japaneseText.menuPage.learningPath.track.title}</h3>
                 <ul className="text-sm text-gray-700 space-y-1">
-                  <li>• Study Journal</li>
-                  <li>• Checklist goals</li>
-                  <li>• Quiz yourself</li>
-                  <li>• Profile stats</li>
+                  {japaneseText.menuPage.learningPath.track.items.map((item, i) => (
+                    <li key={i}>• {item}</li>
+                  ))}
                 </ul>
               </div>
               <div className="bg-white p-4 rounded-lg">
                 <div className="text-3xl mb-2">4️⃣</div>
-                <h3 className="font-bold text-lg mb-2 text-orange-600">Advanced</h3>
+                <h3 className="font-bold text-lg mb-2 text-orange-600">{japaneseText.menuPage.learningPath.advanced.title}</h3>
                 <ul className="text-sm text-gray-700 space-y-1">
-                  <li>• AI Tutor</li>
-                  <li>• Conversation</li>
-                  <li>• N3-N1 Grammar</li>
-                  <li>• Curriculum</li>
+                  {japaneseText.menuPage.learningPath.advanced.items.map((item, i) => (
+                    <li key={i}>• {item}</li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -290,7 +270,7 @@ export default function MenuPage() {
               className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl text-lg font-bold shadow-lg hover:shadow-xl transition-all"
             >
               <Home className="w-5 h-5 inline mr-2" />
-              Back to Home
+              {japaneseText.menuPage.backToHome}
             </motion.button>
           </Link>
         </div>
