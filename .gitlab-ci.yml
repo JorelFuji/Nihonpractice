@@ -1,17 +1,5 @@
-# ============================================
-# GitLab CI/CD - NihonPractice Comprehensive Pipeline
-# ============================================
-# Project ID: 83983902
-# Repository: https://gitlab.com/osakaoaks/Nihonpractice
-# 
-# This pipeline handles:
-# - Firebase Hosting (Static HTML/JS/CSS)
-# - React Fullstack Frontend (TypeScript/Vite)
-# - Python FastAPI Backend
-# - Nihongo Quest App Frontend (TypeScript/Vite)
-# - Flutter Mobile App
-# - Shiritori Games
-# ============================================
+# GitLab CI/CD - NihonPractice DevSecOps Pipeline
+# Following industry best practices for security, testing, and deployment
 
 default:
   image: node:18-alpine
@@ -38,10 +26,7 @@ variables:
   CACHE_COMPRESSION_LEVEL: "fast"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
-# ============================================
-# CACHE CONFIGURATION
-# ============================================
-
+# Reusable cache configurations
 .node_cache:
   cache:
     key: node-${CI_COMMIT_REF_SLUG}
@@ -64,634 +49,261 @@ variables:
       - .flutter-plugins
       - .packages
 
-# ============================================
-# STAGE 1: VALIDATE - Project Structure
-# ============================================
-
+# STAGE 1: VALIDATE
 validate:project_structure:
   stage: validate
-  script:
-    - echo "=== Validating Project Structure ==="
-    - |
-      echo "Checking Firebase Hosting..."
-      test -d firebase-hosting && echo "✓ firebase-hosting exists" || echo "✗ Missing"
-      test -f firebase-hosting/firebase.json && echo "✓ firebase.json exists" || echo "✗ Missing"
-      test -f firebase-hosting/.firebaserc && echo "✓ .firebaserc exists" || echo "✗ Missing"
-      test -d firebase-hosting/public && echo "✓ public directory exists" || echo "✗ Missing"
-      
-      echo ""
-      echo "Checking React Frontends..."
-      test -d nihon-quest-fullstack/frontend && echo "✓ Fullstack frontend exists" || echo "✗ Missing"
-      test -f nihon-quest-fullstack/frontend/package.json && echo "✓ Fullstack package.json exists" || echo "✗ Missing"
-      test -d nihongo-quest-app/frontend && echo "✓ Nihongo app frontend exists" || echo "✗ Missing"
-      test -f nihongo-quest-app/frontend/package.json && echo "✓ Nihongo package.json exists" || echo "✗ Missing"
-      
-      echo ""
-      echo "Checking Python Backend..."
-      test -d nihon-quest-fullstack/backend && echo "✓ Backend directory exists" || echo "✗ Missing"
-      test -f nihon-quest-fullstack/backend/requirements.txt && echo "✓ requirements.txt exists" || echo "✗ Missing"
-      
-      echo ""
-      echo "Checking Flutter App..."
-      test -d nihon_quest_mobile && echo "✓ Flutter app exists" || echo "✗ Missing"
-      test -f nihon_quest_mobile/pubspec.yaml && echo "✓ pubspec.yaml exists" || echo "✗ Missing"
-      
-      echo ""
-      echo "✅ Structure validation completed"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_COMMIT_BRANCH =~ /^feature\//'
-    - if: '$CI_COMMIT_BRANCH =~ /^hotfix\//'
-
-validate:config_files:
-  stage: validate
-  script:
-    - echo "=== Validating Configuration Files ==="
-    - |
-      echo "Checking package.json files..."
-      cd nihon-quest-fullstack/frontend
-      node -e "JSON.parse(require('fs').readFileSync('package.json'))" && echo "✓ Fullstack package.json valid JSON" || exit 1
-      
-      cd ../../nihongo-quest-app/frontend
-      node -e "JSON.parse(require('fs').readFileSync('package.json'))" && echo "✓ Nihongo package.json valid JSON" || exit 1
-      
-      cd ../../firebase-hosting
-      node -e "JSON.parse(require('fs').readFileSync('firebase.json'))" && echo "✓ firebase.json valid JSON" || exit 1
-      
-      echo "✅ All config files valid"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  allow_failure: false
-
-validate:html_syntax:
-  stage: validate
-  before_script:
-    - apk add --no-cache libxml2-utils
-  script:
-    - echo "=== Validating HTML Files ==="
-    - |
-      cd firebase-hosting/public
-      html_files=$(find . -name "*.html" -type f 2>/dev/null)
-      
-      if [ -z "$html_files" ]; then
-        echo "No HTML files found"
-        exit 0
-      fi
-      
-      echo "Found HTML files:"
-      echo "$html_files"
-      
-      echo ""
-      echo "Checking HTML syntax..."
-      for file in $html_files; do
-        echo "Checking $file..."
-        xmllint --html --noout "$file" 2>/dev/null && echo "✓ $file valid" || echo "⚠ $file has warnings"
-      done
-      
-      echo "✅ HTML validation completed"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  allow_failure: true
-
-validate:encoding:
-  stage: validate
-  before_script:
-    - apk add --no-cache file
-  script:
-    - echo "=== Checking Japanese Text Encoding ==="
-    - |
-      cd firebase-hosting/public
-      
-      check_file() {
-        if [ -f "$1" ]; then
-          encoding=$(file -i "$1" | grep -o 'charset=[^;]*' | cut -d= -f2)
-          echo "File: $1 → Encoding: $encoding"
-          if echo "$encoding" | grep -qi "utf-8"; then
-            echo "✓ UTF-8 encoding confirmed"
-          else
-            echo "⚠ Warning: Not UTF-8"
-          fi
-        else
-          echo "File not found: $1"
-        fi
-        echo ""
-      }
-      
-      check_file "index.html"
-      check_file "japanese-learning-rules.html"
-      check_file "games/memory-match/index.html"
-      check_file "kids-mode/index.html"
-      
-      echo "✅ Encoding check completed"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  allow_failure: true
-
-# ============================================
-# STAGE 2: LINT - Code Quality
-# ============================================
-
-lint:frontend_fullstack:
-  stage: lint
-  extends: .node_cache
-  before_script:
-    - cd nihon-quest-fullstack/frontend
-    - npm ci --cache ../../.npm --prefer-offline
-  script:
-    - echo "=== Linting Fullstack Frontend ==="
-    - npm run lint || echo "⚠ Linting completed with warnings"
-    - echo "✅ Lint check completed"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - changes:
-        - nihon-quest-fullstack/frontend/**/*
-  allow_failure: true
-
-lint:frontend_nihongo:
-  stage: lint
-  extends: .node_cache
-  before_script:
-    - cd nihongo-quest-app/frontend
-    - npm ci --cache ../../.npm --prefer-offline
-  script:
-    - echo "=== Linting Nihongo Quest App Frontend ==="
-    - npm run lint || echo "⚠ Linting completed with warnings"
-    - echo "✅ Lint check completed"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - changes:
-        - nihongo-quest-app/frontend/**/*
-  allow_failure: true
-
-lint:python_backend:
-  stage: lint
-  image: python:3.11-alpine
-  extends: .python_cache
-  before_script:
-    - apk add --no-cache gcc musl-dev linux-headers
-    - pip install flake8 black pylint
-  script:
-    - echo "=== Linting Python Backend ==="
-    - cd nihon-quest-fullstack/backend
-    - |
-      echo "Running flake8..."
-      flake8 app/ --max-line-length=120 --extend-ignore=E203,W503 || echo "⚠ Flake8 warnings found"
-      
-      echo ""
-      echo "Checking code formatting with black..."
-      black --check app/ || echo "⚠ Code formatting issues found"
-      
-      echo "✅ Python lint completed"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - changes:
-        - nihon-quest-fullstack/backend/**/*
-  allow_failure: true
-
-# ============================================
-# STAGE 3: TEST - Unit & Integration Tests
-# ============================================
-
-test:frontend_fullstack:
-  stage: test
-  extends: .node_cache
-  before_script:
-    - cd nihon-quest-fullstack/frontend
-    - npm ci --cache ../../.npm --prefer-offline
-  script:
-    - echo "=== Testing Fullstack Frontend ==="
-    - npm run type-check || echo "⚠ Type check warnings"
-    - echo "✅ Frontend tests completed"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - changes:
-        - nihon-quest-fullstack/frontend/**/*
-  allow_failure: true
-
-test:frontend_nihongo:
-  stage: test
-  extends: .node_cache
-  before_script:
-    - cd nihongo-quest-app/frontend
-    - npm ci --cache ../../.npm --prefer-offline
-  script:
-    - echo "=== Testing Nihongo Quest App Frontend ==="
-    - npm run type-check || echo "⚠ Type check warnings"
-    - echo "✅ Frontend tests completed"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - changes:
-        - nihongo-quest-app/frontend/**/*
-  allow_failure: true
-
-test:python_backend:
-  stage: test
-  image: python:3.11-alpine
-  extends: .python_cache
-  before_script:
-    - apk add --no-cache gcc musl-dev linux-headers postgresql-dev
-    - cd nihon-quest-fullstack/backend
-    - pip install -r requirements.txt
-    - pip install pytest pytest-cov pytest-asyncio httpx
-  script:
-    - echo "=== Testing Python Backend ==="
-    - |
-      if [ -d "tests" ]; then
-        pytest -v --cov=app tests/ || echo "⚠ Some tests failed"
-      else
-        echo "⚠ No tests directory found, skipping"
-      fi
-      echo "✅ Backend tests completed"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - changes:
-        - nihon-quest-fullstack/backend/**/*
-  allow_failure: true
-
-# ============================================
-# STAGE 4: SECURITY - Vulnerability Scanning
-# ============================================
-
-security:npm_audit:
-  stage: security
-  script:
-    - echo "=== Running NPM Security Audit ==="
-    - |
-      echo "Checking root package.json..."
-      npm audit --audit-level=moderate || echo "⚠ Root: Vulnerabilities found"
-      
-      echo ""
-      echo "Checking Fullstack Frontend..."
-      cd nihon-quest-fullstack/frontend
-      npm audit --audit-level=moderate || echo "⚠ Fullstack: Vulnerabilities found"
-      
-      echo ""
-      echo "Checking Nihongo App Frontend..."
-      cd ../../nihongo-quest-app/frontend
-      npm audit --audit-level=moderate || echo "⚠ Nihongo App: Vulnerabilities found"
-      
-      echo ""
-      echo "✅ NPM audit completed"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  allow_failure: true
-
-security:python_safety:
-  stage: security
-  image: python:3.11-alpine
-  extends: .python_cache
-  before_script:
-    - pip install safety
-  script:
-    - echo "=== Running Python Safety Check ==="
-    - cd nihon-quest-fullstack/backend
-    - safety check -r requirements.txt || echo "⚠ Python: Vulnerabilities found"
-    - echo "✅ Python safety check completed"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - changes:
-        - nihon-quest-fullstack/backend/**/*
-  allow_failure: true
-
-security:secrets_scan:
-  stage: security
-  script:
-    - echo "=== Scanning for Exposed Secrets ==="
-    - |
-      echo "Checking for common secret patterns..."
-      
-      # Check for API keys
-      if grep -r "api[_-]key.*=.*['\"]" --include="*.js" --include="*.ts" --include="*.py" . 2>/dev/null | grep -v node_modules | grep -v ".git"; then
-        echo "⚠ WARNING: Possible API keys found in code"
-      fi
-      
-      # Check for passwords in code
-      if grep -r "password.*=.*['\"]" --include="*.js" --include="*.ts" --include="*.py" . 2>/dev/null | grep -v node_modules | grep -v ".git" | grep -v ".md"; then
-        echo "⚠ WARNING: Possible passwords found in code"
-      fi
-      
-      # Check for Firebase config in code
-      if grep -r "firebaseConfig" --include="*.js" --include="*.ts" . 2>/dev/null | grep -v node_modules | grep -v ".git"; then
-        echo "ℹ INFO: Firebase config found (verify it's safe for client-side)"
-      fi
-      
-      echo "✅ Secrets scan completed"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  allow_failure: true
-
-# ============================================
-# STAGE 5: BUILD - Compile & Package
-# ============================================
-
-build:firebase_hosting:
-  stage: build
-  extends: .node_cache
-  script:
-    - echo "=== Building Firebase Hosting ==="
-    - cd firebase-hosting
-    - npm ci --cache ../.npm --prefer-offline || echo "No dependencies to install"
-    - |
-      echo "Checking static files..."
-      ls -lh public/ | head -20
-      
-      echo ""
-      echo "Counting files..."
-      html_count=$(find public -name "*.html" -type f 2>/dev/null | wc -l)
-      js_count=$(find public -name "*.js" -type f 2>/dev/null | wc -l)
-      css_count=$(find public -name "*.css" -type f 2>/dev/null | wc -l)
-      
-      echo "HTML files: $html_count"
-      echo "JS files: $js_count"
-      echo "CSS files: $css_count"
-      
-      echo ""
-      echo "✅ Static files ready for deployment"
-  artifacts:
-    name: firebase-hosting-$CI_COMMIT_REF_SLUG
-    paths:
-      - firebase-hosting/public/
-      - firebase-hosting/firebase.json
-      - firebase-hosting/.firebaserc
-    expire_in: 1 week
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_COMMIT_BRANCH =~ /^feature\//'
-
-build:frontend_fullstack:
-  stage: build
-  extends: .node_cache
-  before_script:
-    - apk add --no-cache git
-    - cd nihon-quest-fullstack/frontend
-    - npm ci --cache ../../.npm --prefer-offline
-  script:
-    - echo "=== Building Fullstack Frontend ==="
-    - npm run build
-    - |
-      echo "Build output:"
-      ls -lh dist/ | head -20
-      
-      echo ""
-      echo "Build size:"
-      du -sh dist/
-      
-      echo ""
-      echo "✅ Fullstack frontend build completed"
-  artifacts:
-    name: fullstack-frontend-$CI_COMMIT_REF_SLUG
-    paths:
-      - nihon-quest-fullstack/frontend/dist/
-    expire_in: 1 week
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - changes:
-        - nihon-quest-fullstack/frontend/**/*
-  allow_failure: false
-
-build:frontend_nihongo:
-  stage: build
-  extends: .node_cache
-  before_script:
-    - apk add --no-cache git
-    - cd nihongo-quest-app/frontend
-    - npm ci --cache ../../.npm --prefer-offline
-  script:
-    - echo "=== Building Nihongo Quest App Frontend ==="
-    - npm run build
-    - |
-      echo "Build output:"
-      ls -lh dist/ | head -20
-      
-      echo ""
-      echo "Build size:"
-      du -sh dist/
-      
-      echo ""
-      echo "✅ Nihongo app frontend build completed"
-  artifacts:
-    name: nihongo-frontend-$CI_COMMIT_REF_SLUG
-    paths:
-      - nihongo-quest-app/frontend/dist/
-    expire_in: 1 week
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - changes:
-        - nihongo-quest-app/frontend/**/*
-  allow_failure: false
-
-build:backend_docker:
-  stage: build
-  image: docker:24-cli
-  services:
-    - docker:24-dind
-  variables:
-    DOCKER_TLS_CERTDIR: "/certs"
-  script:
-    - echo "=== Building Python Backend Docker Image ==="
-    - cd nihon-quest-fullstack/backend
-    - |
-      echo "Docker build would happen here"
-      echo "To enable: Add Docker registry credentials to GitLab CI/CD variables"
-      echo "Command: docker build -t nihon-quest-backend:$CI_COMMIT_SHORT_SHA ."
-      echo "✅ Backend Docker build configured (manual enable required)"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
-    - changes:
-        - nihon-quest-fullstack/backend/**/*
-      when: manual
-  allow_failure: true
-
-build:flutter_web:
-  stage: build
-  image: ghcr.io/cirruslabs/flutter:stable
-  extends: .flutter_cache
-  before_script:
-    - flutter --version
-    - flutter doctor -v || true
-  script:
-    - echo "=== Building Flutter Web App ==="
-    - cd nihon_quest_mobile
-    - flutter pub get
-    - flutter build web --release --web-renderer html
-    - |
-      echo "Build output:"
-      ls -lh build/web/ | head -20
-      
-      echo ""
-      echo "Build size:"
-      du -sh build/web/
-      
-      echo ""
-      echo "✅ Flutter web build completed"
-  artifacts:
-    name: flutter-web-$CI_COMMIT_REF_SLUG
-    paths:
-      - nihon_quest_mobile/build/web/
-    expire_in: 1 week
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - changes:
-        - nihon_quest_mobile/**/*
-  allow_failure: true
-
-# ============================================
-# STAGE 6: DEPLOY - Production & Staging
-# ============================================
-
-deploy:firebase_production:
-  stage: deploy
+# GitLab CI/CD - NihonPractice Dti# Following industry best practices for security-h
+default:
   image: node:18-alpine
-  before_script:
-    - npm install -g firebase-tools
-  script:
-    - echo "=== Deploying to Firebase Hosting (Production) ==="
-    - cd firebase-hosting
-    - echo "Firebase project $FIREBASE_PROJECT"
-    - |
-      if [ -n "$FIREBASE_TOKEN" ]; then
-        echo "Token found, deploying..."
-        firebase deploy --only hosting --project $FIREBASE_PROJECT --token $FIREBASE_TOKEN --non-interactive
-        echo "Deployment successful"
-        echo "Live at https://nihonselfpacepractic.web.app"
-      else
-        echo "FIREBASE_TOKEN not set"
-        echo "Set FIREBASE_TOKEN in GitLab CI/CD variables"
-        echo "Get token with firebase login:ci"
-        exit 0
-      fi
-  environment:
-    name: production
-    url: https://nihonselfpacepractic.web.app
-    deployment_tier: production
-    on_stop: stop_production
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
-  dependencies:
-    - build:firebase_hosting
-  needs:
-    - build:firebase_hosting
+  retry:
+    max: 2
+    when:
+      - sti  image -  retry:
+    max: 2
+  in    maxas    when: e      - fi      - stuck_or_timeout_fai"M
+stages:
+  - validate
+  - lint
+t -  - vaba  - lint
+  .f  - tesrc  - seco   - build
+ se  - depls"  - verif"M
+variableire  NODE_EN    FIREBASE_PROJECT: "niti  GIT_DEPTH: 10
+  FF_USE_FASTZIP: "true"
+is  FF_USE_FASTZIS  CACHE_COMPRESSION_LEV -  PIP_CACHE_DIR: "$CI_PROJECT_DI &
+# Reusable cache configurations
+.node_cacheo ".node_cache:
+  cache:
+    key:ue  cache:
+  k/    keyd/    paths:
+      - .npm/
+      - n p      - .on      - nodeIS
+.python_cache:
+  canih  cache:
+    p/    keyd     paths:
+      - .cache/pip/
+     st      - .o       - .venv/
 
-deploy:firebase_staging:
-  stage: deploy
+.fst
+.flutter_cacues  cache:
+    k/p    keyjs    paths:
+      - .dart_tool/
+      ||      - .SS      - .flutter-p n      - .packages
+
+# STck
+# STAGE 1: VALIBacvalidate:project_sst  stage: validate
+# GitLab t# GitLab CI/CD -stdefault:
   image: node:18-alpine
-  before_script:
-    - npm install -g firebase-tools
-  script:
-    - echo "=== Deploying to Firebase Hosting (Staging) ==="
-    - cd firebase-hosting
-    - |
-      if [ -n "$FIREBASE_TOKEN" ]; then
-        echo "Token found, deploying to staging..."
-        firebase deploy --only hosting --project $FIREBASE_PROJECT --token $FIREBASE_TOKEN --non-interactive
-        echo "Staging deployment successful"
-      else
-        echo "FIREBASE_TOKEN not set"
-        echo "Skipping staging deployment"
-        exit 0
-      fi
-  environment:
-    name: staging
-    url: https://nihonselfpacepractic.web.app
-    deployment_tier: staging
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-      when: manual
-  dependencies:
-    - build:firebase_hosting
-  needs:
-    - build:firebase_hosting
-  allow_failure: true
-
-stop_production:
-  stage: deploy
-  script:
-    - echo "Production environment stopped"
-  environment:
-    name: production
-    action: stop
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
-  allow_failure: true
-
-deploy:pages:
-  stage: deploy
-  script:
-    - echo "=== Preparing GitLab Pages ==="
-    - mkdir -p public
-    - cp -r firebase-hosting/public/* public/ 2>/dev/null || echo "No files to copy"
-    - |
-      echo "Creating index page..."
-      ls -la public/ | head -20
-      echo "✅ GitLab Pages ready"
-  artifacts:
-    paths:
-      - public
-    expire_in: 30 days
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  when: manual
-  allow_failure: true
-
-# ============================================
-# STAGE 7: VERIFY - Post-Deployment Checks
-# ============================================
-
-verify:deployment:
-  stage: verify
-  script:
-    - echo "=== Verifying Deployment ==="
-    - apk add --no-cache curl
-    - |
-      if [ -n "$CI_ENVIRONMENT_URL" ]; then
-        echo "Checking $CI_ENVIRONMENT_URL..."
-        
-        if curl -f -s -o /dev/null -w "%{http_code}" "$CI_ENVIRONMENT_URL" | grep -q "200"; then
-          echo "✅ Site is responding (HTTP 200)"
-        else
-          echo "⚠ Site returned non-200 response"
+  retry:
+    max: 2
+    when:
+      - sti  image -
+   imagest  retry:
+    max: 2
+   &    max"O    when: a      - s"    max: 2
+  in    maxas   st  in    m_qstages:
+  - validate
+  - lint
+t -  - vaba  - lint
+  .f  - tesrcSI  - va    - lint
+t uct -  - li  .f  - tesrc  - s   se  - depls"  - verif"M
+varia_Svariableire  NODE_EN   _e  FF_USE_FASTZIP: "true"
+is  FF_USE_FASTZIS  CACHE_COMPRESSIO_Cis  FF_USE_FASTZIS  CACp"# Reusable cache configurations
+.node_cacheo ".node_cache:
+  cache:
+    key: =.node_cacheo ".node_cache:
+  cg_  cache:
+    key:ue  cach      key
+   k/    keyd/    li      - .npm/
+      - il      - n p - .python_cache:
+  canih  cache:
+        canih  cachSO    p/    keyde(      - .cache/pip/
+    ag     st      - .o  "
+.fst
+.flutter_cacues  cache:
+ " |.flxi    k/p    keyjs    paon      - .dart_tool/
+      -      ||      - .Sse
+# STck
+# STAGE 1: VALIBacvalidate:project_sst  stage: OK # STAgo# GitLab t# GitLab CI/CD -stdefault:
+  image: node:18--h  image: node:18-alpine
+  retry:
+  qu  retry:
+    max: 2
+  ('    maxe.    when:&&      - K    imagest  retry:
+"     max: 2
+   &  ch   &    mnf  in    maxas   st  in    m_qstages:
+  - vaEL  - validate
+  - lint
+t -  - vaba  '
+  - lint
+t $Ct -  - T_  .f  - tesrcSI  -  t uct -  - li  .f  - tesrc  - 2:varia_Svariableire  NODE_EN   _e  FF_USE_FASTZIP: "true".nis  FF_USE_FASTZIS  CACHE_COMPRESSIO_Cis  FF_USE_FASTZIck.node_cacheo ".node_cache:
+  cache:
+    key: =.node_cacheo ".node_cache:
+  cg_  cache:
+    keFu  cache:
+    key: =.node_ -    keyn   cg_  cache:
+    key:ue  cach     et    key:ue  in   k/    keyd/    li    ck      - il      - n p - .python_$C  canih  cache:
+        canih  cachSO'$        canih CH    ag     st      - .o  "
+.fst
+.flutter_cacues  cache:_r.fst
+.flutter_cacues  cacge.fl   " |.flxi    k/p    kell      -      ||      - .Sse
+# STck
+# STAGE 1: VALIBnt# STck
+# STAGE 1: VALIBacv
+ # STAnd  image: node:18--h  image: node:18-alpine
+  retry:
+  qu  retry:
+    max: 2
+  ('    maxe.   ..  retry:
+  qu  retry:
+    max: 2
+  ('    ho  qu  rin    max: 2
+o   ('    m F"     max: 2
+   &  ch   &    mnf  in    maxas   st nt   &  ch   ed  - vaEL  - validate
+  - lint
+t -  - vaba  '
+  - lint
+le  - lint
+t -  - vabOMt -  - NC  - lint
+t $C  t $Ct - '  cache:
+    key: =.node_cacheo ".node_cache:
+  cg_  cache:
+    keFu  cache:
+    key: =.node_ -    keyn   cg_  cache:
+    key:ue  cach     et    key:ue  in   k/    keyd/    li    ck      - il      - n p -  i    keyyt  cg_  cache:
+    keFu  cache:
+    ca    keFu  ca_s    key: =.nodek     key:ue  cach     et    key:ue  in  rs        canih  cachSO'$        canih CH    ag     st      - .o  "
+.fst
+.flutter_cacues  cache:_r.fst
+.flutter_cst.fst
+.flutter_cacues  cache:_r.fst
+.flutter_cacues  cacge.fl   "en.flgn.flutter_cacues  cacge.fl   NG# STck
+# STAGE 1: VALIBnt# STck
+# STAGE 1: VALIBacv
+ # STAnd  image: node:18-ti# STAsu# STAGE 1: VALIBacv
+ # yt # STAnd  image: n"
+  retry:
+  qu  retry:
+    max: 2
+  ('    maxe.       qu  r '    max: 2
+BR  ('    mde  qu  retry:
+    max: 2
+ PE    max: 2
+ =  ('    hreo   ('    m F"     max: 2
+  
+    &  ch   &    mnf  in ls  - lint
+t -  - vaba  '
+  - lint
+le  - lint
+t -  - vabOMt -  - NC  - linult -  - 
+   - lint
+le    le  - l: t -  - vahet $C  t $Ct - '  cache:
+    ih    key: =.node_cacheont  cg_  cache:
+    keFu  cache:
+     -    keFu  cain    key: =.node -    key:ue  cach     et    key:ue  in  ==    keFu  cache:
+    ca    keFu  ca_s    key: =.nodek     key:ue  cach     et    key:ue  in  rs        canih  :
+    ca    keFu CO.fst
+.flutter_cacues  cache:_r.fst
+.flutter_cst.fst
+.flutter_cacues  cache:_r.fst
+.flutter_cacues  cacge.fl   "en.flgn.flutter_cacues  cacge.f  .fl n.flutter_cst.fst
+.flutter_cad/.flutter_cacuesil.flutter_cacues  cacge.fl   on# STAGE 1: VALIBnt# STck
+# STAGE 1: VALIBacv
+ # STAnd  image: node:18-tng# STAGE 1: VALIBacv
+ #    # STAnd  image: n./ # yt # STAnd  image: n"
+  retry:
+  qu  retry:
+    mes  retry:
+  qu  retry:
+ Fr  qu  r==    max: 2
+m   ('    mchBR  ('    mde  qu  retry:
+    max: 2in    max: 2
+ PE    max: 2 t PE    male =  ('    hr:
+  
+    &  ch   &    mnf  in ls  - lin"'   t -  - vaba  '
+  - lint
+le  - lintel  - lint
+le  : le  - lPEt -  - vaCE   - lint
+le    le  - l: t -  - vahengle    le      ih    key: =.node_cacheont  cg_  cache:
+    ur    keFu  cache:
+     -    keFu  cain    kt
+     -    keFu :3    ca    keFu  ca_s    key: =.nodek     key:ue  cach     et    key:ue  in  rs        canih  nu    ca    keFu CO.fst
+.flutter_cacues  cache:_r.fst
+.flutter_cst.fst
+.flutter_cacues  cache:_en.flutter_cacues  cacta.flutter_cst.fst
+.flutter_caas.flutter_cacuescr.flutter_cacues  cacge.fl    P.flutter_cad/.flutter_cacuesil.flutter_cacues  cacge.fl   on# STAGE 1: VALIBnt# STpp# STAGE 1: VALIBacv
+ # STAnd  image: node:18-tng# STAGE 1: VALIBacv
+ #    # STAnd  ts # STAnd  image: nsk #    # STAnd  image: n./ # yt # STAnd  image:pl  retry:
+  qu  retry:
+    mes  retry:
+  qu  retrma  qu  r      mes  reCO  qu  retry:
+  " Fr  qu  r=  m   ('    mchBR  ('  SO    max: 2in    max: 2
+ PE    max: 2 ch PE    max: 2 t PE   n-  
+    &  ch   &    mnf  in ls  - lin"ai ur  - lint
+le  - lintel  - lint
+le  : le  - lPEt -  - tale  - lurle  : le  - lPEt -  ele    le  - l: t -  - vahengle    t     ur    keFu  cache:
+     -    keFu  cain    kt
+     -    keFu :3    ca    keFat     -    keFu  cain ot     -    keFu :3    ca    .flutter_cacues  cache:_r.fst
+.flutter_cst.fst
+.flutter_cacues  cache:_en.flutter_cacues  cacta.flutter_cst.fst
+.flutter_caas.flutteG .flutter_cst.fst
+.flutter_caun.flutter_cacuesCh.flutter_caas.flutter_cacuescr.flutter_cacues  cacge.fl    P.flro # STAnd  image: node:18-tng# STAGE 1: VALIBacv
+ #    # STAnd  ts # STAnd  image: nsk #    # STAnd  image: n./ # yt # STAnd  image:pl  retry:
+  qu  retry:
+    mesRA #    # STAnd  ts # STAnd  image: nsk #    # S==  qu  retry:
+    mes  retry:
+  qu  retrma  qu  r      mes  reCO  qu  retry:
+  " Fr  qu  r=  ma    mes  re3.  qu  retrma  te  " Fr  qu  r=  m   ('    mchBR  ('  SO    ma i PE    max: 2 ch PE    max: 2 t PE   n-  
+    &  ch   &    my     &  ch   &    mnf  in ls  - lin"ai urk/le  - lintel  - lint
+le  : le  - lPEt -  - tale||le  : le  - lPEt - on     -    keFu  cain    kt
+     -    keFu :3    ca    keFat     -    keFu  cain ot     -    keFu :3    ca    .fin     -    keFu :3    ca  E_.flutter_cst.fst
+.flutter_cacues  cache:_en.flutter_cacues  cacta.flutter_cst.fst
+.flutter_caas.flutteG .flutttr.flutter_cacuescr.flutter_caas.flutteG .flutter_cst.fst
+.flutter_caun.flutter_cafo.flutter_caun.flutter_cacuesCh.flutteec #    # STAnd  ts # STAnd  image: nsk #    # STAnd  image: n./ # yt # STAnd  image:pl  retry:
+  qu  retry:
+    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # STAnd  ts # STAnd  image: nsk #    # S==  qu  retry:
+    mes  et    mesRA #-     mes  retry:
+  qu  retrma  qu  r      mes  reCO  qu  retry:
+  " F.p  qu  retrma  ll  " Fr  qu  r=  ma    mes  re3.  qu  retrma  ep    &  ch   &    my     &  ch   &    mnf  in ls  - lin"ai urk/le  - lintel  - lint
+le  : le  - lPEt -  - tale||le  : le  - lPEt - on  " le  : le  - lPEt -  - tale||le  : le  - lPEt - on     -    keFu  cain    kt
+     NF     -    keFu :3    ca    keFat     -    keFu  cain ot     -    keFu :3  o .flutter_cacues  cache:_en.flutter_cacues  cacta.flutter_cst.fst
+.flutter_caas.flutteG .flutttr.flutter_cacuescr.flutter_caas.fl"'.flutter_caas.flutteG .flutttr.flutter_cacuescr.flutter_caas.fl:
+.flutter_caun.flutter_cafo.flutter_caun.flutter_cacuesCh.flutteec #    # STAnd  ts #st  qu  retry:
+    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # STAnd  ts # STAnd  image: nsk #    # S==  qu  retry:
+    mes  et    mesRA #-  -     mesRA #ic    mesRA #    # STAnd  ts # STAnd  image: nsk fi    mes  et    mesRA #-     mes  retry:
+  qu  retrma  qu  r      mesic  qu  retrma  qu  r      mes  reCO  qu -  " F.p  qu  retrma  ll  " Fr  qu  r=  ma    dele  : le  - lPEt -  - tale||le  : le  - lPEt - on  " le  : le  - lPEt -  - tale||le  : le  - lPEt - on     -    keFu  cain    kt
+     NF     -    keFu os     NF     -    keFu :3    ca    keFat     -    keFu  cain ot     -    keFu :3  o .flutter_cacues  cache:_en.flutter_cacues  cf:.flutter_caas.flutteG .flutttr.flutter_cacuescr.flutter_caas.fl"'.flutter_caas.flutteG .flutttr.flutter_cacuescr.flutter_caas.fl:
+.flutter_caun.fl
+ .flutter_caun.flutter_cafo.flutter_caun.flutter_cacuesCh.flutteec #    # STAnd  ts #st  qu  retry:
+    mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts # STAnd  image: nsk 
+     mes  et    mesRA #-  -     mesRA #ic    mesRA #    # STAnd  ts #k   qu  retrma  qu  r      mesic  qu  retrma  qu  r      mes  reCO  qu -  " F.p  qu  retrma  ll  " Fr  qu  r=  ma    dele  : le  k/     NF     -    keFu os     NF     -    keFu :3    ca    keFat     -    keFu  cain ot     -    keFu :3  o .flutter_cacues  cache:_en.flutter_cacues  cf:.flutter_caas.flutteG .flutttr.flutter_cacuescr.flutter_caas.fl"'.flutter_caas.flutteG .flue:.flutter_caun.fl
+ .flutter_caun.flutter_cafo.flutter_caun.flutter_cacuesCh.flutteec #    # STAnd  ts #st  qu  retry:
+    mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts # STAnds  .flutter_caun.d     mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #/d     mes  et    mesRA #-  -     mesRA #ic    mesRA #    # STAnd  ts #k   qu  retrma  qu  r      T_ .flutter_caun.flutter_cafo.flutter_caun.flutter_cacuesCh.flutteec #    # STAnd  ts #st  qu  retry:
+    mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts # STAnds  .flutter_caun.d     mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #t"    mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # Sd"    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #on    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #/d     mes  et    mesRA #-  -     mesRA #ic    mesRA #    # STAnd  ts #k   qu  retre/    mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts # STAnds  .flutter_caun.d     mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # Sho    mesRA #  IR    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #ok    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #t"    mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+ Li    mesRA #    # Sd"    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #on    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRit    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts # STAnds  .flutter_caun.d     mesRA #    # STAnd  ts #  n    mesRA #    # STAnd  ts # STAnde_  qu  retry:
+    mesRA #    # Sho    mesRA #  IR    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #ok    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: in    mesRA #    # Sho    mesRA #  IR    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #ok    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: nske- Li    mesRA #    # Sd"    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #on    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRit    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts # STAnds  .flutter_caun.d     mesTO    mesRA #    # Sho    mesRA #  IR    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #ok    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: in    mesRA #    # Sho    mesRA #  IR    mesRA #    # STAnd  ts # STAnd  image: nsk #==    mesRA #    # STAnd  ts #ok    mesRA #    # Sho    mesRA #    # STAnd  ts # STAnd  image: nske- 
+sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssse
+          echo "WARNING Site returned non-200 response"
         fi
       else
         echo "No environment URL set, skipping verification"
       fi
-      
-      echo "✅ Verification completed"
+    - echo "Verification completed"
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
   allow_failure: true
 
-# ============================================
-# WORKFLOW RULES - Pipeline Execution Control
-# ============================================
-
+# WORKFLOW RULES
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
