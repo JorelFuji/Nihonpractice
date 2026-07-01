@@ -1,0 +1,79 @@
+# .pre-commit-config.yaml
+# Drop in repo root. Setup:
+#   pip install pre-commit
+#   pre-commit install                       # runs on every `git commit` 
+#   pre-commit install --hook-type pre-push  # heavier checks on `git push` 
+#   pre-commit run --all-files               # one-time cleanup of the whole repo
+#
+# Principle: point these hooks at the SAME tools your CI pipeline runs,
+# so "passes locally" == "passes in CI".
+
+repos:
+  # ---- Universal hygiene (all stacks) ----
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml            # catches broken .gitlab-ci.yml before commit
+        args: ['--allow-multiple-documents']
+      - id: check-json
+      - id: check-added-large-files
+        args: ['--maxkb=1024']
+      - id: check-merge-conflict
+      - id: detect-private-key
+
+  # ---- Secret scanning (matches CI gitleaks stage) ----
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+
+  # ---- Python (backend) ----
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.0
+    hooks:
+      - id: ruff                  # lint
+        files: ^nihon-quest-fullstack/backend/
+      - id: ruff-format           # format
+        files: ^nihon-quest-fullstack/backend/
+
+  # ---- JS/TS (React/Vite frontends) via local hooks, uses YOUR project's config ----
+  - repo: local
+    hooks:
+      - id: eslint-fullstack
+        name: eslint (fullstack)
+        entry: bash -c 'cd nihon-quest-fullstack/frontend && npx eslint'
+        language: system
+        files: ^nihon-quest-fullstack/frontend/.*\.(js|jsx|ts|tsx)$
+        pass_filenames: false
+        
+      - id: eslint-nihongo
+        name: eslint (nihongo)
+        entry: bash -c 'cd nihongo-quest-app/frontend && npx eslint'
+        language: system
+        files: ^nihongo-quest-app/frontend/.*\.(js|jsx|ts|tsx)$
+        pass_filenames: false
+        
+      - id: prettier-fullstack
+        name: prettier (fullstack)
+        entry: bash -c 'cd nihon-quest-fullstack/frontend && npx prettier --check'
+        language: system
+        files: ^nihon-quest-fullstack/frontend/.*\.(js|jsx|ts|tsx|css|json|md)$
+        stages: [pre-push]
+        pass_filenames: false
+        
+      - id: prettier-nihongo
+        name: prettier (nihongo)
+        entry: bash -c 'cd nihongo-quest-app/frontend && npx prettier --check'
+        language: system
+        files: ^nihongo-quest-app/frontend/.*\.(js|jsx|ts|tsx|css|json|md)$
+        stages: [pre-push]
+        pass_filenames: false
+
+      - id: firebase-config
+        name: firebase config check
+        entry: bash -c 'node -e "JSON.parse(require(\"fs\").readFileSync(\"firebase-hosting/firebase.json\"))"'
+        language: system
+        files: ^firebase-hosting/firebase\.json$
+        pass_filenames: false

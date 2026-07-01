@@ -2,6 +2,11 @@
 # Build time optimization: 60%+ faster with tier 1-4 techniques
 # Mental model: avoid doing work you already did (cache), work you don't need (selective),
 # work one-at-a-time (parallel), or work on slow machines (right-size)
+#
+# LOCAL-CI INTEGRATION:
+# - Run locally: make ci (or ./local-ci.sh)
+# - This pipeline calls the SAME make targets
+# - Guarantees: "passes locally" == "passes in CI"
 
 default:
   image: node:18-alpine
