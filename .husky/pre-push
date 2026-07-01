@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🚀 Running pre-push checks (full local CI)..."
+echo "⚡ This catches failures before they hit GitLab CI/CD"
+echo ""
+
+# Check which files changed
+if git diff --name-only origin/$(git branch --show-current) | grep -q "nihon-quest-fullstack/frontend"; then
+  echo "📦 Running fullstack frontend checks..."
+  npm run ci:fullstack || exit 1
+fi
+
+if git diff --name-only origin/$(git branch --show-current) | grep -q "nihongo-quest-app/frontend"; then
+  echo "📦 Running nihongo app checks..."
+  npm run ci:nihongo || exit 1
+fi
+
+if git diff --name-only origin/$(git branch --show-current) | grep -q "nihon_quest_mobile"; then
+  echo "📱 Running Flutter checks..."
+  npm run ci:flutter || exit 1
+fi
+
+echo "✅ All pre-push checks passed!"

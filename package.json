@@ -53,9 +53,26 @@
     "yargs": "^17.7.3",
     "yargs-parser": "^21.1.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ci:fullstack": "cd nihon-quest-fullstack/frontend && npm run ci:local",
+    "ci:nihongo": "cd nihongo-quest-app/frontend && npm run ci:local",
+    "ci:flutter": "cd nihon_quest_mobile && flutter analyze && flutter test",
+    "ci:all": "npm run ci:fullstack && npm run ci:nihongo && npm run ci:flutter",
+    "ci:quick": "npm run ci:fullstack && npm run ci:nihongo",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "nihon-quest-fullstack/frontend/**/*.{ts,tsx}": [
+      "cd nihon-quest-fullstack/frontend && npm run lint"
+    ],
+    "nihongo-quest-app/frontend/**/*.{ts,tsx}": [
+      "cd nihongo-quest-app/frontend && npm run lint"
+    ]
   },
   "keywords": [],
   "author": "",
