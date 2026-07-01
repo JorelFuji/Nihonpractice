@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Shiritori Battle Arena</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&amp;family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hard-shadow {
+            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .glow-orange {
+            box-shadow: 0 0 20px rgba(255, 183, 127, 0.4);
+        }
+        .mechanical-press:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @keyframes pulse-border {
+            0% { border-color: #ffb77f; }
+            50% { border-color: #ff8a00; }
+            100% { border-color: #ffb77f; }
+        }
+        .active-pulse {
+            animation: pulse-border 2s infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffb77f",
+                        "on-tertiary": "#3a3000",
+                        "on-secondary-fixed-variant": "#2e2bc2",
+                        "primary-fixed-dim": "#ffb77f",
+                        "on-tertiary-fixed-variant": "#544600",
+                        "error-container": "#93000a",
+                        "tertiary": "#e9c400",
+                        "primary-fixed": "#ffdcc4",
+                        "on-secondary": "#1200a9",
+                        "surface-container-low": "#241912",
+                        "inverse-surface": "#f3dfd1",
+                        "on-primary-fixed": "#2f1500",
+                        "on-background": "#f3dfd1",
+                        "secondary-container": "#312ec5",
+                        "tertiary-fixed-dim": "#e9c400",
+                        "surface-container-high": "#33281f",
+                        "outline-variant": "#564334",
+                        "surface-container": "#281d15",
+                        "on-primary-fixed-variant": "#6f3900",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#e1e0ff",
+                        "outline": "#a58c7b",
+                        "surface-dim": "#1b110a",
+                        "on-primary": "#4e2600",
+                        "surface-container-highest": "#3f3229",
+                        "on-tertiary-fixed": "#221b00",
+                        "surface-tint": "#ffb77f",
+                        "on-secondary-container": "#b0b1ff",
+                        "secondary": "#c1c1ff",
+                        "on-tertiary-container": "#4a3d00",
+                        "on-secondary-fixed": "#07006c",
+                        "inverse-on-surface": "#3a2e25",
+                        "primary-container": "#ff8a00",
+                        "on-surface-variant": "#ddc1ae",
+                        "secondary-fixed-dim": "#c1c1ff",
+                        "tertiary-fixed": "#ffe170",
+                        "on-surface": "#f3dfd1",
+                        "on-primary-container": "#613100",
+                        "on-error": "#690005",
+                        "tertiary-container": "#c7a600",
+                        "surface": "#1b110a",
+                        "background": "#1b110a",
+                        "surface-bright": "#43372e",
+                        "inverse-primary": "#914c00",
+                        "surface-variant": "#3f3229",
+                        "surface-container-lowest": "#150c06"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "md": "24px",
+                        "base": "8px",
+                        "lg": "48px",
+                        "gutter": "16px",
+                        "xl": "64px",
+                        "sm": "12px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "80px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-hero": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "display-hero": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-sm": ["11px", {"lineHeight": "1.0", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-hidden">
+<!-- WebGL Shader Background -->
+<!-- STITCH_SHADER_START:ANIMATION_8 class="fixed inset-0 w-full h-full opacity-40 pointer-events-none" -->
+<div class="fixed inset-0 w-full h-full opacity-40 pointer-events-none" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_8" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_8');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `
+precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+varying vec2 v_texCoord;
+
+void main() {
+    vec2 uv = v_texCoord;
+    
+    // Create a stylized "Kawaii" grid/battleground background
+    vec3 color1 = vec3(0.1, 0.05, 0.03); // Deep brown (from design system)
+    vec3 color2 = vec3(1.0, 0.54, 0.0);  // Primary orange
+    
+    float pulse = (sin(u_time * 1.5) * 0.5 + 0.5);
+    
+    // Soft vignette
+    float dist = distance(uv, vec2(0.5));
+    float vignette = 1.0 - smoothstep(0.2, 0.8, dist);
+    
+    // Grid lines
+    float gridWidth = 0.02;
+    vec2 grid = abs(fract(uv * 10.0 - 0.5) - 0.5);
+    float line = smoothstep(0.0, gridWidth, min(grid.x, grid.y));
+    
+    vec3 finalColor = mix(color1, color2 * 0.1, 1.0 - line);
+    finalColor += color2 * 0.05 * pulse * vignette;
+    
+    gl_FragColor = vec4(finalColor * vignette, 1.0);
+}
+`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_8 -->
+<!-- Top App Bar -->
+<header class="bg-surface border-b-2 border-outline w-full top-0 sticky flex justify-between items-center px-gutter h-16 w-full z-50">
+<div class="flex items-center gap-base">
+<button class="hover:bg-surface-container-highest transition-colors p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<h1 class="font-display-hero text-headline-md tracking-tighter text-primary">SHIRITORI BATTLE</h1>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex gap-base">
+<span class="font-label-caps text-on-surface-variant text-xs">MODE: RANKED ARENA</span>
+<span class="font-label-caps text-primary text-xs">REGION: TOKYO-01</span>
+</div>
+<button class="hover:bg-surface-container-highest transition-colors p-2 rounded-lg active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+</button>
+</div>
+</header>
+<main class="flex-1 flex flex-col items-center justify-start p-gutter md:p-md relative overflow-y-auto hide-scrollbar pb-32">
+<!-- 3D Battle Scene -->
+<section class="w-full max-w-4xl h-[300px] md:h-[450px] relative mb-md">
+<div class="absolute inset-0 bg-surface-container-low border-2 border-primary/20 rounded-xl overflow-hidden hard-shadow">
+<!-- STITCH_THREEJS_START:ANIMATION_9 class="w-full h-full" -->
+<div class="w-full h-full" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_9" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_9');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+renderer.setSize(width, height);
+container.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+scene.add(ambientLight);
+const pointLight = new THREE.PointLight(0xff8a00, 1, 100);
+pointLight.position.set(5, 5, 5);
+scene.add(pointLight);
+
+// Pokémon-style Battle Platform (Cylinder)
+const geoPlatform = new THREE.CylinderGeometry(2, 2.2, 0.2, 32);
+const matPlatform = new THREE.MeshPhongMaterial({ color: 0xff8a00, transparent: true, opacity: 0.8 });
+const platform = new THREE.Mesh(geoPlatform, matPlatform);
+platform.position.y = -1;
+scene.add(platform);
+
+// Player Side (Blue-ish cube as proxy for character)
+const geoPlayer = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+const matPlayer = new THREE.MeshPhongMaterial({ color: 0x4fc3f7 });
+const playerChar = new THREE.Mesh(geoPlayer, matPlayer);
+playerChar.position.set(-1.5, -0.5, 0);
+scene.add(playerChar);
+
+// Opponent Side (Pink-ish cube as proxy for character)
+const geoEnemy = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+const matEnemy = new THREE.MeshPhongMaterial({ color: 0xf06292 });
+const enemyChar = new THREE.Mesh(geoEnemy, matEnemy);
+enemyChar.position.set(1.5, -0.5, 0);
+scene.add(enemyChar);
+
+camera.position.set(0, 1, 6);
+camera.lookAt(0, 0, 0);
+
+function animate() {
+    requestAnimationFrame(animate);
+    
+    // Idle animations
+    playerChar.position.y = -0.5 + Math.sin(Date.now() * 0.005) * 0.1;
+    enemyChar.position.y = -0.5 + Math.cos(Date.now() * 0.005) * 0.1;
+    
+    playerChar.rotation.y += 0.01;
+    enemyChar.rotation.y -= 0.01;
+    
+    renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+    const newWidth = container.clientWidth || window.innerWidth;
+    const newHeight = container.clientHeight || window.innerHeight;
+    camera.aspect = newWidth / newHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(newWidth, newHeight);
+});
+
+animate();
+
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_9 -->
+<!-- Player Nameplates -->
+<div class="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none">
+<div class="bg-surface-container-highest border-2 border-primary p-2 px-4 rounded-lg flex flex-col gap-xs active-pulse">
+<span class="font-label-caps text-[10px] text-primary">PLAYER 1</span>
+<span class="font-headline-sm text-on-surface">Satoshi_99</span>
+<div class="w-full h-1 bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[80%]"></div>
+</div>
+</div>
+<div class="bg-surface-container-highest border-2 border-secondary p-2 px-4 rounded-lg flex flex-col items-end gap-xs">
+<span class="font-label-caps text-[10px] text-secondary">PLAYER 2</span>
+<span class="font-headline-sm text-on-surface">AI_Sensei</span>
+<div class="w-full h-1 bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[65%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Current Word Display -->
+<section class="flex flex-col items-center text-center gap-xs mb-lg">
+<div class="font-label-caps text-primary-container tracking-widest text-sm mb-xs">CURRENT TARGET</div>
+<div class="relative group">
+<div class="absolute -inset-4 bg-primary/20 blur-xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+<h2 class="font-display-hero text-headline-lg md:text-display-hero text-on-primary-container relative flex items-baseline gap-md">
+<span>りんご</span>
+<span class="font-label-caps text-headline-sm opacity-60">RINGO</span>
+</h2>
+</div>
+<div class="flex items-center gap-base mt-base">
+<div class="px-3 py-1 bg-surface-container border-2 border-outline rounded-full font-label-caps text-[10px] text-on-surface-variant">
+                    ENDS WITH: <span class="text-primary">ご (GO)</span>
+</div>
+<div class="px-3 py-1 bg-surface-container border-2 border-outline rounded-full font-label-caps text-[10px] text-on-surface-variant">
+                    POINTS: <span class="text-tertiary">+450</span>
+</div>
+</div>
+</section>
+<!-- Chain History -->
+<section class="w-full max-w-2xl mb-lg">
+<div class="flex items-center justify-between mb-base">
+<span class="font-label-caps text-xs text-on-surface-variant">CHAIN HISTORY (14 WORDS)</span>
+<span class="font-label-caps text-xs text-primary">COMBO x4</span>
+</div>
+<div class="flex gap-md overflow-x-auto pb-4 hide-scrollbar snap-x snap-mandatory">
+<!-- Word Bubbles -->
+<div class="snap-center shrink-0">
+<div class="bg-surface-container border-2 border-outline px-6 py-3 rounded-full flex flex-col items-center">
+<span class="font-headline-sm text-on-surface">しりとり</span>
+<span class="font-label-sm text-outline">SHIRITORI</span>
+</div>
+</div>
+<div class="snap-center shrink-0">
+<div class="bg-surface-container border-2 border-outline px-6 py-3 rounded-full flex flex-col items-center">
+<span class="font-headline-sm text-on-surface">りす</span>
+<span class="font-label-sm text-outline">RISU</span>
+</div>
+</div>
+<div class="snap-center shrink-0">
+<div class="bg-primary-container/20 border-2 border-primary px-6 py-3 rounded-full flex flex-col items-center">
+<span class="font-headline-sm text-primary">すいか</span>
+<span class="font-label-sm text-primary/70">SUIKA</span>
+</div>
+</div>
+<div class="snap-center shrink-0">
+<div class="bg-surface-container border-2 border-outline px-6 py-3 rounded-full flex flex-col items-center">
+<span class="font-headline-sm text-on-surface">かも</span>
+<span class="font-label-sm text-outline">KAMO</span>
+</div>
+</div>
+<div class="snap-center shrink-0">
+<div class="bg-surface-container border-2 border-outline px-6 py-3 rounded-full flex flex-col items-center opacity-50">
+<span class="font-headline-sm text-on-surface">もり</span>
+<span class="font-label-sm text-outline">MORI</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Input Area (Fixed) -->
+<footer class="fixed bottom-0 left-0 w-full bg-surface border-t-2 border-outline p-gutter md:px-xl md:py-md z-[60] flex flex-col items-center">
+<div class="w-full max-w-5xl flex items-center gap-md">
+<!-- Left Character Avatar -->
+<div class="hidden md:flex flex-col items-center gap-xs">
+<div class="relative">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest border-2 border-primary overflow-hidden">
+<img alt="Satoshi Avatar" class="w-full h-full object-cover" data-alt="A stylized anime-inspired character avatar with spiky black hair and glowing orange goggles, wearing a high-tech streetwear jacket. The art style is crisp vector graphics with bold outlines and vibrant cel-shading, set against a dark grid workspace background with neon primary accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuMBhmk14G-hUnIAwH_uglForbfKDK_vvH5yq1Ex2vWVYkrqeiMZ06qY6rQMRNMhIvCBPKaSxxVstFftQp6nn9p87HFsWVABSlKCmt9YjvCqIQNrdHrWK0wMNP2Dr2taRfSIs3gGkJ6ULGcj_nNMTJWWhj9fU_9K-d-62rQEEtodEzOFWX45mZuPoKEMk5ceNK2KaoztZtww1P0XfxOANl-W-e5IRh0aF9qPax-lVXPPlJvIxvOEQht8REVA4FhuxvjgkCNLqVVUtD"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-surface"></div>
+</div>
+<span class="font-label-caps text-[10px] text-primary">READY!</span>
+</div>
+<!-- Input Core -->
+<div class="flex-1 flex items-center gap-md bg-black border-2 border-primary/50 p-2 rounded-xl focus-within:border-primary transition-all glow-orange">
+<!-- Timer Widget -->
+<div class="relative w-12 h-12 flex items-center justify-center shrink-0">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-surface-container-highest" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary transition-all duration-1000" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-dasharray="125.6" stroke-dashoffset="31.4" stroke-width="4"></circle>
+</svg>
+<span class="absolute font-label-caps text-primary text-sm">10</span>
+</div>
+<!-- Text Field -->
+<div class="flex-1 flex flex-col">
+<label class="font-label-caps text-[10px] text-outline mb-0.5">INPUT HIRAGANA (START WITH: ご)</label>
+<input class="bg-transparent border-none focus:ring-0 text-headline-sm text-on-surface p-0 placeholder:text-surface-variant font-body-md" id="wordInput" oninput="handleInput(this)" placeholder="Type romaji here..." type="text"/>
+</div>
+<!-- Submit Button -->
+<button class="bg-primary-container text-on-primary-container font-label-caps px-6 py-3 rounded-lg flex items-center gap-base active:scale-95 mechanical-press">
+<span>SEND</span>
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+</div>
+<!-- Right Character Avatar (Opponent) -->
+<div class="hidden md:flex flex-col items-center gap-xs">
+<div class="relative">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest border-2 border-secondary overflow-hidden">
+<img alt="AI Sensei Avatar" class="w-full h-full object-cover" data-alt="A robotic assistant avatar with a sleek white and blue casing, featuring a digital display for eyes that shows a thinking ellipsis. The visual style is futuristic and mechanical, matching a dark cyberpunk workspace with soft blue secondary lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJfWonAhIhqPN3xtD44GxFg8X5IH9WErhREdBp4CKfSvsXiZmO1OKaJzuH3sJK8BB6Ok53yq-_68btEafWopmwbFNnSdWuxVWJq-gYzr6JBFDxMHJp7br0PMrixBynGf4G3s7-Ejt2QuMlSu2sXRomNJcPED3qALGhwSantAEwPb78trAtvDibW-FnVmEFZBy_sEtErmBuLcFhtyWZKm18pz9NQZ2YVGH2qjNK3e8pjSGYSI5JThu0pyiC7fTLbdk1vXziehZpKndt"/>
+</div>
+<div class="absolute -top-1 -left-1 px-2 py-0.5 bg-secondary text-on-secondary rounded-full font-label-caps text-[8px] animate-bounce">
+                        THINKING...
+                    </div>
+</div>
+<span class="font-label-caps text-[10px] text-secondary">LVL 42</span>
+</div>
+</div>
+</footer>
+<!-- Bottom Nav (Shared Component Proxy) -->
+<nav class="md:hidden fixed bottom-24 left-4 right-4 bg-surface-container/90 backdrop-blur-md border-2 border-outline p-2 rounded-full flex justify-around items-center z-[55] hard-shadow">
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full p-2 h-10 w-10">
+<span class="material-symbols-outlined">swords</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined">style</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined">shopping_bag</span>
+</div>
+</nav>
+<script>
+        // Simple Romaji to Hiragana conversion mapping (Subset for demo)
+        const romajiMap = {
+            'a': 'あ', 'i': 'い', 'u': 'う', 'e': 'え', 'o': 'お',
+            'ka': 'か', 'ki': 'き', 'ku': 'く', 'ke': 'け', 'ko': 'こ',
+            'ga': 'が', 'gi': 'ぎ', 'gu': 'ぐ', 'ge': 'げ', 'go': 'ご',
+            'sa': 'さ', 'si': 'し', 'su': 'す', 'se': 'せ', 'so': 'そ',
+            'ta': 'た', 'ti': 'ち', 'tu': 'つ', 'te': 'て', 'to': 'と',
+            'na': 'な', 'ni': 'に', 'nu': 'ぬ', 'ne': 'ね', 'no': 'の',
+            'ha': 'は', 'hi': 'ひ', 'fu': 'ふ', 'he': 'へ', 'ho': 'ほ',
+            'ma': 'ま', 'mi': 'み', 'mu': 'む', 'me': 'め', 'mo': 'も',
+            'ya': 'や', 'yu': 'ゆ', 'yo': 'よ',
+            'ra': 'ら', 'ri': 'り', 'ru': 'る', 're': 'れ', 'ro': 'ろ',
+            'wa': 'わ', 'wo': 'を', 'n': 'ん'
+        };
+
+        function handleInput(el) {
+            let val = el.value.toLowerCase();
+            let converted = "";
+            let i = 0;
+            
+            while (i < val.length) {
+                let char2 = val.substring(i, i + 2);
+                let char1 = val.substring(i, i + 1);
+                
+                if (romajiMap[char2]) {
+                    converted += romajiMap[char2];
+                    i += 2;
+                } else if (romajiMap[char1]) {
+                    converted += romajiMap[char1];
+                    i += 1;
+                } else {
+                    converted += val[i];
+                    i++;
+                }
+            }
+            
+            if (converted !== val) {
+                el.value = converted;
+            }
+        }
+
+        // Timer countdown simulation
+        let timeLeft = 10;
+        const timerCircle = document.querySelector('circle.text-primary');
+        const timerText = document.querySelector('.absolute.font-label-caps.text-primary');
+        
+        setInterval(() => {
+            timeLeft--;
+            if (timeLeft < 0) timeLeft = 10;
+            
+            timerText.innerText = timeLeft;
+            const offset = (125.6 * (10 - timeLeft)) / 10;
+            timerCircle.style.strokeDashoffset = offset;
+            
+            // Critical alert
+            if (timeLeft <= 3) {
+                timerCircle.classList.replace('text-primary', 'text-error');
+                timerText.classList.replace('text-primary', 'text-error');
+            } else {
+                timerCircle.classList.replace('text-error', 'text-primary');
+                timerText.classList.replace('text-error', 'text-primary');
+            }
+        }, 1000);
+    </script>
+</body></html>

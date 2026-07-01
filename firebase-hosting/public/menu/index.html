@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kawaii Logic - Game Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --grid-color: rgba(255, 183, 197, 0.05);
+            --grid-glow: rgba(255, 183, 197, 0.08);
+        }
+        body {
+            background-color: #131313;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            overflow-x: hidden;
+        }
+        .grid-glow-radial {
+            background: radial-gradient(circle at 50% 50%, var(--grid-glow) 0%, transparent 70%);
+        }
+        .sticker-shadow-pink {
+            box-shadow: 4px 4px 0px 0px rgba(255, 183, 197, 0.3);
+        }
+        .sticker-shadow-blue {
+            box-shadow: 4px 4px 0px 0px rgba(137, 208, 237, 0.3);
+        }
+        .active-press:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px transparent !important;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#131313",
+                      "on-secondary-container": "#94dbf8",
+                      "outline": "#9e8c8f",
+                      "surface-container-lowest": "#0e0e0e",
+                      "on-tertiary-container": "#535555",
+                      "primary-fixed": "#ffd9df",
+                      "on-tertiary": "#2f3131",
+                      "surface-bright": "#393939",
+                      "primary-fixed-dim": "#fbb3c1",
+                      "tertiary-container": "#cacaca",
+                      "surface": "#131313",
+                      "on-surface": "#e4e2e1",
+                      "primary": "#ffdee3",
+                      "error": "#ffb4ab",
+                      "surface-container": "#1f2020",
+                      "inverse-primary": "#864e5a",
+                      "surface-container-low": "#1b1c1c",
+                      "surface-container-high": "#2a2a2a",
+                      "on-primary-container": "#7b4551",
+                      "tertiary": "#e6e6e6",
+                      "inverse-on-surface": "#303030",
+                      "on-primary": "#50212d",
+                      "secondary-fixed-dim": "#89d0ed",
+                      "inverse-surface": "#e4e2e1",
+                      "on-secondary-fixed-variant": "#004d62",
+                      "on-secondary": "#003544",
+                      "on-secondary-fixed": "#001f29",
+                      "tertiary-fixed-dim": "#c6c6c7",
+                      "on-tertiary-fixed-variant": "#454747",
+                      "surface-variant": "#353535",
+                      "surface-tint": "#fbb3c1",
+                      "error-container": "#93000a",
+                      "outline-variant": "#514345",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary-fixed": "#1a1c1c",
+                      "surface-container-highest": "#353535",
+                      "on-error": "#690005",
+                      "on-background": "#e4e2e1",
+                      "secondary-fixed": "#baeaff",
+                      "background": "#131313",
+                      "tertiary-fixed": "#e2e2e2",
+                      "primary-container": "#ffb7c5",
+                      "secondary-container": "#00627b",
+                      "secondary": "#89d0ed",
+                      "on-surface-variant": "#d6c2c4",
+                      "on-primary-fixed": "#360c19",
+                      "on-primary-fixed-variant": "#6b3743",
+                      "sakura": "#FFB7C5",
+                      "sky": "#87CEEB"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "40px",
+                      "md": "24px",
+                      "lg": "48px",
+                      "gutter": "20px",
+                      "xl": "80px",
+                      "xs": "4px",
+                      "margin-mobile": "16px",
+                      "sm": "12px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "body-md": ["Plus Jakarta Sans"],
+                      "label-lg": ["Plus Jakarta Sans"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "headline-lg-mobile": ["Plus Jakarta Sans"],
+                      "label-sm": ["Plus Jakarta Sans"],
+                      "display": ["Plus Jakarta Sans"],
+                      "body-lg": ["Plus Jakarta Sans"],
+                      "headline-md": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "500"}],
+                      "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "800"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "800"}],
+                      "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "500"}],
+                      "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-on-background">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 w-full bg-surface/80 backdrop-blur-md z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 border-b-2 border-outline-variant">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-sakura" data-icon="grid_view" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-primary tracking-tighter">KAWAII LOGIC</h1>
+</div>
+<div class="hidden md:flex gap-lg">
+<a class="text-sakura font-extrabold text-label-lg" href="#">Home</a>
+<a class="text-on-surface-variant hover:text-sakura transition-colors duration-200 font-label-lg" href="#">Stats</a>
+<a class="text-on-surface-variant hover:text-sakura transition-colors duration-200 font-label-lg" href="#">Settings</a>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-32 pb-40 px-margin-mobile md:px-margin-desktop max-w-[1200px] mx-auto w-full relative">
+<!-- Atmospheric Background Glow -->
+<div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-full h-[500px] grid-glow-radial pointer-events-none -z-10 opacity-60"></div>
+<section class="mb-lg space-y-xs text-center md:text-left">
+<p class="font-label-lg text-sakura uppercase tracking-widest">Choose Your Game / あなたのゲームを選んでください</p>
+<h2 class="font-display text-display leading-tight">🎮 ゲームを選ぶ</h2>
+</section>
+<!-- Game Selection Cards (Sticker Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md px-2">
+<!-- Shiritori Card -->
+<div class="group relative bg-surface-container-low border-2 border-sakura rounded-full p-8 sticker-shadow-pink transition-all hover:scale-[1.02] active-press">
+<div class="flex justify-between items-start mb-6">
+<div class="bg-sakura text-on-primary px-4 py-1.5 rounded-full font-label-sm text-[11px] tracking-widest flex items-center gap-1">
+<span class="material-symbols-outlined !text-[14px]" data-icon="local_fire_department" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>🔥 POPULAR
+                    </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant opacity-40">SH-01</span>
+</div>
+<div class="flex flex-col gap-sm">
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 rounded-full border-2 border-sakura flex items-center justify-center bg-background shadow-inner">
+<span class="material-symbols-outlined text-[32px] text-sakura" data-icon="videogame_asset">videogame_asset</span>
+</div>
+<div>
+<h3 class="font-headline-lg text-on-surface">しりとり</h3>
+<p class="font-label-lg text-sakura/80 uppercase">Word Chain Battle</p>
+</div>
+</div>
+<div class="px-2">
+<p class="text-on-surface-variant font-body-md py-4 font-semibold">Word chain game where each word starts with the last sound of the previous word. <br/><span class="text-on-surface/60">前の言葉の最後の音で始まる言葉を繋げます。</span></p>
+<ul class="grid grid-cols-1 gap-2 text-label-lg text-on-surface-variant/80 mb-6">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined !text-[18px] text-sakura">stars</span>Voice &amp; AI Opponents</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined !text-[18px] text-sakura">stars</span>5000+ Japanese Words</li>
+</ul>
+</div>
+</div>
+<div class="mt-2">
+<button class="w-full bg-sakura text-on-primary py-4 rounded-full font-headline-md flex items-center justify-center gap-base shadow-lg transition-all hover:brightness-105 active-press">Play Now<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span></button>
+</div>
+</div>
+<!-- Othello Card -->
+<div class="group relative bg-surface-container-low border-2 border-sky rounded-full p-8 sticker-shadow-blue transition-all hover:scale-[1.02] active-press opacity-90 hover:opacity-100">
+<div class="flex justify-between items-start mb-6">
+<div class="bg-sky text-on-secondary px-4 py-1.5 rounded-full font-label-sm text-[11px] tracking-widest flex items-center gap-1">
+<span class="material-symbols-outlined !text-[14px]" data-icon="casino">casino</span>🎲 COMING SOON
+                    </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant opacity-40">OT-02</span>
+</div>
+<div class="flex flex-col gap-sm">
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 rounded-full border-2 border-sky flex items-center justify-center bg-background shadow-inner">
+<span class="material-symbols-outlined text-[32px] text-sky" data-icon="contrast">contrast</span>
+</div>
+<div>
+<h3 class="font-headline-lg text-on-surface">オセロ</h3>
+<p class="font-label-lg text-sky/80 uppercase">Strategic Board Game</p>
+</div>
+</div>
+<div class="px-2">
+<p class="text-on-surface-variant font-body-md py-4 font-semibold">Strategic board game where you flip opponent's pieces by trapping them. <br/><span class="text-on-surface/60">相手の石を挟んでひっくり返す戦略ボードゲーム。</span></p>
+<ul class="grid grid-cols-1 gap-2 text-label-lg text-on-surface-variant/60 mb-6">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined !text-[18px] text-sky/50">check_circle</span>Classic 8x8 Board</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined !text-[18px] text-sky/50">check_circle</span>Online Multiplayer</li>
+</ul>
+</div>
+</div>
+<div class="mt-2">
+<button class="w-full bg-background border-2 border-sky text-sky/50 py-4 rounded-full font-headline-md flex items-center justify-center gap-base cursor-not-allowed">Locked<span class="material-symbols-outlined" data-icon="lock">lock</span></button>
+</div>
+</div>
+</div>
+<!-- Quick Access Action (Prominent for 3-click requirement) -->
+<div class="mt-xl flex flex-col items-center">
+<button class="px-xl py-md bg-secondary text-on-secondary rounded-full font-headline-md flex items-center gap-base sticker-shadow-blue border-2 border-sky active-press transition-all hover:brightness-110">
+<span class="material-symbols-outlined" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                Quick Test (Free Bot)
+            </button>
+<p class="mt-4 text-on-surface-variant font-label-sm uppercase tracking-widest opacity-60">No login required • 今すぐお試し</p>
+</div>
+<!-- About Section -->
+<section class="mt-xl py-lg border-t-2 border-outline-variant/30 flex flex-col md:flex-row gap-lg items-center">
+<div class="w-full md:w-1/3 h-64 rounded-full overflow-hidden border-2 border-sakura relative sticker-shadow-pink">
+<img alt="High-tech classroom" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADZ3_psL0dBwPj53466Jk4xs57SVRGRVhtPpNLe2vpLinGf0Tiz_e0cKKxeDehGSZ7dflaXlt-bgcnx-DqrVayu_-5zVByRqgK25psLmn_OxCRMm89yJfAKf2SVn7YUO5aHUVEEq291SJhXEZc6Z1s67j1wnBiiQ5WkQStcPNvLCgP8RodgfQPS7WGaUV86EVxr3SPiCiaa_SiJae23EXP9-7eEibyqb_DRfDG99xu_z0gpMqPCOTfbztc2aMcopj3KwJg8io2HIZ4"/>
+<div class="absolute inset-0 bg-sakura/20 mix-blend-overlay"></div>
+</div>
+<div class="w-full md:w-2/3 space-y-md">
+<h4 class="font-display text-headline-lg text-sakura">About These Games</h4>
+<p class="font-body-lg text-on-surface-variant leading-relaxed font-semibold">
+                    しりとり (Shiritori) is a classic Japanese word game perfect for learning vocabulary and having fun with friends! 
+                    オセロ (Osero) is the Japanese name for Othello/Reversi. Also known as リバーシ (Ribāshi), it's a popular strategy game in Japan.
+                </p>
+<div class="bg-surface-container-low p-6 rounded-full border-2 border-sakura mt-4 shadow-inner">
+<p class="font-body-md text-on-surface italic font-bold px-4">Example: オセロをしましょう。(Osero o shimashō) - "Let's play Othello."</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Shell (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 bg-surface/90 backdrop-blur-lg border-t-2 border-outline-variant z-50">
+<a class="flex flex-col items-center justify-center bg-sakura text-on-primary rounded-full px-8 py-2 -translate-y-2 shadow-lg border-2 border-white/20" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-sakura transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-sm">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-sakura transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-sm">Settings</span>
+</a>
+</nav>
+<footer class="w-full py-lg px-margin-mobile md:px-margin-desktop border-t-2 border-outline-variant/30 text-center text-on-surface-variant/50 font-label-sm mb-20 md:mb-0">
+        Built with ❤️ for Japanese language learners. <br class="md:hidden"/> 日本語学習者のために作られました
+    </footer>
+<script>
+        // Smooth hover micro-interactions
+        document.querySelectorAll('.active-press').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.style.transform = 'translate(2px, 2px)';
+            });
+            button.addEventListener('mouseup', () => {
+                button.style.transform = '';
+            });
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = '';
+            });
+        });
+    </script>
+</body></html>
