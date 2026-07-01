@@ -171,7 +171,7 @@ deploy:production:
     - echo "🚀 Deploying to Firebase Hosting (Production)..."
     - cd firebase-hosting
     - echo "📦 Firebase project: $FIREBASE_PROJECT"
-    - if [ -n "$FIREBASE_TOKEN" ]; then firebase deploy --only hosting --project $FIREBASE_PROJECT --token $FIREBASE_TOKEN --non-interactive && echo "✅ Deployment successful!" && echo "🌐 Live at: https://nihonselfpacepractic.web.app"; else echo "⚠️ FIREBASE_TOKEN not set. Skipping deployment." && echo "ℹ️ Set FIREBASE_TOKEN in GitLab CI/CD variables to enable deployment." && echo "ℹ️ Get token with: firebase login:ci"; fi
+    - 'if [ -n "$FIREBASE_TOKEN" ]; then firebase deploy --only hosting --project $FIREBASE_PROJECT --token $FIREBASE_TOKEN --non-interactive && echo "Deployment successful!" && echo "Live at: https://nihonselfpacepractic.web.app"; else echo "FIREBASE_TOKEN not set. Skipping deployment." && echo "Set FIREBASE_TOKEN in GitLab CI/CD variables to enable deployment." && echo "Get token with: firebase login:ci"; fi'
   environment:
     name: production
     url: https://nihonselfpacepractic.web.app
@@ -191,7 +191,7 @@ deploy:staging:
   script:
     - echo "🧪 Deploying to Firebase Hosting (Staging)..."
     - cd firebase-hosting
-    - if [ -n "$FIREBASE_TOKEN" ]; then firebase deploy --only hosting --project $FIREBASE_PROJECT --token $FIREBASE_TOKEN --non-interactive && echo "✅ Staging deployment successful!"; else echo "⚠️ FIREBASE_TOKEN not set. Skipping staging deployment."; fi
+    - 'if [ -n "$FIREBASE_TOKEN" ]; then firebase deploy --only hosting --project $FIREBASE_PROJECT --token $FIREBASE_TOKEN --non-interactive && echo "Staging deployment successful!"; else echo "FIREBASE_TOKEN not set. Skipping staging deployment."; fi'
   environment:
     name: staging
     url: https://nihonselfpacepractic.web.app
