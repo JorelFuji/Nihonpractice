@@ -82,6 +82,7 @@ The root of the repo collects the working notes and guides produced during devel
 - **Learning features** — `ENHANCED_KANJI_LEARNING.md`, `KANJI_FEATURE_COMPLETE.md`, `ADULT_LEARNING_JOURNAL_SYSTEM.md`, `FEATURED_BANNER_ADDED.md`
 - **Localization** — `JAPANESE_LOCALIZATION_COMPLETE.md`, `JAPANESE_FIRST_LANGUAGE_TOGGLE.md`
 - **QA / usage** — `TESTING_CHECKLIST.md`, `NAVIGATION_GUIDE.md`, `HARD_REFRESH_INSTRUCTIONS.md`
+- **AI tooling** — [`AI_DEV_TOOLS.md`](AI_DEV_TOOLS.md) — comparison of open-source AI developer tools and a recommended stack for building these projects
 
 Each sub-project also ships its own deeper docs (e.g. `nihon-quest-fullstack/CURRICULUM_SYSTEM.md`, `GRAMMAR_SRS_SYSTEM.md`, `JMDICT_INTEGRATION.md`, `KIDS_MODE.md`).
 
