@@ -1,1 +1,49 @@
 node_modules
+
+# Environment Variables - NEVER COMMIT THESE
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*.local
+
+# Sensitive Files
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Firebase
+.firebase/
+*-firebase-adminsdk-*.json
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# OS Files
+Thumbs.db
+.DS_Store
