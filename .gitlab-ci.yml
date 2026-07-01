@@ -295,7 +295,6 @@ build:firebase:
       - "**/*.map"
       - "**/node_modules/**"
     expire_in: 3 days
-    compression: fast
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "develop"
@@ -326,7 +325,6 @@ build:fullstack:
       - "**/*.map"
       - "**/node_modules/**"
     expire_in: 3 days
-    compression: fast
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "develop"
@@ -357,7 +355,6 @@ build:nihongo:
       - "**/*.map"
       - "**/node_modules/**"
     expire_in: 3 days
-    compression: fast
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "develop"
@@ -387,7 +384,6 @@ build:flutter:
     exclude:
       - "**/*.log"
     expire_in: 3 days
-    compression: fast
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "develop"
