@@ -113,7 +113,39 @@ cap — at which point you pay a fee on *that layer only*, not the whole stack.
 
 ---
 
-## 5. What we deliberately did NOT recommend
+## 5. CI/CD build-time optimization
+
+This repo has several distinct build targets — FastAPI backend (`backend/Dockerfile`),
+React/Vite web (`frontend/`), and the Flutter app (`nihon_quest_mobile/`). The single
+biggest win is **not rebuilding what didn't change**, then caching and parallelizing
+the rest. Aim for the **10-minute commit-to-feedback rule**: past that, developers
+batch large risky PRs instead of shipping small ones.
+
+Prioritized for *this* repo (highest impact first):
+
+| Lever | How it applies here | Tooling (free → fee) |
+|---|---|---|
+| **Build only what changed** | Path filters so a `frontend/` change doesn't run backend/Flutter jobs, and docs-only PRs skip builds entirely. | GitHub Actions `paths:` filters (**free**); Turborepo/Nx if the JS side grows (**free**, Remote Cache/Nx Cloud **free→fee**) |
+| **Dependency caching** | Cache `pip` (backend), `yarn`/`npm` (web), and `pub` (Flutter) keyed on the lockfile hash. | `actions/cache` keyed on `hashFiles('**/requirements.txt')` etc. (**free**) |
+| **Docker layer caching** | Order `backend/Dockerfile` so deps install before `COPY . .` — code changes then don't bust the dep layer. Use Buildx (`DOCKER_BUILDKIT=1`) + registry cache. | Docker Buildx (**free**); GHCR / Docker Hub cache (**free→fee**) |
+| **Parallelize** | Run backend tests, web lint/build, and Flutter analyze as concurrent jobs, not a chain. Run fast static checks first (fail-fast). | GitHub Actions job matrix (**free minutes → fee**) |
+| **Artifact reuse** | Build the backend image once → reuse the same digest for test and deploy stages instead of rebuilding. | GH Actions artifacts / GHCR (**free→fee**) |
+| **Dependency proxy / cache** | If install time or registry flakiness bites, put a caching proxy in front of PyPI/npm. | **Sonatype Nexus Repository OSS** (self-host, **free**) / Nexus Repository Pro (**fee**); or GitHub Packages (**free→fee**) |
+| **Faster runners** | Only if image builds are CPU-bound — larger runners for the Docker/Flutter jobs. | GitHub larger runners (**fee**), Depot (**free tier → fee**) |
+
+**Kubernetes tie-in:** once the backend image is built and pushed to GHCR, deployment
+is a thin final stage — `helm upgrade` (or Argo CD / Flux GitOps, both **free→fee**)
+against your cluster. Build the image once in CI and let the deploy stage only *ship*
+it; don't rebuild in the deploy job.
+
+> **Honest scope note:** for a repo this size, `paths:` filters + dependency caching +
+> a couple of parallel jobs already gets you comfortably under 10 minutes. Turborepo/Nx
+> remote caching, Bazel, self-hosted runners, and a Nexus proxy are worth it only once
+> build times or team size actually justify them — don't add them preemptively.
+
+---
+
+## 6. What we deliberately did NOT recommend
 
 Because they'd be premature for this app and/or require self-hosting you can't justify:
 
