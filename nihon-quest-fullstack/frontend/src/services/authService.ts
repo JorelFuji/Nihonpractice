@@ -79,6 +79,51 @@ export const authService = {
     }
   },
 
+  async signInWithAuth0(): Promise<UserCredential> {
+    try {
+      const result = await signInWithPopup(auth, auth0Provider);
+      const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+      if (!userDoc.exists()) {
+        await this.createUserProfile(result.user, result.user.displayName || 'Student');
+      } else {
+        await this.updateLastLogin(result.user.uid);
+      }
+      return result;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  },
+
+  async signInWithOkta(): Promise<UserCredential> {
+    try {
+      const result = await signInWithPopup(auth, oktaProvider);
+      const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+      if (!userDoc.exists()) {
+        await this.createUserProfile(result.user, result.user.displayName || 'Student');
+      } else {
+        await this.updateLastLogin(result.user.uid);
+      }
+      return result;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  },
+
+  async signInWithLine(): Promise<UserCredential> {
+    try {
+      const result = await signInWithPopup(auth, lineProvider);
+      const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+      if (!userDoc.exists()) {
+        await this.createUserProfile(result.user, result.user.displayName || 'Student');
+      } else {
+        await this.updateLastLogin(result.user.uid);
+      }
+      return result;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  },
+
   async signOut(): Promise<void> {
     try {
       await signOut(auth);
