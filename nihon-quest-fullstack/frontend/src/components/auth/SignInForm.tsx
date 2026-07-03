@@ -45,6 +45,48 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }: SignInFormPr
     }
   };
 
+  const handleAuth0SignIn = async () => {
+    setIsLoading(true);
+    try {
+      await authService.signInWithAuth0();
+      analyticsService.logLogin('auth0');
+      toast.success('Welcome back! 🎌');
+      onSuccess?.();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign in with Auth0');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOktaSignIn = async () => {
+    setIsLoading(true);
+    try {
+      await authService.signInWithOkta();
+      analyticsService.logLogin('okta');
+      toast.success('Welcome back! 🎌');
+      onSuccess?.();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign in with Okta');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLineSignIn = async () => {
+    setIsLoading(true);
+    try {
+      await authService.signInWithLine();
+      analyticsService.logLogin('line');
+      toast.success('Welcome back! 🎌');
+      onSuccess?.();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign in with LINE');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleForgotPassword = async () => {
     if (!email) {
       toast.error('Please enter your email first');
