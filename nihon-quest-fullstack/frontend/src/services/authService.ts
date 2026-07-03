@@ -3,6 +3,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  OAuthProvider,
   signOut,
   User,
   UserCredential,
@@ -14,6 +15,9 @@ import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '@/config/firebaseConfig';
 
 const googleProvider = new GoogleAuthProvider();
+const auth0Provider = new OAuthProvider('oidc.auth0');
+const oktaProvider = new OAuthProvider('oidc.okta');
+const lineProvider = new OAuthProvider('oidc.line');
 
 interface UserProfile {
   uid: string;
