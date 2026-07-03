@@ -58,6 +58,48 @@ export default function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormPr
     }
   };
 
+    const handleAuth0SignUp = async () => {
+          setIsLoading(true);
+          try {
+                  await authService.signInWithAuth0();
+                  analyticsService.logSignUp('auth0');
+                  toast.success('Welcome to NihongoQuest! 🎌');
+                  onSuccess?.();
+          } catch (error: any) {
+                  toast.error(error.message || 'Failed to sign up with Auth0');
+          } finally {
+                  setIsLoading(false);
+          }
+    };
+
+    const handleOktaSignUp = async () => {
+          setIsLoading(true);
+          try {
+                  await authService.signInWithOkta();
+                  analyticsService.logSignUp('okta');
+                  toast.success('Welcome to NihongoQuest! 🎌');
+                  onSuccess?.();
+          } catch (error: any) {
+                  toast.error(error.message || 'Failed to sign up with Okta');
+          } finally {
+                  setIsLoading(false);
+          }
+    };
+
+    const handleLineSignUp = async () => {
+          setIsLoading(true);
+          try {
+                  await authService.signInWithLine();
+                  analyticsService.logSignUp('line');
+                  toast.success('Welcome to NihongoQuest! 🎌');
+                  onSuccess?.();
+          } catch (error: any) {
+                  toast.error(error.message || 'Failed to sign up with LINE');
+          } finally {
+                  setIsLoading(false);
+          }
+    };
+
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="kawaii-card">
@@ -173,6 +215,30 @@ export default function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormPr
           </svg>
           Sign up with Google
         </button>
+
+                  <button
+                                onClick={handleAuth0SignUp}
+                                disabled={isLoading}
+                                className="w-full bg-white border-2 border-surface-container-highest text-on-surface py-md rounded-lg font-label-bold hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-sm"
+                              >
+                              Sign up with Auth0
+                  </button>
+      
+                <button
+                              onClick={handleOktaSignUp}
+                              disabled={isLoading}
+                              className="w-full bg-white border-2 border-surface-container-highest text-on-surface py-md rounded-lg font-label-bold hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-sm"
+                            >
+                            Sign up with Okta
+                </button>
+      
+                <button
+                              onClick={handleLineSignUp}
+                              disabled={isLoading}
+                              className="w-full bg-white border-2 border-surface-container-highest text-on-surface py-md rounded-lg font-label-bold hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-sm"
+                            >
+                            Sign up with LINE
+                </button>
 
         <div className="text-center mt-lg">
           <span className="font-body-md text-on-surface-variant">
