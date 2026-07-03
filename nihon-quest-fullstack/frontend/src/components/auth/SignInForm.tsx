@@ -196,6 +196,30 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }: SignInFormPr
           Sign in with Google
         </button>
 
+              <button
+                        onClick={handleAuth0SignIn}
+                        disabled={isLoading}
+                        className="w-full bg-white border-2 border-surface-container-highest text-on-surface py-md rounded-lg font-label-bold hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-sm"
+                      >
+                      Sign in with Auth0
+              </button>
+      
+            <button
+                      onClick={handleOktaSignIn}
+                      disabled={isLoading}
+                      className="w-full bg-white border-2 border-surface-container-highest text-on-surface py-md rounded-lg font-label-bold hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-sm"
+                    >
+                    Sign in with Okta
+            </button>
+      
+            <button
+                      onClick={handleLineSignIn}
+                      disabled={isLoading}
+                      className="w-full bg-white border-2 border-surface-container-highest text-on-surface py-md rounded-lg font-label-bold hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-sm"
+                    >
+                    Sign in with LINE
+            </button>
+
         <div className="text-center mt-lg">
           <span className="font-body-md text-on-surface-variant">
             Don't have an account?{' '}
