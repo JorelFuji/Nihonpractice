@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Pre-commit hook: Fast checks on staged files only (~1-2 seconds)
+#
+# The Pyramid:
+#   1. Dev inner loop (instant feedback while coding)
+#   2. Pre-commit hook ← YOU ARE HERE (fast: lint + secrets on staged only)
+#   3. Pre-push hook (full: lint + test + scan + build)
+#   4. CI (thin confirmation, runs same commands)
+#   5. Scheduled deep scans (weekly: SAST + CVE analysis)
+#
+# This runs FAST checks only - the heavy stuff runs in pre-push
+
+set -e
+
+echo ""
+echo "╔═══════════════════════════════════════╗"
+echo "║  🔍 PRE-COMMIT: Fast staged-only checks  ║"
+echo "╚═══════════════════════════════════════╝"
+echo ""
+
+# 1. Scan for secrets in staged files (CRITICAL - prevents API key leaks)
+echo "🔐 Scanning staged files for secrets..."
+if command -v gitleaks >/dev/null 2>&1; then
+    if ! gitleaks protect --staged --redact -v; then
+        echo ""
+        echo "❌ SECRET DETECTED IN STAGED FILES!"
+        echo ""
+        echo "🚨 CRITICAL: You almost committed sensitive data!"
+        echo ""
+        echo "📋 Next steps:"
+        echo "   1. Remove the secret from the file"
+        echo "   2. Use environment variables instead"
+        echo "   3. Add to .gitignore if it's a config file"
+        echo ""
+        echo "⚠️  If you already committed it, you'll need to:"
+        echo "   - Rotate the credential immediately"
+        echo "   - Remove from git history: git reset HEAD~1"
+        echo ""
+        exit 1
+    fi
+    echo "   ✓ No secrets detected"
+else
+    echo "   ⚠️  gitleaks not installed - SKIPPING SECRET SCAN"
+    echo "   Run: brew install gitleaks"
+    echo "   THIS IS CRITICAL FOR SECURITY!"
+fi
+echo ""
+
+# 2. Lint staged files (if lint-staged is configured)
+if [ -f "package.json" ] && grep -q "lint-staged" package.json; then
+    echo "✨ Linting staged files..."
+    if command -v npx >/dev/null 2>&1; then
+        npx lint-staged
+        echo "   ✓ Lint passed"
+    fi
+fi
+
+echo ""
+echo "✅ Pre-commit checks passed!"
+echo "💡 Full CI will run on push (pre-push hook)"
+echo ""
+
+exit 0

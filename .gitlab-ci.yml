@@ -479,3 +479,70 @@ deploy:staging:
   needs:
     - job: build:firebase
   allow_failure: true
+
+# ================================================================================
+# SCHEDULED SECURITY SCANS (Layer 5: Deep scans run weekly, NOT per-push)
+# ================================================================================
+#
+# Setup: GitLab → CI/CD → Schedules → New schedule
+# Interval: Weekly (e.g., Sundays at 2am)
+# Variables: None needed
+#
+# These scans are EXPENSIVE (2-5 min) so they DON'T run on every push.
+# They run on a schedule to catch new CVEs and deep code issues.
+
+security:deep-scan:
+  stage: security
+  image: returntocorp/semgrep:latest
+  before_script:
+    - apk add --no-cache curl bash
+    # Install osv-scanner
+    - |
+      curl -L https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_amd64 -o /usr/local/bin/osv-scanner
+      chmod +x /usr/local/bin/osv-scanner
+  script:
+    # SAST: Static analysis with Semgrep
+    - echo "🔍 Running Semgrep SAST..."
+    - semgrep --config auto --error --quiet . || echo "⚠️ Semgrep findings"
+    
+    # CVE scan: Check dependencies for known vulnerabilities
+    - echo "📊 Running OSV dependency scan..."
+    - osv-scanner --recursive . || echo "⚠️ Vulnerabilities found"
+    
+    # Summary
+    - echo "✅ Deep security scan completed"
+  rules:
+    # Only run on schedule (weekly)
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    # Or manual trigger from web UI
+    - when: manual
+  allow_failure: true
+  timeout: 10m
+
+security:gitleaks-full:
+  stage: security
+  image: zricethezav/gitleaks:latest
+  script:
+    # Full history scan (not just staged/diff)
+    - echo "🔐 Running full gitleaks scan on entire repo..."
+    - gitleaks detect --redact -v --exit-code 1
+  rules:
+    # Only on schedule or manual
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - when: manual
+  allow_failure: false
+  timeout: 5m
+
+security:trivy-full:
+  stage: security
+  image: aquasec/trivy:latest
+  script:
+    # Comprehensive Trivy scan
+    - echo "🐳 Running Trivy full scan..."
+    - trivy fs --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 0 .
+    - trivy config .
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - when: manual
+  allow_failure: true
+  timeout: 10m

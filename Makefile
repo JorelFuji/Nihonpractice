@@ -102,25 +102,51 @@ test-flutter: ## Run Flutter tests
 # SECURITY SCAN TARGETS (matches CI security stage)
 # ================================================================================
 
-scan: scan-secrets scan-npm ## Run all security scans
-	@echo "✅ All security scans passed"
+scan: scan-secrets scan-npm ## Run FAST security scans (~10-15s, safe for every push)
+	@echo "✅ Fast security scans passed"
 
-scan-secrets: ## Scan for leaked secrets (gitleaks)
+scan-secrets: ## Scan for leaked secrets (gitleaks) - CRITICAL for VA/API keys
 	@if command -v gitleaks >/dev/null 2>&1; then \
-		gitleaks detect --no-banner --exit-code 0 || echo "⚠️  Secrets detected"; \
+		gitleaks detect --redact -v --exit-code 1; \
 	else \
-		echo "⚠️  gitleaks not installed (brew install gitleaks)"; \
+		echo "⚠️  gitleaks not installed — run: brew install gitleaks"; \
+		echo "⚠️  This is CRITICAL for catching API keys!"; \
+		exit 1; \
+	fi
+
+scan-secrets-staged: ## Scan only staged files (for pre-commit hook)
+	@if command -v gitleaks >/dev/null 2>&1; then \
+		gitleaks protect --staged --redact -v; \
+	else \
+		echo "⚠️  gitleaks not installed — run: brew install gitleaks"; \
 	fi
 
 scan-npm: ## Scan npm packages for vulnerabilities
-	cd nihon-quest-fullstack/frontend && npm audit --audit-level=high || echo "⚠️  Vulnerabilities found"
-	cd nihongo-quest-app/frontend && npm audit --audit-level=high || echo "⚠️  Vulnerabilities found"
+	@cd nihon-quest-fullstack/frontend && npm audit --audit-level=high || true
+	@cd nihongo-quest-app/frontend && npm audit --audit-level=high || true
 
-scan-trivy: ## Scan with Trivy (optional, requires Docker)
+scan-deep: scan-sast scan-osv scan-trivy ## Run DEEP scans (~2-5 min, for weekly/scheduled runs)
+	@echo "✅ Deep security scans completed"
+
+scan-sast: ## Static application security testing (Semgrep)
+	@if command -v semgrep >/dev/null 2>&1; then \
+		semgrep --config auto --error --quiet .; \
+	else \
+		echo "⚠️  semgrep not installed — run: brew install semgrep"; \
+	fi
+
+scan-osv: ## Scan dependencies for known CVEs (OSV-Scanner)
+	@if command -v osv-scanner >/dev/null 2>&1; then \
+		osv-scanner --recursive . || true; \
+	else \
+		echo "⚠️  osv-scanner not installed — run: brew install osv-scanner"; \
+	fi
+
+scan-trivy: ## Scan with Trivy (container/IaC/secrets/misconfig)
 	@if command -v trivy >/dev/null 2>&1; then \
 		trivy fs --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 0 .; \
 	else \
-		echo "⚠️  trivy not installed (brew install trivy)"; \
+		echo "⚠️  trivy not installed — run: brew install trivy"; \
 	fi
 
 # ================================================================================

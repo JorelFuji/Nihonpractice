@@ -1,18 +1,29 @@
 #!/usr/bin/env bash
 # Pre-push hook: Run local CI to prevent wasting GitLab/GitHub minutes
-# This hook blocks pushes that would fail CI anyway
+# This is the MAIN GATE - blocks pushes that would fail CI
+#
+# The Pyramid:
+#   1. Dev inner loop (instant feedback while coding)
+#   2. Pre-commit hook (fast: lint + secrets on staged files)
+#   3. Pre-push hook ← YOU ARE HERE (full: lint + test + scan + build)
+#   4. CI (thin confirmation, runs same commands)
+#   5. Scheduled deep scans (weekly: SAST + CVE analysis)
 
 set -e
 
 echo ""
-echo "🚀 Running local CI checks before push..."
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "╔═══════════════════════════════════════════════╗"
+echo "║  🚀 PRE-PUSH GATE: Running Local CI           ║"
+echo "║  This prevents wasting CI minutes on failures ║"
+echo "╚═══════════════════════════════════════════════╝"
 echo ""
+
+START_TIME=$(date +%s)
 
 # Detect which CI system to use
 if [ -f "Makefile" ] && grep -q "^ci:" Makefile; then
     CI_COMMAND="make ci"
-elif [ -f "package.json" ] && grep -q '"ci:' package.json; then
+elif [ -f "package.json" ] && grep -q '"ci' package.json; then
     CI_COMMAND="npm run ci"
 elif [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
     CI_COMMAND="pytest && ruff check ."
@@ -27,27 +38,38 @@ echo ""
 
 # Run the CI command
 if ! $CI_COMMAND; then
+    END_TIME=$(date +%s)
+    DURATION=$((END_TIME - START_TIME))
+    
     echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "❌ LOCAL CI FAILED"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "╔═══════════════════════════════════════════════╗"
+    echo "║  ❌ LOCAL CI FAILED                            ║"
+    echo "╚═══════════════════════════════════════════════╝"
     echo ""
-    echo "Push BLOCKED to prevent wasting CI minutes."
+    echo "⏱️  Time: ${DURATION}s (saved 6-8 min of CI time!)"
     echo ""
-    echo "Options:"
-    echo "  1. Fix the issues and try again"
-    echo "  2. Skip this check: git push --no-verify"
-    echo "  3. Push only docs: git commit --amend -m 'docs: ... [skip ci]'"
+    echo "🚫 Push BLOCKED to prevent wasting CI minutes."
+    echo ""
+    echo "📋 Options:"
+    echo "   1. Fix the issues above and try again"
+    echo "   2. Skip this check: git push --no-verify"
+    echo "   3. Docs only: git commit --amend -m 'docs: ... [skip ci]'"
+    echo ""
+    echo "💡 Every blocked push saves you 6-8 CI minutes!"
     echo ""
     exit 1
 fi
 
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+
 echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "✅ LOCAL CI PASSED"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "╔═══════════════════════════════════════════════╗"
+echo "║  ✅ LOCAL CI PASSED                            ║"
+echo "╚═══════════════════════════════════════════════╝"
 echo ""
-echo "Proceeding with push..."
+echo "⏱️  Time: ${DURATION}s"
+echo "🎯 Push proceeding - CI will rubber-stamp this"
 echo ""
 
 exit 0
