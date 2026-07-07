@@ -48,6 +48,15 @@ dependencies:
   confetti: ^0.7.0
   flutter_animate: ^4.5.0
   google_fonts: ^6.2.1
+  
+  # URL Launcher
+  url_launcher: ^6.3.1
+  
+  # WebView for game integration
+  webview_flutter: ^4.4.2
+  
+  # Local storage
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

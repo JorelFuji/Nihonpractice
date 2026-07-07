@@ -1,13 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'kids_mode_screen.dart';
+import 'grammar_screen.dart';
+import 'adult_learning_screen.dart';
+import 'retro_games_screen.dart';
 import 'about_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ScrollController _verticalController = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
+
+  @override
+  void dispose() {
+    _verticalController.dispose();
+    _horizontalController.dispose();
+    super.dispose();
+  }
+
+  void _refreshApp() {
+    // Force refresh by clearing any cached state
+    setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('🔄 App refreshed! If you still see old content, hard refresh your browser (Ctrl+Shift+R or Cmd+Shift+R)'),
+        duration: Duration(seconds: 4),
+        backgroundColor: Colors.purple,
+      ),
+    );
+  }
+
+  Future<void> _launchWebApp() async {
+    final Uri url = Uri.parse('https://nihonselfpacepractic.web.app/');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('❌ Could not open web app'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('🌸 日本語クエスト'),
+        backgroundColor: Colors.purple,
+        foregroundColor: Colors.white,
+        actions: [
+          // Web App button
+          IconButton(
+            icon: const Icon(Icons.web),
+            tooltip: 'Open Web App',
+            onPressed: _launchWebApp,
+          ),
+          // Refresh button
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh App',
+            onPressed: _refreshApp,
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -20,12 +85,24 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+        child: Stack(
+          children: [
+            SafeArea(
+          child: Scrollbar(
+            controller: _verticalController,
+            thumbVisibility: true,
+            trackVisibility: true,
+            thickness: 16.0,
+            radius: const Radius.circular(8.0),
+            interactive: true,
+            child: SingleChildScrollView(
+              controller: _verticalController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
                 // Title
                 const Text(
                   '🌸 日本語クエスト 🌸',
@@ -65,7 +142,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Grammar Button (Coming Soon)
+                // Grammar Button
                 _buildMenuCard(
                   context,
                   icon: '📚',
@@ -73,17 +150,17 @@ class HomeScreen extends StatelessWidget {
                   subtitle: 'もうすぐ！',
                   colors: [Colors.blue.shade300, Colors.blue.shade100],
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Coming soon! 🚀'),
-                        duration: Duration(seconds: 2),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const GrammarScreen(),
                       ),
                     );
                   },
                 ),
                 const SizedBox(height: 20),
 
-                // Adult Learning Button (Coming Soon)
+                // Adult Learning Button
                 _buildMenuCard(
                   context,
                   icon: '🎓',
@@ -91,10 +168,28 @@ class HomeScreen extends StatelessWidget {
                   subtitle: 'もうすぐ！',
                   colors: [Colors.purple.shade300, Colors.purple.shade100],
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Coming soon! 🚀'),
-                        duration: Duration(seconds: 2),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdultLearningScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+
+                // Retro Games Button
+                _buildMenuCard(
+                  context,
+                  icon: '🕹️',
+                  title: 'レトロゲーム',
+                  subtitle: 'Classic gaming history',
+                  colors: [Colors.deepOrange.shade300, Colors.orange.shade100],
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RetroGamesScreen(),
                       ),
                     );
                   },
@@ -118,7 +213,7 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
 
-                const Spacer(),
+                const SizedBox(height: 40),
 
                 // Footer
                 const Text(
@@ -129,9 +224,57 @@ class HomeScreen extends StatelessWidget {
                     fontStyle: FontStyle.italic,
                   ),
                 ),
-              ],
+                const SizedBox(height: 60),
+                
+                // Extra content to ensure scrolling
+                const Text(
+                  '🎯 Features',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  '• Interactive Japanese Learning\n• Fun Games for Kids\n• Audio Support\n• Progress Tracking',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.deepPurple,
+                    height: 1.8,
+                  ),
+                ),
+                const SizedBox(height: 100),
+                  ],
+                ),
+              ),
             ),
           ),
+            ),
+            // Version Badge
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.purple.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    'v2.0.0',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

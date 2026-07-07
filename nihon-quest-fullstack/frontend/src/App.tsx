@@ -23,6 +23,9 @@ import AdultLearningPage from './pages/AdultLearningPage'
 import MenuPage from './pages/MenuPage'
 import KanjiPage from './pages/KanjiPage'
 import GeographyGamePage from './pages/GeographyGamePage'
+import HiraganaChartPage from './pages/HiraganaChartPage'
+import KatakanaChartPage from './pages/KatakanaChartPage'
+import KanjiChartPage from './pages/KanjiChartPage'
 import Layout from './components/Layout'
 
 const queryClient = new QueryClient()
@@ -54,6 +57,9 @@ function App() {
             <Route path="quiz" element={<QuizPage />} />
             <Route path="word-generator" element={<WordGeneratorPage />} />
             <Route path="kanji" element={<KanjiPage />} />
+            <Route path="hiragana-chart" element={<HiraganaChartPage />} />
+            <Route path="katakana-chart" element={<KatakanaChartPage />} />
+            <Route path="kanji-chart" element={<KanjiChartPage />} />
             <Route path="tutor" element={<AITutorPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>

@@ -69,6 +69,30 @@ const MENU_TILES: MenuTile[] = [
     color: 'from-green-500 to-emerald-500'
   },
   {
+    to: '/hiragana-chart',
+    icon: BookOpen,
+    title: 'Hiragana Chart',
+    description: 'Complete あ-ん reference',
+    color: 'from-blue-500 to-cyan-500',
+    badge: 'NEW'
+  },
+  {
+    to: '/katakana-chart',
+    icon: BookOpen,
+    title: 'Katakana Chart',
+    description: 'Complete ア-ン reference',
+    color: 'from-purple-500 to-pink-500',
+    badge: 'NEW'
+  },
+  {
+    to: '/kanji-chart',
+    icon: BookOpen,
+    title: 'Kanji Chart',
+    description: '80+ common kanji',
+    color: 'from-orange-500 to-red-500',
+    badge: 'NEW'
+  },
+  {
     to: '/tutor',
     icon: Bot,
     title: 'AI Tutor',
@@ -142,10 +166,10 @@ const MENU_TILES: MenuTile[] = [
 ]
 
 const QUICK_STATS = [
-  { label: 'Total Features', labelJP: 'ごうけいきのう', value: '17+', icon: Sparkles, color: 'text-yellow-600' },
+  { label: 'Total Features', labelJP: 'ごうけいきのう', value: '20+', icon: Sparkles, color: 'text-yellow-600' },
   { label: 'Learning Modes', labelJP: 'がくしゅうモード', value: '8', icon: Target, color: 'text-blue-600' },
   { label: 'Games', labelJP: 'ゲーム', value: '6', icon: Gamepad2, color: 'text-green-600' },
-  { label: 'Tools', labelJP: 'ツール', value: '3', icon: Settings, color: 'text-purple-600' }
+  { label: 'Tools', labelJP: 'ツール', value: '6', icon: Settings, color: 'text-purple-600' }
 ]
 
 export default function MenuPage() {

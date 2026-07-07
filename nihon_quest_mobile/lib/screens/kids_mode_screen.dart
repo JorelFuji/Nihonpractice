@@ -4,9 +4,38 @@ import 'memory_card_game_screen.dart';
 import 'character_trace_screen.dart';
 import 'puzzle_slide_screen.dart';
 import 'character_tap_game_screen.dart';
+import 'katakana_match_screen.dart';
 
-class KidsModeScreen extends StatelessWidget {
+class KidsModeScreen extends StatefulWidget {
   const KidsModeScreen({super.key});
+
+  @override
+  State<KidsModeScreen> createState() => _KidsModeScreenState();
+}
+
+class _KidsModeScreenState extends State<KidsModeScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _refreshPage() {
+    setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('🔄 Page refreshed!'),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.pink,
+      ),
+    );
+  }
+
+  void _goHome() {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +44,21 @@ class KidsModeScreen extends StatelessWidget {
         title: const Text('👶 こどもモード'),
         backgroundColor: Colors.pink,
         foregroundColor: Colors.white,
+        actions: [
+          // Refresh button
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _refreshPage,
+          ),
+          // Home button
+          IconButton(
+            icon: const Icon(Icons.home),
+            tooltip: 'Go Home',
+            onPressed: _goHome,
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -29,11 +73,50 @@ class KidsModeScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+          child: Scrollbar(
+            controller: _scrollController,
+            thumbVisibility: true,
+            trackVisibility: true,
+            thickness: 16.0,
+            radius: const Radius.circular(8.0),
+            interactive: true,
             child: SingleChildScrollView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
+                  // Version indicator banner
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'v2.0.0 - Latest Version ✅',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   const Text(
                     '🎮 ゲームをえらぼう！',
                     style: TextStyle(
@@ -43,13 +126,32 @@ class KidsModeScreen extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 10),
+                  // Game count indicator
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.green, width: 2),
+                    ),
+                    child: const Text(
+                      '✅ 6 Games - All Ready to Play!',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
 
-                  // Hiragana Match
+                  // Game 1: Hiragana Match
                   _buildGameCard(
                     context,
                     icon: 'あ',
-                    title: 'ひらがなマッチ',
+                    title: '1️⃣ ひらがナマッチ [Hiragana Match]',
                     subtitle: 'えとじをあわせよう！',
                     color: Colors.blue,
                     onTap: () {
@@ -63,11 +165,11 @@ class KidsModeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
 
-                  // Memory Card Game
+                  // Game 2: Memory Card Game
                   _buildGameCard(
                     context,
                     icon: '🧠',
-                    title: 'きおくゲーム',
+                    title: '2️⃣ 記憶(きおく)ゲーム [Memory Game]',
                     subtitle: 'おなじカードをさがそう！',
                     color: Colors.purple,
                     onTap: () {
@@ -81,11 +183,11 @@ class KidsModeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
 
-                  // Character Trace
+                  // Game 3: Character Trace
                   _buildGameCard(
                     context,
                     icon: '✏️',
-                    title: 'もじをかこう',
+                    title: '3️⃣ 文字(もじ)を書(か)こう [Character Trace]',
                     subtitle: 'ひらがなをかく！',
                     color: Colors.orange,
                     onTap: () {
@@ -99,11 +201,11 @@ class KidsModeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
 
-                  // Puzzle Slide
+                  // Game 4: Puzzle Slide
                   _buildGameCard(
                     context,
                     icon: '🧩',
-                    title: 'スライドパズル',
+                    title: '4️⃣ スライドパズル [Slide Puzzle]',
                     subtitle: 'すうじパズルをとこう！',
                     color: Colors.cyan,
                     onTap: () {
@@ -117,11 +219,11 @@ class KidsModeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
 
-                  // Fast Tap Game
+                  // Game 5: Fast Tap Game
                   _buildGameCard(
                     context,
                     icon: '⚡',
-                    title: 'はやくタップ',
+                    title: '5️⃣ 速(はや)くタップ [Fast Tap]',
                     subtitle: 'おちてくるもじをタップ！',
                     color: Colors.indigo,
                     onTap: () {
@@ -135,18 +237,18 @@ class KidsModeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
 
-                  // Katakana Match (Coming Soon)
+                  // Game 6: Katakana Match
                   _buildGameCard(
                     context,
                     icon: 'ア',
-                    title: 'カタカナマッチ',
-                    subtitle: 'もうすぐ！',
+                    title: '6️⃣ カタカナマッチ [Katakana Match]',
+                    subtitle: 'がいこくごのもじをあわせよう！',
                     color: Colors.green,
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Coming soon! 🚀'),
-                          duration: Duration(seconds: 2),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const KatakanaMatchScreen(),
                         ),
                       );
                     },

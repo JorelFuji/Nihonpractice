@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { resetStats } from '../utils/statsManager'
 import { LanguageToggle } from '../contexts/LanguageContext'
 import Footer from './Footer'
+import { CharacterChartButton } from './CharacterChartButton'
+import { DictionaryButton } from './DictionaryButton'
 
 export default function Layout() {
   const location = useLocation()
@@ -107,6 +109,12 @@ export default function Layout() {
       </main>
 
       <Footer />
+
+      {/* Floating Character Chart Button - Always Accessible */}
+      <CharacterChartButton />
+
+      {/* Floating Dictionary Button - Always Accessible */}
+      <DictionaryButton />
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t-2 border-primary/20 shadow-2xl safe-area-inset-bottom z-50">
         <div className="max-w-7xl mx-auto px-1 sm:px-2 py-1.5 sm:py-2 flex justify-around items-center">

@@ -3,6 +3,8 @@ import 'package:confetti/confetti.dart';
 import 'dart:async';
 import '../models/picture_card.dart';
 import '../services/audio_service.dart';
+import '../services/progress_service.dart';
+import '../widgets/tutorial_dialog.dart';
 
 class MemoryCardGameScreen extends StatefulWidget {
   const MemoryCardGameScreen({super.key});
@@ -13,6 +15,7 @@ class MemoryCardGameScreen extends StatefulWidget {
 
 class _MemoryCardGameScreenState extends State<MemoryCardGameScreen> with SingleTickerProviderStateMixin {
   final AudioService _audioService = AudioService();
+  final ProgressService _progressService = ProgressService();
   late ConfettiController _confettiController;
   late AnimationController _flipController;
   
@@ -21,7 +24,10 @@ class _MemoryCardGameScreenState extends State<MemoryCardGameScreen> with Single
   Set<int> _matchedIndices = {};
   int _score = 0;
   int _moves = 0;
+  int _highScore = 0;
+  int _bestMoves = 999;
   bool _isChecking = false;
+  bool _isNewHighScore = false;
 
   @override
   void initState() {
@@ -32,7 +38,49 @@ class _MemoryCardGameScreenState extends State<MemoryCardGameScreen> with Single
       vsync: this,
     );
     _audioService.initialize();
+    _loadProgress();
+    _progressService.incrementGamesPlayed('memory_game');
     _initializeGame();
+  }
+
+  Future<void> _loadProgress() async {
+    final highScore = await _progressService.getHighScore('memory_game');
+    final bestMoves = await _progressService.getBestTime('memory_game');
+    setState(() {
+      _highScore = highScore;
+      _bestMoves = bestMoves > 0 ? bestMoves : 999;
+    });
+  }
+
+  void _showTutorial() {
+    TutorialDialog.show(
+      context,
+      gameName: 'Memory Game',
+      icon: Icons.psychology,
+      color: Colors.purple,
+      steps: const [
+        TutorialStep(
+          emoji: '🧠',
+          text: 'Find matching pairs of hiragana characters',
+          hint: 'Each character appears twice on the board',
+        ),
+        TutorialStep(
+          emoji: '👆',
+          text: 'Tap two cards to flip them over',
+          hint: 'Cards will stay flipped if they match',
+        ),
+        TutorialStep(
+          emoji: '✅',
+          text: 'Match all pairs to win!',
+          hint: 'Try to complete with as few moves as possible',
+        ),
+        TutorialStep(
+          emoji: '🎯',
+          text: 'Beat your high score and best move count',
+          hint: 'Your progress is saved automatically',
+        ),
+      ],
+    );
   }
 
   @override
@@ -125,21 +173,63 @@ class _MemoryCardGameScreenState extends State<MemoryCardGameScreen> with Single
     }
   }
 
-  void _showWinDialog() {
+  Future<void> _showWinDialog() async {
+    // Save progress
+    await _progressService.saveHighScore('memory_game', _score);
+    await _progressService.saveBestTime('memory_game', _moves);
+    await _progressService.incrementWins('memory_game');
+    
+    _isNewHighScore = _score > _highScore;
+    final isNewBest = _moves < _bestMoves;
+    
+    if (_isNewHighScore) _highScore = _score;
+    if (isNewBest) _bestMoves = _moves;
+    
+    if (!mounted) return;
+    
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('🎉 You Win!'),
+        title: Text(
+          _isNewHighScore ? '� NEW HIGH SCORE! 🏆' : '�🎉 You Win! 🎉',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: _isNewHighScore ? Colors.orange : null,
+          ),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const Text('⭐⭐⭐', style: TextStyle(fontSize: 48)),
+            const SizedBox(height: 20),
             Text(
               'Score: $_score',
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
-              'Moves: $_moves',
-              style: const TextStyle(fontSize: 18),
+              'Moves: $_moves${isNewBest ? " ✨ NEW BEST!" : ""}',
+              style: TextStyle(
+                fontSize: 18,
+                color: isNewBest ? Colors.orange : null,
+                fontWeight: isNewBest ? FontWeight.bold : null,
+              ),
+            ),
+            if (_isNewHighScore) ...[
+              const SizedBox(height: 10),
+              const Text(
+                '✨ Amazing! New personal best! ✨',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, color: Colors.orange, fontWeight: FontWeight.bold),
+              ),
+            ],
+            const SizedBox(height: 10),
+            const Text(
+              'Great memory skills!',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18),
             ),
           ],
         ),
@@ -191,17 +281,40 @@ class _MemoryCardGameScreenState extends State<MemoryCardGameScreen> with Single
                       icon: const Icon(Icons.arrow_back, color: Colors.blue, size: 30),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
-                    const Text(
-                      '🧠 Memory Match',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
+                    Column(
+                      children: [
+                        const Text(
+                          '🧠 Memory Match',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        if (_highScore > 0)
+                          Text(
+                            '🏆 Best: $_highScore',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                      ],
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.refresh, color: Colors.blue, size: 30),
-                      onPressed: _initializeGame,
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.help_outline, color: Colors.blue, size: 30),
+                          onPressed: _showTutorial,
+                          tooltip: 'How to Play',
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.refresh, color: Colors.blue, size: 30),
+                          onPressed: _initializeGame,
+                          tooltip: 'New Game',
+                        ),
+                      ],
                     ),
                   ],
                 ),

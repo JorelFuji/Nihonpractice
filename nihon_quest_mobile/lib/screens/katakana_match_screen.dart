@@ -3,16 +3,15 @@ import 'package:confetti/confetti.dart';
 import '../models/picture_card.dart';
 import '../services/audio_service.dart';
 import '../services/progress_service.dart';
-import '../widgets/tutorial_dialog.dart';
 
-class HiraganaMatchScreen extends StatefulWidget {
-  const HiraganaMatchScreen({super.key});
+class KatakanaMatchScreen extends StatefulWidget {
+  const KatakanaMatchScreen({super.key});
 
   @override
-  State<HiraganaMatchScreen> createState() => _HiraganaMatchScreenState();
+  State<KatakanaMatchScreen> createState() => _KatakanaMatchScreenState();
 }
 
-class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
+class _KatakanaMatchScreenState extends State<KatakanaMatchScreen> {
   final AudioService _audioService = AudioService();
   final ProgressService _progressService = ProgressService();
   late ConfettiController _confettiController;
@@ -30,11 +29,11 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
     _confettiController = ConfettiController(duration: const Duration(seconds: 2));
     _audioService.initialize();
     _loadHighScore();
-    _progressService.incrementGamesPlayed('hiragana_match');
+    _progressService.incrementGamesPlayed('katakana_match');
   }
 
   Future<void> _loadHighScore() async {
-    final highScore = await _progressService.getHighScore('hiragana_match');
+    final highScore = await _progressService.getHighScore('katakana_match');
     setState(() {
       _highScore = highScore;
     });
@@ -60,7 +59,7 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
     if (_matchedPairs.contains(id)) return;
     
     // Play sound
-    final card = hiraganaCards.firstWhere((c) => c.id == id);
+    final card = katakanaCards.firstWhere((c) => c.id == id);
     _audioService.speak(card.sound ?? card.character);
     
     setState(() {
@@ -84,7 +83,7 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
         _confettiController.play();
         
         // Check if game complete
-        if (_matchedPairs.length == hiraganaCards.length) {
+        if (_matchedPairs.length == katakanaCards.length) {
           _showWinDialog();
         }
       } else {
@@ -100,12 +99,10 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
   }
 
   Future<void> _showWinDialog() async {
-    // Save scores
-    await _progressService.saveHighScore('hiragana_match', _score);
-    await _progressService.saveLastScore('hiragana_match', _score);
-    await _progressService.incrementWins('hiragana_match');
+    await _progressService.saveHighScore('katakana_match', _score);
+    await _progressService.saveLastScore('katakana_match', _score);
+    await _progressService.incrementWins('katakana_match');
     
-    // Check if new high score
     _isNewHighScore = _score > _highScore;
     if (_isNewHighScore) {
       _highScore = _score;
@@ -118,7 +115,7 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text(
-          _isNewHighScore ? '� NEW HIGH SCORE! 🏆' : '� You Won! 🎉',
+          _isNewHighScore ? '� NEW HIGH SCORE! 🏆' : '�🎉 You Won! 🎉',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 28, 
@@ -154,7 +151,7 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
             ],
             const SizedBox(height: 10),
             const Text(
-              'Great job learning hiragana!',
+              'Great job learning katakana!',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18),
             ),
@@ -189,55 +186,14 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
     });
   }
 
-  void _showTutorial() {
-    TutorialDialog.show(
-      context,
-      gameName: 'Hiragana Match',
-      icon: Icons.abc,
-      color: Colors.blue,
-      steps: const [
-        TutorialStep(
-          emoji: '🖼️',
-          text: 'Look at the pictures on the left side',
-          hint: 'Each picture represents a Japanese word',
-        ),
-        TutorialStep(
-          emoji: 'あ',
-          text: 'Look at the hiragana characters on the right side',
-          hint: 'These are Japanese letters',
-        ),
-        TutorialStep(
-          emoji: '👆',
-          text: 'Tap a picture, then tap the matching hiragana character',
-          hint: 'The picture and character will light up when selected',
-        ),
-        TutorialStep(
-          emoji: '✅',
-          text: 'Match all pairs to win the game!',
-          hint: 'Earn 10 points for each correct match',
-        ),
-        TutorialStep(
-          emoji: '🔊',
-          text: 'Tap any hiragana to hear its pronunciation',
-          hint: 'This helps you learn how to say each character',
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Match Hiragana!'),
-        backgroundColor: Colors.blue,
+        title: const Text('Match Katakana!'),
+        backgroundColor: Colors.green,
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            tooltip: 'How to Play',
-            onPressed: _showTutorial,
-          ),
           if (_highScore > 0)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
@@ -272,9 +228,9 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xFFE3F2FD),
-                  Color(0xFFBBDEFB),
-                  Color(0xFF90CAF9),
+                  Color(0xFFE8F5E9),
+                  Color(0xFFC8E6C9),
+                  Color(0xFFA5D6A7),
                 ],
               ),
             ),
@@ -288,7 +244,7 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: Colors.green,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -322,8 +278,8 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
               numberOfParticles: 30,
               colors: const [
                 Colors.red,
-                Colors.blue,
                 Colors.green,
+                Colors.blue,
                 Colors.yellow,
                 Colors.purple,
                 Colors.orange,
@@ -337,9 +293,9 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
 
   Widget _buildPictureColumn() {
     return ListView.builder(
-      itemCount: hiraganaCards.length,
+      itemCount: katakanaCards.length,
       itemBuilder: (context, index) {
-        final card = hiraganaCards[index];
+        final card = katakanaCards[index];
         final isSelected = _selectedPicture == card.id;
         final isMatched = _matchedPairs.contains(card.id);
 
@@ -362,7 +318,7 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
                       ? Colors.green
                       : isSelected
                           ? Colors.purple
-                          : Colors.blue.shade200,
+                          : Colors.green.shade200,
                   width: 3,
                 ),
                 boxShadow: [
@@ -390,7 +346,7 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.indigo,
+                            color: Colors.green,
                           ),
                         ),
                         Text(
@@ -420,9 +376,9 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
 
   Widget _buildCharacterColumn() {
     return ListView.builder(
-      itemCount: hiraganaCards.length,
+      itemCount: katakanaCards.length,
       itemBuilder: (context, index) {
-        final card = hiraganaCards[index];
+        final card = katakanaCards[index];
         final isSelected = _selectedCharacter == card.id;
         final isMatched = _matchedPairs.contains(card.id);
 
@@ -437,15 +393,15 @@ class _HiraganaMatchScreenState extends State<HiraganaMatchScreen> {
                 color: isMatched
                     ? Colors.green.shade100
                     : isSelected
-                        ? Colors.blue.shade100
+                        ? Colors.green.shade100
                         : Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
                   color: isMatched
                       ? Colors.green
                       : isSelected
-                          ? Colors.blue
-                          : Colors.blue.shade200,
+                          ? Colors.green
+                          : Colors.green.shade200,
                   width: 3,
                 ),
                 boxShadow: [
