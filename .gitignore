@@ -48,3 +48,10 @@ build/
 # OS Files
 Thumbs.db
 .DS_Store
+
+# Backup files
+*.backup
+*.backup-*
+*.simple
+*_backup
+*_old
