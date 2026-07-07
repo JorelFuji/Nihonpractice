@@ -30,6 +30,7 @@ ui-debug.log
 *.swo
 *~
 .DS_Store
+.history/
 
 # Logs
 logs/
