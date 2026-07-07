@@ -47,20 +47,42 @@ workflow:
   auto_cancel:
     on_new_commit: interruptible
   rules:
+    # Never run if explicitly skipped
     - if: $CI_COMMIT_MESSAGE =~ /\[skip ci\]/
       when: never
+    
+    # Always run on main (deployment)
+    - if: $CI_COMMIT_BRANCH == "main"
+    
+    # Always run on tags (releases)
+    - if: $CI_COMMIT_TAG
+    
+    # Always run for merge requests
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    
+    # Allow explicit opt-in from any branch with [ci] marker
+    - if: $CI_COMMIT_MESSAGE =~ /\[ci\]/
+    
+    # Skip docs-only changes on feature branches
+    - if: $CI_COMMIT_BRANCH =~ /^feature\//
       changes:
         paths:
           - "**/*.md"
           - "docs/**/*"
+          - "*.md"
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_COMMIT_BRANCH == "develop"
+    
+    # IMPORTANT: Feature branches are NOT run automatically
+    # This saves minutes - use GitHub Actions for feature CI
+    # To force GitLab CI on feature branch: add [ci] to commit message
     - if: $CI_COMMIT_BRANCH =~ /^feature\//
+      when: never
+    
+    # Allow develop branch
+    - if: $CI_COMMIT_BRANCH == "develop"
+    
+    # Allow hotfixes
     - if: $CI_COMMIT_BRANCH =~ /^hotfix\//
-    - if: $CI_COMMIT_TAG
 
 # OPTIMIZED CACHE TEMPLATES
 .cache_node:

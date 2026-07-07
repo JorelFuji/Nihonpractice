@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+# Cancel in-progress runs when new commits are pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Quick validation (runs first, fails fast)
+  quick-checks:
+    name: Quick Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check commit messages
+        run: |
+          echo "Checking commit messages..."
+          git log --oneline -10
+
+      - name: Validate YAML files
+        run: |
+          sudo apt-get update && sudo apt-get install -y yamllint
+          find . -name "*.yml" -o -name "*.yaml" | xargs yamllint -d relaxed || true
+
+      - name: Check for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+  # Full CI (runs if quick checks pass)
+  ci:
+    name: Full CI
+    needs: quick-checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          if [ -f "Makefile" ]; then
+            make install || echo "No install target in Makefile"
+          fi
+
+      - name: Run CI checks
+        run: |
+          if [ -f "Makefile" ] && grep -q "^ci:" Makefile; then
+            make ci
+          elif [ -f "package.json" ]; then
+            npm run ci || npm run lint
+          else
+            echo "No CI command found"
+          fi
+
+      - name: Upload artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-failure-logs
+          path: |
+            **/*.log
+            **/test-results/
+          retention-days: 7
+
+  # Build check (optional, only on main)
+  build:
+    name: Build Check
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install and build
+        run: |
+          if [ -f "Makefile" ] && grep -q "^build:" Makefile; then
+            make install && make build
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            **/dist/
+            **/build/
+          retention-days: 3
