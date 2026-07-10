@@ -144,8 +144,8 @@ export default function HandwritingPage() {
         </div>
 
         {/* Ghost Character Guide */}
-        <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none opacity-10">
-          <span className="text-[240px] font-bold text-primary">{currentCharacter}</span>
+        <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none opacity-10 p-8">
+          <span className="text-[280px] font-bold text-primary leading-none">{currentCharacter}</span>
         </div>
 
         {/* Drawing Canvas */}

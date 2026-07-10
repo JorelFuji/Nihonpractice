@@ -273,17 +273,19 @@ class _CharacterTraceScreenState extends State<CharacterTraceScreen> {
                               child: Opacity(
                                 opacity: 0.2,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(24.0),
+                                  padding: const EdgeInsets.all(40.0),
                                   child: FittedBox(
                                     fit: BoxFit.contain,
+                                    alignment: Alignment.center,
                                     child: Text(
                                       _currentCard.character,
                                       style: const TextStyle(
-                                        fontSize: 200,
+                                        fontSize: 300,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.orange,
-                                        height: 1.0,
+                                        height: 1.2,
                                       ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
