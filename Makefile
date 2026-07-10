@@ -223,3 +223,24 @@ deps-update: ## Update all dependencies
 	cd nihongo-quest-app/frontend && npm update
 	cd nihon_quest_mobile && flutter pub upgrade
 	@echo "✅ Dependencies updated"
+
+# ================================================================================
+# FIREBASE TARGETS
+# ================================================================================
+
+firebase-status: ## Check Firebase login, hosting sites, and local target mappings
+	@echo "🔍 Firebase Account Status..."
+	@firebase login:list || echo "⚠️  Not logged in"
+	@echo "\n🔍 Mobile App (Flutter) Firebase Configuration:"
+	@cd nihon_quest_mobile && firebase target --project nihonselfpacepractic
+	@echo "\n🔍 Fullstack Frontend (React) Firebase Configuration:"
+	@cd nihon-quest-fullstack/frontend && firebase target --project nihonselfpacepractic
+	@echo "\n🔍 Hosting Sites List on 'nihonselfpacepractic':"
+	@cd nihon_quest_mobile && firebase hosting:sites:list --project nihonselfpacepractic
+
+deploy-flutter: ## Build and deploy Flutter Web application to Firebase
+	./deploy.sh prod
+
+deploy-fullstack: ## Build and deploy React Fullstack application to Firebase
+	cd nihon-quest-fullstack/frontend && npm run build && firebase deploy --only hosting --project nihonselfpacepractic
+
