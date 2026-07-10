@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo "🚀 Running pre-push checks (full local CI)..."
 echo "⚡ This catches failures before they hit GitLab CI/CD"
 echo ""

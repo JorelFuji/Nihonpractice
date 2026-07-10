@@ -17,25 +17,25 @@ interface PictureCard {
 }
 
 const HIRAGANA_CARDS: PictureCard[] = [
-  { id: 'a', character: 'あ', romanji: 'a', emoji: '🍎', image: 'Apple', sound: 'a' },
-  { id: 'i', character: 'い', romanji: 'i', emoji: '🦷', image: 'Tooth', sound: 'i' },
-  { id: 'u', character: 'う', romanji: 'u', emoji: '🐰', image: 'Rabbit', sound: 'u' },
-  { id: 'e', character: 'え', romanji: 'e', emoji: '✏️', image: 'Pencil', sound: 'e' },
-  { id: 'o', character: 'お', romanji: 'o', emoji: '👑', image: 'King', sound: 'o' },
-  { id: 'ka', character: 'か', romanji: 'ka', emoji: '🚗', image: 'Car', sound: 'ka' },
-  { id: 'ki', character: 'き', romanji: 'ki', emoji: '🌳', image: 'Tree', sound: 'ki' },
-  { id: 'ku', character: 'く', romanji: 'ku', emoji: '☁️', image: 'Cloud', sound: 'ku' },
+  { id: 'a', character: 'あ', romanji: 'a', emoji: '🐜', image: 'Ari (Ant)', sound: 'あ' },
+  { id: 'i', character: 'い', romanji: 'i', emoji: '🐕', image: 'Inu (Dog)', sound: 'い' },
+  { id: 'u', character: 'う', romanji: 'u', emoji: '🐰', image: 'Usagi (Rabbit)', sound: 'う' },
+  { id: 'e', character: 'え', romanji: 'e', emoji: '✏️', image: 'Enpitsu (Pencil)', sound: 'え' },
+  { id: 'o', character: 'お', romanji: 'o', emoji: '🍙', image: 'Onigiri (Rice ball)', sound: 'お' },
+  { id: 'ka', character: 'か', romanji: 'ka', emoji: '☂️', image: 'Kasa (Umbrella)', sound: 'か' },
+  { id: 'ki', character: 'き', romanji: 'ki', emoji: '🌳', image: 'Ki (Tree)', sound: 'き' },
+  { id: 'ku', character: 'く', romanji: 'ku', emoji: '☁️', image: 'Kumo (Cloud)', sound: 'く' },
 ]
 
 const KATAKANA_CARDS: PictureCard[] = [
-  { id: 'a', character: 'ア', romanji: 'a', emoji: '🍦', image: 'Ice Cream', sound: 'a' },
-  { id: 'i', character: 'イ', romanji: 'i', emoji: '🍓', image: 'Strawberry', sound: 'i' },
-  { id: 'u', character: 'ウ', romanji: 'u', emoji: '🎾', image: 'Tennis', sound: 'u' },
-  { id: 'e', character: 'エ', romanji: 'e', emoji: '🏃', image: 'Running', sound: 'e' },
-  { id: 'o', character: 'オ', romanji: 'o', emoji: '🐺', image: 'Wolf', sound: 'o' },
-  { id: 'ka', character: 'カ', romanji: 'ka', emoji: '📷', image: 'Camera', sound: 'ka' },
-  { id: 'ki', character: 'キ', romanji: 'ki', emoji: '🔑', image: 'Key', sound: 'ki' },
-  { id: 'ku', character: 'ク', romanji: 'ku', emoji: '🍪', image: 'Cookie', sound: 'ku' },
+  { id: 'a', character: 'ア', romanji: 'a', emoji: '🍦', image: 'Aisu kurīmu (Ice Cream)', sound: 'ア' },
+  { id: 'i', character: 'イ', romanji: 'i', emoji: '🦜', image: 'Inko (Parakeet)', sound: 'イ' },
+  { id: 'u', character: 'ウ', romanji: 'u', emoji: '🐰', image: 'Usagi (Rabbit)', sound: 'ウ' },
+  { id: 'e', character: 'エ', romanji: 'e', emoji: '🎽', image: 'Epuron (Apron)', sound: 'エ' },
+  { id: 'o', character: 'オ', romanji: 'o', emoji: '🍊', image: 'Orenji (Orange)', sound: 'オ' },
+  { id: 'ka', character: 'カ', romanji: 'ka', emoji: '📷', image: 'Kamera (Camera)', sound: 'カ' },
+  { id: 'ki', character: 'キ', romanji: 'ki', emoji: '🔑', image: 'Kī (Key)', sound: 'キ' },
+  { id: 'ku', character: 'ク', romanji: 'ku', emoji: '🍪', image: 'Kukkī (Cookie)', sound: 'ク' },
 ]
 
 export default function KidsModePage() {

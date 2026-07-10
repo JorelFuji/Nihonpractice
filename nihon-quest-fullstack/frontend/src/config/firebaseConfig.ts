@@ -3,6 +3,9 @@ import { getAnalytics, Analytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+// Firebase config - these are PUBLIC client keys, not secrets
+// They're meant to be in client-side code and protected by Firebase Security Rules
+// gitleaks:allow
 const firebaseConfig = {
   apiKey: "AIzaSyAEZ-4sPafZkPUseFK4hRN1q4-Vv-eEq_I",
   authDomain: "nihonselfpacepractic.firebaseapp.com",

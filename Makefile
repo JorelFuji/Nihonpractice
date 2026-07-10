@@ -107,10 +107,18 @@ scan: scan-secrets scan-npm ## Run FAST security scans (~10-15s, safe for every 
 
 scan-secrets: ## Scan for leaked secrets (gitleaks) - CRITICAL for VA/API keys
 	@if command -v gitleaks >/dev/null 2>&1; then \
-		gitleaks detect --redact -v --exit-code 1; \
+		gitleaks detect --no-git --redact -v --exit-code 1; \
 	else \
 		echo "⚠️  gitleaks not installed — run: brew install gitleaks"; \
 		echo "⚠️  This is CRITICAL for catching API keys!"; \
+		exit 1; \
+	fi
+
+scan-secrets-history: ## Scan entire git history for secrets (slower)
+	@if command -v gitleaks >/dev/null 2>&1; then \
+		gitleaks detect --redact -v --exit-code 1; \
+	else \
+		echo "⚠️  gitleaks not installed"; \
 		exit 1; \
 	fi
 

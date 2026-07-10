@@ -26,6 +26,9 @@ import GeographyGamePage from './pages/GeographyGamePage'
 import HiraganaChartPage from './pages/HiraganaChartPage'
 import KatakanaChartPage from './pages/KatakanaChartPage'
 import KanjiChartPage from './pages/KanjiChartPage'
+import VocabularyPage from './pages/VocabularyPage'
+import CategoryWordsPage from './pages/CategoryWordsPage'
+import MatchGamePage from './pages/MatchGamePage'
 import Layout from './components/Layout'
 
 const queryClient = new QueryClient()
@@ -43,6 +46,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="practice" element={<CurriculumPage />} />
             <Route path="flashcards" element={<FlashcardPage />} />
+            <Route path="flashcards/:category" element={<FlashcardPage />} />
             <Route path="grammar-game" element={<GrammarGamePage />} />
             <Route path="sentence-game" element={<SentenceGamePage />} />
             <Route path="geography-game" element={<GeographyGamePage />} />
@@ -62,6 +66,10 @@ function App() {
             <Route path="kanji-chart" element={<KanjiChartPage />} />
             <Route path="tutor" element={<AITutorPage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="vocabulary" element={<VocabularyPage />} />
+            <Route path="vocabulary/:category" element={<CategoryWordsPage />} />
+            <Route path="match-game" element={<MatchGamePage />} />
+            <Route path="match-game/:category" element={<MatchGamePage />} />
           </Route>
         </Routes>
       </BrowserRouter>

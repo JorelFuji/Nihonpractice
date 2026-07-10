@@ -1,0 +1,29 @@
+apiVersion: v2
+name: nihonquest
+description: NihongoQuest - Japanese Learning Platform with 6 Interactive Games
+type: application
+version: 2.1.0
+appVersion: "2.1.0"
+
+keywords:
+  - education
+  - japanese
+  - flutter
+  - games
+  - learning
+  - hiragana
+  - katakana
+
+home: https://nihonselfpacepractic-flutter.web.app
+sources:
+  - https://github.com/m1876041/NihonSelfPace
+
+maintainers:
+  - name: NihongoQuest Team
+    email: support@nihonquest.com
+
+icon: https://nihonselfpacepractic-flutter.web.app/icons/Icon-192.png
+
+annotations:
+  category: Education
+  licenses: MIT

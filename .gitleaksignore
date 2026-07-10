@@ -1,0 +1,7 @@
+# Documentation files with example configs
+FIREBASE_QUICK_REFERENCE.md
+FIREBASE_CONFIG_SETUP.md
+FIREBASE_MASTER_CONFIG.md
+*.md
+# Environment example files
+.env.example

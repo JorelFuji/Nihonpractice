@@ -45,6 +45,19 @@ build/
 .cache/
 .parcel-cache/
 
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+
+# Firebase
+google-services.json
+GoogleService-Info.plist
+firebase-adminsdk-*.json
+
 # OS Files
 Thumbs.db
 .DS_Store

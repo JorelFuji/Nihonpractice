@@ -6,7 +6,7 @@ export default function HandwritingPage() {
   const [isDrawing, setIsDrawing] = useState(false)
   const [paths, setPaths] = useState<Array<Array<{ x: number; y: number }>>>([])
   const [currentPath, setCurrentPath] = useState<Array<{ x: number; y: number }>>([])
-  const [currentCharacter, setCurrentCharacter] = useState('あ')
+  const [currentCharacter] = useState('あ')
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -24,6 +24,7 @@ export default function HandwritingPage() {
     resizeCanvas()
     window.addEventListener('resize', resizeCanvas)
     return () => window.removeEventListener('resize', resizeCanvas)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const redraw = () => {
