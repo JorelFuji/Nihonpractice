@@ -88,7 +88,6 @@ echo -e "${BLUE}Step 5: Building for web (release mode)...${NC}"
 echo -e "${YELLOW}This may take 2-5 minutes...${NC}"
 
 flutter build web --release \
-    --web-renderer canvaskit \
     --base-href="/" \
     --no-tree-shake-icons
 
