@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 # Configuration
 ENVIRONMENT=${1:-prod}
 PROJECT_DIR="/Users/m1876041/Documents/Github/NihonSelfPace/nihon_quest_mobile"
-FIREBASE_PROJECT="nihonselfpacepractic-flutter"
+FIREBASE_PROJECT="nihonselfpacepractic"
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}🚀 NihongoQuest Deployment Script${NC}"
