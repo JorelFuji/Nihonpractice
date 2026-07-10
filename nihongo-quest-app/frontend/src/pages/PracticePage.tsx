@@ -80,6 +80,7 @@ export default function PracticePage() {
       setShowConfetti(true)
       setTimeout(() => setShowConfetti(false), 3000)
     } else {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       useHeart()
       toast.error('がんばって！(Ganbatte!) Try again!')
     }

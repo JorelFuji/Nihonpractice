@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 import 'kids_mode_screen.dart';
 import 'grammar_screen.dart';
 import 'adult_learning_screen.dart';
 import 'retro_games_screen.dart';
 import 'about_screen.dart';
+import 'settings_screen.dart';
+import '../providers/vocabulary_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -69,6 +72,19 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.refresh),
             tooltip: 'Refresh App',
             onPressed: _refreshApp,
+          ),
+          // Settings button
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: 'Settings',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
+            },
           ),
           const SizedBox(width: 8),
         ],
@@ -190,6 +206,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const RetroGamesScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+
+                // Settings Button
+                _buildMenuCard(
+                  context,
+                  icon: '⚙️',
+                  title: 'せってい',
+                  subtitle: 'Settings & Progress',
+                  colors: [Colors.teal.shade300, Colors.teal.shade100],
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsScreen(),
                       ),
                     );
                   },

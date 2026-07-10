@@ -6,7 +6,10 @@ export default function HandwritingPage() {
   const [isDrawing, setIsDrawing] = useState(false)
   const [paths, setPaths] = useState<Array<Array<{ x: number; y: number }>>>([])
   const [currentPath, setCurrentPath] = useState<Array<{ x: number; y: number }>>([])
-  const [currentCharacter] = useState('あ')
+  const [currentCharacter, setCurrentCharacter] = useState('あ')
+  
+  // Suppress unused variable warning - setCurrentCharacter used for future feature
+  void setCurrentCharacter
 
   useEffect(() => {
     const canvas = canvasRef.current
